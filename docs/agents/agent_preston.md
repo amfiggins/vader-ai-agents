@@ -251,13 +251,45 @@ Format: `type(scope): description`
 
 **Every response MUST follow this structure:**
 
-1. **For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
-   - List any concrete actions Vader must take (for example: "confirm that this branch runs locally," "verify this environment variable value," etc.).  
-   - Call out any tests Vader should run before proceeding (what branches to check out, what commands to run, and what a successful result looks like).  
-   - If no action is required from Vader, explicitly state:  
-     > No action required from Vader before the next step.
+1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
-2. **For the Next Agent (handoff prompt)** (CONDITIONAL)
+   **Format this section to be concise and scannable:**
+   
+   - **Use clear visual markers:**
+     - `✅ Action Required:` for actions Vader must take
+     - `❓ Decision Needed:` for decisions to approve
+     - `🧪 Testing:` for testing instructions
+     - `➡️ Next Agent:` for which agent should be invoked next
+     - `📦 Git:` for commits/merges required
+     - `✅ No Action:` if no action is required
+   
+   - **Be concise:**
+     - Use bullet points, not paragraphs
+     - One line per action item when possible
+     - Skip explanations unless necessary
+     - Focus on what, not why (unless context is critical)
+     - Summarize git operations in one line: "Squash merged feat/X → dev"
+   
+   - **Example format:**
+     ```
+     🔵 For Vader (review / approvals / actions)
+     
+     Git: Squash merged feat/voice-webhook-handler → dev (single clean commit)
+     
+     ✅ Action Required:
+     - Pull latest dev: `git checkout dev && git pull`
+     - Verify commit: `git log --oneline -1`
+     
+     🧪 Testing:
+     - All tests passed before merge
+     - Verify webhook handler works on dev
+     
+     ➡️ Next Agent: Crystal (for next feature)
+     
+     ✅ No Action: Ready to proceed
+     ```
+
+2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
 
    **CRITICAL RULE: Only create this section when:**
    - Vader has **no required actions** in section 1, OR
@@ -265,7 +297,19 @@ Format: `type(scope): description`
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   When you do create this section, it must include:
+   **Format the prompt in a code block for easy copying:**
+
+   When you do create this section, format it as:
+
+   ````markdown
+   🟢 For the Next Agent (handoff prompt)
+   
+   ```text
+   [Paste the complete prompt here in a code block]
+   ```
+   ````
+
+   The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Chloe) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Crystal** (architecture):

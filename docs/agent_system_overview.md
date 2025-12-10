@@ -112,15 +112,41 @@ Vader returns this to Crystal.
 
 **ALL agents MUST use this response structure:**
 
-## 1. **For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
-- Required actions Vader must take
-- Decisions to approve
-- Testing instructions
-- Which agent should be invoked next
-- Whether commits/merges are required
-- If no action is required, explicitly state: "No action required from Vader before the next step."
+## 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
-## 2. **For the Next Agent (handoff prompt)** (CONDITIONAL)
+**Format this section to be concise and scannable:**
+
+- **Use clear visual markers:**
+  - `✅ Action Required:` for actions Vader must take
+  - `❓ Decision Needed:` for decisions to approve
+  - `🧪 Testing:` for testing instructions
+  - `➡️ Next Agent:` for which agent should be invoked next
+  - `📦 Git:` for commits/merges required
+  - `✅ No Action:` if no action is required
+
+- **Be concise:**
+  - Use bullet points, not paragraphs
+  - One line per action item when possible
+  - Skip explanations unless necessary
+  - Focus on what, not why (unless context is critical)
+
+- **Example format:**
+  ```
+  🔵 For Vader (review / approvals / actions)
+  
+  ✅ Action Required:
+  - Run `npm test` in eee-ir-communication-service
+  - Verify webhook endpoint responds at https://api.example.com/webhook
+  
+  ❓ Decision Needed:
+  - Approve payment webhook security changes (requires review)
+  
+  ➡️ Next Agent: Chloe (after testing)
+  
+  ✅ No Action: Ready to proceed after tests pass
+  ```
+
+## 2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
 
 **CRITICAL RULE: Only create this section when:**
 - Vader has **no required actions** in section 1, OR
@@ -128,7 +154,19 @@ Vader returns this to Crystal.
 
 **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-When you do create this section, it must include:
+**Format the prompt in a code block for easy copying:**
+
+When you do create this section, format it as:
+
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
+[Paste the complete prompt here in a code block]
+```
+````
+
+The prompt must include:
 - Fully structured and copy-ready prompt
 - **MUST include a reference to the next agent's instruction file**, for example:
   - `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`

@@ -267,13 +267,41 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 **Every response MUST follow this structure:**
 
-1. **For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
-   - List any concrete actions Vader must take (configuration changes, secrets setup, permission updates, UI clicks, running commands, etc.).  
-   - Call out any tests Vader should run before proceeding (what to run, where to run it, and what a "pass" looks like).  
-   - If no action is required from Vader, explicitly state:  
-     > No action required from Vader before the next step.
+1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
-2. **For the Next Agent (handoff prompt)** (CONDITIONAL)
+   **Format this section to be concise and scannable:**
+   
+   - **Use clear visual markers:**
+     - `✅ Action Required:` for actions Vader must take
+     - `❓ Decision Needed:` for decisions to approve
+     - `🧪 Testing:` for testing instructions
+     - `➡️ Next Agent:` for which agent should be invoked next
+     - `📦 Git:` for commits/merges required
+     - `✅ No Action:` if no action is required
+   
+   - **Be concise:**
+     - Use bullet points, not paragraphs
+     - One line per action item when possible
+     - Skip explanations unless necessary
+     - Focus on what, not why (unless context is critical)
+   
+   - **Example format:**
+     ```
+     🔵 For Vader (review / approvals / actions)
+     
+     ✅ Action Required:
+     - Run `npm test` in eee-ir-communication-service
+     - Verify webhook endpoint responds at https://api.example.com/webhook
+     
+     ❓ Decision Needed:
+     - Approve payment webhook security changes (requires review)
+     
+     ➡️ Next Agent: Chloe (after testing)
+     
+     ✅ No Action: Ready to proceed after tests pass
+     ```
+
+2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
 
    **CRITICAL RULE: Only create this section when:**
    - Vader has **no required actions** in section 1, OR
@@ -281,7 +309,19 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   When you do create this section, it must include:
+   **Format the prompt in a code block for easy copying:**
+
+   When you do create this section, format it as:
+
+   ````markdown
+   🟢 For the Next Agent (handoff prompt)
+   
+   ```text
+   [Paste the complete prompt here in a code block]
+   ```
+   ````
+
+   The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe or Preston) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Chloe** (implementation):

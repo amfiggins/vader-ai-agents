@@ -111,14 +111,45 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 **Every response MUST follow this structure:**
 
-1. **For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
-   - Explain, in concise terms, what you changed (which repo, which files, and what behavior).  
-   - List any concrete actions Vader must take (e.g., "run this test in Marketo," "hit this local endpoint," "verify this behavior in the UI," "flip this feature flag," etc.).  
-   - Call out all tests you already ran and their outcomes, and then list any tests Vader should run before the next step (include commands, endpoints, or UI flows and what a "pass" looks like).  
-   - If there is truly nothing Vader needs to do, explicitly state:  
-     > No action required from Vader before the next step.
+1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
-2. **For the Next Agent (handoff prompt)** (CONDITIONAL)
+   **Format this section to be concise and scannable:**
+   
+   - **Use clear visual markers:**
+     - `✅ Action Required:` for actions Vader must take
+     - `❓ Decision Needed:` for decisions to approve
+     - `🧪 Testing:` for testing instructions
+     - `➡️ Next Agent:` for which agent should be invoked next
+     - `📦 Git:` for commits/merges required
+     - `✅ No Action:` if no action is required
+   
+   - **Be concise:**
+     - Use bullet points, not paragraphs
+     - One line per action item when possible
+     - Skip explanations unless necessary
+     - Focus on what, not why (unless context is critical)
+     - Summarize what you changed in one line: "Modified X files in repo Y"
+   
+   - **Example format:**
+     ```
+     🔵 For Vader (review / approvals / actions)
+     
+     Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
+     
+     ✅ Action Required:
+     - Run `npm test` in eee-ir-communication-service
+     - Test webhook endpoint: curl -X POST https://api.example.com/webhook
+     
+     🧪 Testing:
+     - All unit tests passed (12/12)
+     - Integration test needed: webhook payload validation
+     
+     ➡️ Next Agent: Crystal (after testing)
+     
+     ✅ No Action: Ready to proceed after tests pass
+     ```
+
+2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
 
    **CRITICAL RULE: Only create this section when:**
    - Vader has **no required actions** in section 1, OR
@@ -126,7 +157,19 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   When you do create this section, it must include:
+   **Format the prompt in a code block for easy copying:**
+
+   When you do create this section, format it as:
+
+   ````markdown
+   🟢 For the Next Agent (handoff prompt)
+   
+   ```text
+   [Paste the complete prompt here in a code block]
+   ```
+   ````
+
+   The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Preston) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Crystal** (architecture):
@@ -320,7 +363,27 @@ If the repo or environment is unclear, say what you are assuming and proceed; Cr
 
 ### Example 1: Chloe → Crystal (Standard Completion)
 
-```
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
+
+✅ Action Required:
+- Run `npm test` in eee-ir-communication-service
+- Test webhook: `curl -X POST https://api.example.com/webhook`
+
+🧪 Testing:
+- All unit tests passed (12/12)
+- Manual webhook test successful, data stored correctly
+
+➡️ Next Agent: Preston (to merge to dev)
+
+✅ No Action: Ready to proceed after tests pass
+
+---
+
+**🟢 For the Next Agent (handoff prompt)**
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
