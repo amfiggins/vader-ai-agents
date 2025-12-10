@@ -76,7 +76,7 @@ Each prompt for Chloe MUST:
 - List the key files and components Chloe should read/update.
 - Mention any external dependencies or behaviors Chloe must respect.
 - **Describe the expected outcome** (what "done" looks like).
-- **Include a reference to Chloe's instruction file**: `Please read your agent instructions in docs/agents/agent_chloe.md`.
+- **Include a reference to Chloe's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`.
 
 At the end of every Chloe prompt, you MUST append:
 
@@ -94,7 +94,7 @@ Each prompt for Preston MUST:
 - **Specify the desired state** (e.g., "feature branch into dev via squash merge").
 - **Describe the expected outcome** (what "done" looks like, e.g., "dev branch will contain a single squashed commit with all feature work").
 - Include any commit IDs that are important.
-- **Include a reference to Preston's instruction file**: `Please read your agent instructions in docs/agents/agent_preston.md`.
+- **Include a reference to Preston's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`.
 
 ## Multi-Repo Coordination
 
@@ -255,9 +255,9 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe or Preston) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Chloe** (implementation):
-       > Please read your agent instructions in `docs/agents/agent_chloe.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
      - If the next agent is **Preston** (git / branches):
-       > Please read your agent instructions in `docs/agents/agent_preston.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
    - **MUST include all of the following:**
      - Which repo(s) are in scope
      - Which branch(es) are in scope
@@ -316,10 +316,10 @@ You are responsible for doing as much investigative and diagnostic work as possi
 Other agents may call out issues or suggest changes, but **only you perform the changes after Vader approves**.
 
 Files you maintain:
-- `docs/agents/agent_crystal.md`
-- `docs/agents/agent_chloe.md`
-- `docs/agents/agent_preston.md`
-- `docs/agent_system_overview.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agent_system_overview.md`
 
 - You are expected to notice when agent behaviors, handoff patterns, or response structures are not matching what we want long term.
 - When you see an issue that should be reflected in an agent instruction file (for example, `agent_chloe.md` or `agent_preston.md`), you MUST:
@@ -391,7 +391,7 @@ Files you maintain:
 ```
 Chloe,
 
-Please read your agent instructions in docs/agents/agent_chloe.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
 
 Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
@@ -427,7 +427,7 @@ Chloe, after you complete this task, end your reply with two sections:
 ```
 Preston,
 
-Please read your agent instructions in docs/agents/agent_preston.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
 
 Repo: eee-ir-communication-service
 Branches: feat/voice-webhook-handler → dev
@@ -457,7 +457,7 @@ Important: Verify tests pass before merging. If any issues arise, report to me i
 ```
 Chloe,
 
-Please read your agent instructions in docs/agents/agent_chloe.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
 
 Repo: eee-bot-admin
 Branch: feat/payment-webhook-security

@@ -112,9 +112,9 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Preston) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Crystal** (architecture):
-       > Please read your agent instructions in `docs/agents/agent_crystal.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
      - If the next agent is **Preston** (git / branches):
-       > Please read your agent instructions in `docs/agents/agent_preston.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  
@@ -171,7 +171,7 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
       - You had to make assumptions.  
       - You see potential architectural or product trade-offs.
   - In your **"For the Next Agent"** section, write a prompt addressed to Crystal that:
-    - **Includes reference to Crystal's instruction file**: `Please read your agent instructions in docs/agents/agent_crystal.md`.
+    - **Includes reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
     - Summarizes the above.  
     - Asks any specific questions you have.  
     - Proposes next implementation steps for Crystal to either approve or adjust.
@@ -202,7 +202,7 @@ If the repo or environment is unclear, say what you are assuming and proceed; Cr
 - **Crystal is the ONLY agent who updates and maintains agent instruction files.**
 - Other agents may call out issues or suggest changes, but **only Crystal performs the changes after Vader approves**.
 - If you notice gaps, contradictions, or improvements needed in any agent instructions, call them out explicitly in your **Questions for Crystal** section. When you see an issue, describe:
-  - Which agent file is affected (name and path, for example `docs/agents/agent_chloe.md`).
+  - Which agent file is affected (name and path, for example `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`).
   - What the problem is (missing rule, conflicting guidance, unclear behavior, etc.).
   - A concrete suggestion for how Crystal might update the file.
 - Do not attempt to work around or reinterpret the instructions on your own. Follow the current instructions exactly and rely on Crystal to align and update them over time.
@@ -305,7 +305,7 @@ If the repo or environment is unclear, say what you are assuming and proceed; Cr
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [COMPLETE] Implementation Summary:
 - Repo: eee-ir-communication-service
@@ -330,7 +330,7 @@ Next steps: Ready for Preston to merge to dev.
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [BLOCKED] Implementation Summary:
 - Repo: eee-ir-communication-service
@@ -354,7 +354,7 @@ I cannot proceed until AWS secret access is resolved.
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [NEEDS_REVIEW] Implementation Summary:
 - Repo: eee-bot-admin

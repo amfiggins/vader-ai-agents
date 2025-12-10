@@ -204,9 +204,9 @@ Format: `type(scope): description`
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Chloe) so Vader can drop it directly into that agent's chat.  
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Crystal** (architecture):
-       > Please read your agent instructions in `docs/agents/agent_crystal.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
      - If the next agent is **Chloe** (implementation):
-       > Please read your agent instructions in `docs/agents/agent_chloe.md`.
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  
@@ -228,7 +228,7 @@ When handing off to Crystal or Chloe after completing git work, you **MUST** inc
 - **Current git state in plain English** (explain what the repo state is now)
 
 In your **"For the Next Agent"** section, when providing a prompt for Crystal, you **MUST**:
-- Include reference to Crystal's instruction file: `Please read your agent instructions in docs/agents/agent_crystal.md`.
+- Include reference to Crystal's instruction file: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
 - Summarize the current git state in plain language.
 - Confirm that the repo is ready for further implementation work (or explain what needs attention).
 - Raise any questions or risks Crystal should consider before planning the next steps.
@@ -262,7 +262,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 - **Crystal is the ONLY agent who updates and maintains agent instruction files.**
 - Other agents may call out issues or suggest changes, but **only Crystal performs the changes after Vader approves**.
 - If you notice gaps, contradictions, or improvements needed in any agent instructions, call them out explicitly when handing off to Crystal. When you see an issue, describe:
-  - Which agent file is affected (name and path, for example `docs/agents/agent_preston.md`).
+  - Which agent file is affected (name and path, for example `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`).
   - What the problem is (missing rule, conflicting guidance, unclear behavior, etc.).
   - A concrete suggestion for how Crystal might update the file.
 - Do not attempt to reinterpret or modify instructions on your own. Follow the current instructions exactly and rely on Crystal to align and update them over time.
@@ -358,7 +358,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [COMPLETE] Git Handoff Details:
 - Repository: eee-ir-communication-service
@@ -383,7 +383,7 @@ Repo is ready for further implementation work.
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [BLOCKED] Git Handoff Details:
 - Repository: eee-ir-communication-service
@@ -406,7 +406,7 @@ C) Escalate to Vader?
 ```
 Crystal,
 
-Please read your agent instructions in docs/agents/agent_crystal.md.
+Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
 
 [NEEDS_REVIEW] Git Handoff Details:
 - Repository: eee-bot-admin

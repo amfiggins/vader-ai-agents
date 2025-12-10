@@ -40,7 +40,7 @@ When handing off to another agent, Crystal MUST:
 - Specify which branch(es) are in scope
 - Name the next agent
 - Describe the expected outcome (what "done" looks like)
-- Include a reference to the next agent's instruction file (e.g., `docs/agents/agent_chloe.md` or `docs/agents/agent_preston.md`)
+- Include a reference to the next agent's instruction file (e.g., `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md` or `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`)
 
 ---
 ## Chloe — Implementation Engineer
@@ -131,9 +131,9 @@ Vader returns this to Crystal.
 When you do create this section, it must include:
 - Fully structured and copy-ready prompt
 - **MUST include a reference to the next agent's instruction file**, for example:
-  - `Please read your agent instructions in docs/agents/agent_crystal.md`
-  - `Please read your agent instructions in docs/agents/agent_chloe.md`
-  - `Please read your agent instructions in docs/agents/agent_preston.md`
+  - `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
+  - `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`
+  - `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`
 - Includes the correct repo(s) and branch(es) when applicable
 - Includes brief context of what was just done
 - Includes current state of relevant repo(s) and services
@@ -162,10 +162,10 @@ When you do create this section, it must include:
 Other agents may call out issues or suggest changes, but **only Crystal performs the changes after Vader approves**.
 
 Files maintained by Crystal:
-- `docs/agents/agent_crystal.md`
-- `docs/agents/agent_chloe.md`
-- `docs/agents/agent_preston.md`
-- `docs/agent_system_overview.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`
+- `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agent_system_overview.md`
 
 Change process:
 1. Crystal proposes changes (or another agent suggests changes to Crystal)
