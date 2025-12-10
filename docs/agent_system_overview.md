@@ -211,7 +211,86 @@ Change process:
 4. Preston pushes and merges when Crystal indicates readiness
 
 ---
-# 7. Testing Requirements
+# 7. Branch Protection & Workflow Strategy
+
+## CRITICAL: Never Touch Main/Prod/Dev Branches
+
+**ALL agents (Crystal, Chloe, Preston) MUST follow these rules:**
+
+- **NEVER directly edit, commit to, or modify:**
+  - `main` branch
+  - `prod` branch (or production branch)
+  - `dev` branch
+- **ONLY work on feature branches:**
+  - All code changes happen on feature branches (e.g., `feat/description`, `hotfix/description`)
+  - Feature branches can be messy with frequent commits (this is expected and encouraged)
+  - Preston handles all merges to main/prod/dev branches
+
+## Branch Strategy Definition (Required Before Work Starts)
+
+**Crystal MUST define branch strategy before any work begins:**
+
+1. **Create or identify feature branch:**
+   - Branch name (e.g., `feat/voice-webhook-handler`)
+   - Starting commit SHA (branch ID) - the commit on dev/main where the branch starts
+   - Purpose and scope of the branch
+
+2. **Define completion criteria:**
+   - What must be completed to close the branch
+   - Testing requirements
+   - Review requirements (if any)
+   - Acceptance criteria
+
+3. **Specify merge target:**
+   - Which branch will receive the merge (dev, main, prod)
+   - Merge strategy (always squash merge for clean history)
+   - When merge should happen
+
+4. **Document branch ID:**
+   - Starting commit SHA must be tracked
+   - This allows resetting dev/main back to before the branch
+   - Critical for testing workflow
+
+## Testing Workflow with Branch Reset
+
+**When testing requires pushing to dev before branch completion:**
+
+1. **Initial state:**
+   - Work on feature branch (messy, frequent commits)
+   - Track branch ID (starting commit SHA on dev)
+
+2. **Testing phase:**
+   - Preston temporarily merges feature branch to dev for testing
+   - Testing occurs on dev branch
+   - Dev branch now contains feature work
+
+3. **Reset and clean merge:**
+   - After testing, Preston resets dev back to branch ID (before feature branch)
+   - Preston then squash merges feature branch to dev
+   - Result: Dev has clean history with single commit from feature branch
+
+4. **Benefits:**
+   - Allows testing on dev without polluting history
+   - Maintains clean git history on dev/main/prod
+   - Feature branch can remain messy with frequent commits
+
+## Clean History Strategy
+
+**Main/Prod/Dev branches must remain clean:**
+
+- **Feature branches:** Can be messy with frequent commits (encouraged for checkpointing)
+- **Main/Prod/Dev branches:** Must have clean, linear history
+- **Merge strategy:** Always use squash merge when merging feature branches to main/prod/dev
+- **Result:** Each feature appears as a single, clean commit on main/prod/dev
+
+**Preston's responsibility:**
+- Always use squash merge for feature branches → main/prod/dev
+- Never merge feature branch history into main/prod/dev
+- Track branch IDs for reset capability
+- Maintain clean, readable history on protected branches
+
+---
+# 8. Testing Requirements
 
 **Before commits/merges:**
 - Chloe MUST run relevant tests and report results in "Implementation Summary"
@@ -226,7 +305,7 @@ Change process:
 - Test failures: Block merges to `dev` unless explicitly approved by Crystal
 
 ---
-# 8. Merge Conflict Resolution
+# 9. Merge Conflict Resolution
 
 **When Preston encounters merge conflicts:**
 1. Preston reports to Crystal with:
@@ -245,7 +324,7 @@ Change process:
 - Feature branches should be kept up-to-date with `dev`
 
 ---
-# 9. Branch Lifecycle Management
+# 10. Branch Lifecycle Management
 
 ## Branch Creation
 - Feature branches: Created by Preston when Crystal specifies
@@ -268,7 +347,7 @@ Change process:
 - Vader can request branch retention for specific reasons
 
 ---
-# 10. Merge Strategy Decision Tree
+# 11. Merge Strategy Decision Tree
 
 **Default: Squash merge** (unless Crystal specifies otherwise)
 
@@ -294,7 +373,7 @@ Change process:
 3. Preston confirms strategy before executing
 
 ---
-# 11. Multi-Repo Dependency Coordination
+# 12. Multi-Repo Dependency Coordination
 
 **When tasks span multiple repos, Crystal MUST create a coordination plan:**
 
@@ -319,7 +398,7 @@ Change process:
    - Crystal tracks progress across all repos
 
 ---
-# 12. Error Handling & Rollback Procedures
+# 13. Error Handling & Rollback Procedures
 
 ## Error Detection
 - Chloe tests locally before reporting completion
@@ -351,7 +430,7 @@ Change process:
   - Critical failures requiring manual intervention
 
 ---
-# 13. Commit Message Standards
+# 14. Commit Message Standards
 
 **Preston MUST use consistent commit message format:**
 
@@ -377,7 +456,7 @@ Format: `type(scope): description`
 - First line should be under 72 characters
 
 ---
-# 14. Parallel Work Coordination
+# 15. Parallel Work Coordination
 
 **When tasks are independent across repos, agents can work in parallel:**
 
@@ -403,7 +482,7 @@ Format: `type(scope): description`
   - When coordination overhead exceeds benefit
 
 ---
-# 15. Urgent/Hotfix Fast-Track Workflow
+# 16. Urgent/Hotfix Fast-Track Workflow
 
 **For urgent fixes and hotfixes, agents should prioritize and expedite:**
 
@@ -438,7 +517,7 @@ Format: `type(scope): description`
   - Time-sensitive business requirements
 
 ---
-# 16. Code Review Requirements
+# 17. Code Review Requirements
 
 **For sensitive changes, human review is required before merge:**
 
@@ -473,7 +552,7 @@ Format: `type(scope): description`
   - Verify approval before instructing Preston to merge
 
 ---
-# 17. Standardized Status Reporting
+# 18. Standardized Status Reporting
 
 **All agents MUST use consistent status indicators in their summaries:**
 
@@ -503,7 +582,7 @@ Format: `type(scope): description`
 - Better coordination
 
 ---
-# 18. Stopping Points & Feature Branch Strategy
+# 19. Stopping Points & Feature Branch Strategy
 
 A task is complete when:
 - A stable deployable state is reached
@@ -514,6 +593,6 @@ A task is complete when:
 Crystal determines appropriate stopping points and when Vader can close a feature branch.
 
 ---
-# 19. Versioning
+# 20. Versioning
 `agent_system_overview.md v2.0`
 Crystal increments version on major changes (with Vader's approval).

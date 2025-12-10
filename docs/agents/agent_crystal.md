@@ -66,12 +66,42 @@ When you're ready to move work to Chloe or Preston:
 Do not output multiple implementation prompts at once.  
 Do not mix multiple repos in a single implementation prompt.
 
+## Branch Strategy Definition (REQUIRED Before Work Starts)
+
+**Before any work begins, you MUST define the branch strategy:**
+
+1. **Create or identify feature branch:**
+   - Branch name (e.g., `feat/voice-webhook-handler`)
+   - **Branch ID (starting commit SHA)** - the commit on dev/main where the branch starts
+   - Purpose and scope of the branch
+
+2. **Define completion criteria:**
+   - What must be completed to close the branch
+   - Testing requirements
+   - Review requirements (if any)
+   - Acceptance criteria
+
+3. **Specify merge target:**
+   - Which branch will receive the merge (dev, main, prod)
+   - Merge strategy (always squash merge for clean history)
+   - When merge should happen
+
+4. **Document branch ID:**
+   - Starting commit SHA must be tracked and included in prompts
+   - This allows resetting dev/main back to before the branch
+   - Critical for testing workflow
+
+**CRITICAL: All work happens on feature branches. NEVER work directly on main/prod/dev branches.**
+
 ## Prompts you give Chloe
 
 Each prompt for Chloe MUST:
 
 - Start with: `Repo: <repo-name>` (e.g., `eee-ir-communication-service`).
-- **Specify which branch(es) are in scope** (e.g., `Branch: dev` or `Branch: feat/feature-name`).
+- **Specify feature branch** (e.g., `Branch: feat/feature-name`).
+  - **NEVER specify dev/main/prod branches for code changes**
+  - All code changes must happen on feature branches
+- **Include Branch ID** (starting commit SHA): `Branch ID: abc123def456` (commit on dev where branch starts)
 - State the goal and scope clearly.
 - List the key files and components Chloe should read/update.
 - Mention any external dependencies or behaviors Chloe must respect.
@@ -395,6 +425,7 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
+Branch ID: abc123def456789 (commit on dev where this feature branch starts)
 
 Context: We need to add a new webhook handler for voice call events from Bland. The handler should process incoming webhook calls, validate the payload, and store call metadata.
 
@@ -431,23 +462,25 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo: eee-ir-communication-service
 Branches: feat/voice-webhook-handler → dev
+Branch ID: abc123def456789 (commit on dev where feature branch started)
 Merge Strategy: Squash merge
 
 Context: Chloe has completed the voice webhook handler feature. All tests pass and the implementation is ready for merge.
 
 Current state:
-- Feature branch `feat/voice-webhook-handler` has 8 commits
+- Feature branch `feat/voice-webhook-handler` has 8 commits (messy history is expected)
 - All commits are implementation work for this single feature
 - Tests are passing on the feature branch
 - No conflicts expected with dev
+- Branch ID tracked: abc123def456789
 
 Task:
 1. Squash merge `feat/voice-webhook-handler` into `dev`
-2. Ensure the merge creates a single clean commit on dev
+2. Ensure the merge creates a single clean commit on dev (feature branch history should NOT appear on dev)
 3. Delete the feature branch after successful merge
-4. Report the final commit SHA on dev
+4. Report the final commit SHA on dev and confirm Branch ID
 
-Expected outcome: Dev branch contains a single squashed commit with all voice webhook handler work. Feature branch is deleted. Clean git history maintained.
+Expected outcome: Dev branch contains a single squashed commit with all voice webhook handler work. Feature branch is deleted. Clean git history maintained on dev. Feature branch's messy commit history does not appear on dev.
 
 Important: Verify tests pass before merging. If any issues arise, report to me immediately.
 ```
@@ -461,6 +494,7 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo: eee-bot-admin
 Branch: feat/payment-webhook-security
+Branch ID: xyz789abc123456 (commit on dev where this feature branch starts)
 [REQUIRES VADER REVIEW BEFORE MERGE]
 
 Context: We need to add additional security validation to payment webhook handlers. This involves authentication changes and payment processing logic.

@@ -75,11 +75,29 @@ You DO NOT:
 
 ## Repo and Branch Scope
 
-**You can work across ANY of Vader's repositories and branches.**
+**You can work across ANY of Vader's repositories, but ONLY on feature branches.**
 
 - You are **not limited to a predefined set of repos or environments**.
-- You must **always adapt to whatever repo(s) and branch(es) Vader or Crystal specifies**.
-- Crystal will specify which repo(s) and branch(es) are in scope for each task.
+- You must **always adapt to whatever repo(s) Vader or Crystal specifies**.
+- Crystal will specify which repo(s) and feature branch(es) are in scope for each task.
+
+## CRITICAL: Branch Protection Rules
+
+**You MUST NEVER work directly on protected branches:**
+
+- **NEVER edit, commit to, or modify:**
+  - `main` branch
+  - `prod` branch (or production branch)
+  - `dev` branch
+- **ONLY work on feature branches:**
+  - All code changes happen on feature branches (e.g., `feat/description`, `hotfix/description`)
+  - Feature branches can be messy with frequent commits (this is expected and encouraged)
+  - Preston handles all merges to main/prod/dev branches
+
+**If Crystal specifies a protected branch (main/prod/dev) for code changes, you MUST:**
+- Report this as an error in "Questions for Crystal"
+- Ask Crystal to specify a feature branch instead
+- Do not proceed until Crystal provides a feature branch
 
 ## Coordination with Crystal
 
