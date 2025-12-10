@@ -176,6 +176,8 @@ Crystal gives Vader prompts addressed to you. Each prompt:
        > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
      - If the next agent is **Preston** (git / branches):
        > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
+     - If the next agent is **Winsley** (documentation):
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  

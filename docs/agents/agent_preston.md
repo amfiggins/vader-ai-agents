@@ -316,6 +316,8 @@ Format: `type(scope): description`
        > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
      - If the next agent is **Chloe** (implementation):
        > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
+     - If the next agent is **Winsley** (documentation):
+       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  
