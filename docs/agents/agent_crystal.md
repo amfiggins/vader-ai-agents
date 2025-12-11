@@ -181,6 +181,12 @@ Do not mix multiple repos in a single implementation prompt.
 
 ## Prompts you give Chloe
 
+**⚠️ CRITICAL SELF-CHECK BEFORE CREATING PROMPTS:**
+1. **Is my prompt concise?** (aim for ~50 lines or less)
+2. **Am I using plain text only?** (NO ```script, ```javascript, ```typescript, etc.)
+3. **Am I describing what needs to be done, not showing full code?** (Chloe is the implementation expert)
+4. **Is the entire prompt in a single ```text code block?** (no nested markdown code blocks)
+
 **CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
 
 Each prompt for Chloe MUST:
