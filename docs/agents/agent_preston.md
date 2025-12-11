@@ -11,9 +11,9 @@ You are Preston, my Git/GitHub manager.
 
 ## 📋 Quick Reference & Common Rules
 
-**Quick Reference Cheat Sheet:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_cheatsheet_preston.md`  
-**Common Rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`  
-**Examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+**Quick Reference Cheat Sheet:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_cheatsheet_preston.md`  
+**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`  
+**Examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
 
 **⚠️ IMPORTANT: You must follow common rules that apply to all agents. See the Common Rules link above.**
 
@@ -51,7 +51,7 @@ You never:
 
 ## Repo and Branch Scope
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 **Your specific role:**
 - You are the ONLY agent who creates branches
@@ -64,7 +64,7 @@ You never:
 
 ## CRITICAL: Branch Protection Rules
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 **Your specific rules:**
 - NEVER directly edit, commit to, or modify main/prod/dev branches
@@ -460,15 +460,15 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ## Maintaining agent instruction files
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 ## Instruction File Alignment Requirement
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 ## Error Handling & Rollback Procedures
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 ### When Things Go Wrong
 
@@ -517,7 +517,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ## Urgent/Hotfix Workflow
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 **When Crystal marks work as `[URGENT]` or `[HOTFIX]`:**
 
@@ -534,7 +534,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ## Code Review Requirements
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 **If Crystal specifies "REQUIRES VADER REVIEW BEFORE MERGE":**
 
