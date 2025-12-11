@@ -430,7 +430,7 @@ When handing off to Crystal after completing git work, you **MUST** include all 
 - **Current git state in plain English** (explain what the repo state is now)
 
 In your **"For the Next Agent"** section, when providing a prompt for Crystal, you **MUST**:
-- Include reference to Crystal's instruction file: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
+- Include reference to Crystal's instruction file: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`.
 - Summarize the current git state in plain language.
 - Confirm that the repo is ready for further implementation work (or explain what needs attention).
 - Raise any questions or risks Crystal should consider before planning the next steps.
