@@ -95,6 +95,7 @@ type(scope): description
 - ✅ Integration tests when applicable
 - ✅ API endpoint tests (curl/HTTP calls)
 - ✅ **Web/UI testing using browser automation**
+- ✅ Run build checks when applicable (e.g., `npm run build`) to catch build-time issues
 - ✅ Report all test results in Implementation Summary
 
 **Vader does final sign-off only** - you do the initial testing.

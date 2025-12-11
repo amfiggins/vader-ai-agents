@@ -104,6 +104,7 @@
 ## Testing Requirements
 
 - **Do initial testing yourself** (API endpoints, browser/UI, unit tests)
+- Run build checks when applicable (e.g., `npm run build`) to catch build-time issues
 - **Test on dev after every squash merge** (MANDATORY - do NOT skip)
 - **Vader does final sign-off only**
 - Report all test results in your analysis

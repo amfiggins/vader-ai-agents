@@ -143,6 +143,7 @@ Format: `type(scope): description`
 
 **You MUST test first; Vader only signs off.**
 - Run unit/integration/API tests and **web/UI tests** (browser automation).
+- Run build checks when applicable (e.g., `npm run build`) to catch build-time issues.
 - Report tests run, results, and any flakiness in "Implementation Summary for Crystal".
 - Only report completion if tests pass (or clearly note failures).
 
