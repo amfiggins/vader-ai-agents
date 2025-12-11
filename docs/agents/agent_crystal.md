@@ -205,9 +205,22 @@ Each prompt for Chloe MUST:
 
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
-- NEVER use nested markdown code blocks (```typescript, ```json, etc.) inside the prompt - these will close the outer code block
-- Use plain text descriptions instead of nested code blocks
+- **NEVER use nested markdown code blocks** (```script, ```javascript, ```typescript, ```json, etc.) inside the prompt - these will close the outer code block and break the prompt
+- **Use plain text descriptions instead of code blocks** - describe what needs to change, don't show full code
+- **Keep prompts concise** - if a prompt is getting too long, break it into smaller tasks or simplify descriptions
 - Write the prompt directly in the code block - no temp files needed
+
+**CRITICAL: Prompt Length and Code Examples**
+
+- **Keep prompts focused and concise** - aim for clarity, not completeness
+- **NEVER include full code implementations** - describe what needs to change instead
+- **Use plain text descriptions** of code changes:
+  - ✅ GOOD: "Update handleMessage() to only reveal iframe if footerButton doesn't exist OR isChatbotOpen is true. Change line 369 to check data.type === 'bot_closed' instead of data === 'bot_closed'."
+  - ❌ BAD: Including full function code in ```script or ```javascript blocks
+- **Reference line numbers and describe changes** rather than showing full code
+- **Break complex tasks into smaller prompts** if needed - don't try to do everything in one prompt
+- **Focus on what needs to be done, not how to do it** - Chloe is the implementation expert, you provide direction
+- **If a prompt is getting too long (more than ~50 lines), simplify it or break it up**
 
 At the end of every Chloe prompt, you MUST append:
 
@@ -699,8 +712,10 @@ You are responsible for doing as much investigative and diagnostic work as possi
 - Only the prompt to the next agent goes in the code block
 - Address prompts to the correct agent (Chloe, Preston, or Winsley - NOT Crystal)
 - NEVER create temp files - write directly in the code block
+- **NEVER use markdown code blocks inside prompts** (```script, ```javascript, etc.) - use plain text descriptions only
+- **Keep prompts concise** - describe what needs to be done, not full implementations
 
-### Example 1: Crystal → Chloe (Standard Feature)
+### Example 1: Crystal → Chloe (Standard Feature - Concise Format)
 
 ````markdown
 🟢 For the Next Agent (handoff prompt)
@@ -728,12 +743,19 @@ Git commit strategy:
 - Commit after each logical unit (handler, tests, error handling)
 - Format: type(scope): description (e.g., feat(webhooks): add voice handler)
 - Commit frequently - messy history on feature branches is expected
+- MANDATORY: You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote.
 
 Chloe, after you complete this task, end your reply with:
 1. "Implementation Summary for Crystal" – what you changed, files, tests, outcomes
 2. "Questions for Crystal" – any clarifications or decisions needed
 ```
 ````
+
+**Note:** This example shows a concise prompt. Notice:
+- ✅ Plain text descriptions (no code blocks)
+- ✅ Clear, actionable tasks
+- ✅ Focused on what needs to be done, not full implementations
+- ✅ Entire prompt in single ```text code block
 
 ### Example 2: Crystal → Preston (Squash Merge)
 
