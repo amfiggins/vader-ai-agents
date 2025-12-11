@@ -311,11 +311,24 @@ Format: `type(scope): description`
 
 **⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
 
-**⚠️ SELF-CHECK: Before responding, verify your response format:**
-1. Do you have a "For Vader" section? (MUST be yes)
-2. Do you have a "For the Next Agent" section in a ```text code block? (MUST be yes - you always hand off to Crystal)
-3. Is the entire prompt inside the code block? (MUST be yes)
-4. Is the content plain text only? (MUST be yes - no markdown formatting)
+**⚠️ MANDATORY SELF-CHECK: Before you send your response, verify EVERY item:**
+
+**Section 1 Check:**
+- [ ] Do you have a "🔵 For Vader (review / approvals / actions)" section? (MUST be yes)
+- [ ] Does it start with "🔵 For Vader"? (MUST be yes)
+- [ ] Does it include git operation summary? (MUST be yes)
+- [ ] Does it include "➡️ Next Agent: Crystal"? (MUST be yes)
+
+**Section 2 Check:**
+- [ ] Do you have a "🟢 For the Next Agent (handoff prompt)" section? (MUST be yes)
+- [ ] Is it wrapped in a ```text code block? (MUST be yes)
+- [ ] Does it start with "Crystal,"? (MUST be yes)
+- [ ] Does it include Crystal's instruction file path? (MUST be yes)
+- [ ] Does it include "[COMPLETE]" or status indicator? (MUST be yes)
+- [ ] Does it include git handoff details? (MUST be yes)
+- [ ] Is the content plain text only (no markdown formatting)? (MUST be yes)
+
+**If ANY check fails, your response is WRONG. Fix it before sending.**
 
 **Every response MUST follow this structure:**
 
@@ -554,28 +567,98 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 **See detailed examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
 
-### Example 1: Preston → Crystal (Successful Merge)
+### Example 1: Preston → Crystal (Branch Creation - CORRECT FORMAT)
 
-````markdown
+**This is what your response MUST look like:**
+
+```
+🔵 For Vader (review / approvals / actions)
+
+Git: Created feature branch feat/twilio-bland-integration-helpers from dev
+
+✅ Action Required:
+- None - branch ready for work
+
+➡️ Next Agent: Crystal (for next steps)
+
+✅ No Action: Branch created and ready
+
+---
+
 🟢 For the Next Agent (handoff prompt)
 
 ```text
 Crystal,
 
-   Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
-[COMPLETE] Git Handoff Details:
-- Repository: eee-ir-communication-service
+[COMPLETE] Git handoff details:
+- Repo: eee-bot-admin
+- Branch: feat/twilio-bland-integration-helpers
+- Branch ID: b35d5fbb89e08b01610e7d99d42fb4835b124f42
+- Base branch: dev
+- Current state: Feature branch created and ready for Phase 2.3 work. Branch is checked out and working tree is clean.
+
+Next steps: Branch is ready for Chloe to begin implementation work.
+```
+```
+
+### Example 2: Preston → Crystal (Successful Merge - CORRECT FORMAT)
+
+**This is what your response MUST look like:**
+
+```
+🔵 For Vader (review / approvals / actions)
+
+Git: Squash merged feat/voice-webhook-handler → dev (single clean commit)
+
+✅ Action Required:
+- Pull latest dev: git checkout dev && git pull
+- Verify commit: git log --oneline -1
+
+➡️ Next Agent: Crystal (for next feature)
+
+✅ No Action: Ready to proceed after verification
+
+---
+
+🟢 For the Next Agent (handoff prompt)
+
+```text
+Crystal,
+
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
+
+[COMPLETE] Git handoff details:
+- Repo: eee-ir-communication-service
 - Branches: feat/voice-webhook-handler → dev
 - Branch ID: xyz789abc123456
 - Strategy: Squash merge
 - Resulting commit: abc123def456 (squashed from 8 commits)
-- Tests: All pass on dev
-- Current state: Dev has single clean commit. Feature branch deleted.
+- Current state: Dev has single clean commit. Feature branch retained.
 
-Repo ready for further work.
+Next steps: Ready for Crystal to test on dev and plan next steps.
 ```
-````
+```
+
+### Example 3: WRONG FORMAT - DO NOT DO THIS
+
+**❌ WRONG - Missing both required sections:**
+
+```
+Branch Creation Summary
+Status: [COMPLETE]
+Repository: eee-bot-admin
+Branch Details:
+Branch name: feat/twilio-bland-integration-helpers
+...
+```
+
+**This is WRONG because:**
+- Missing "🔵 For Vader" section
+- Missing "🟢 For the Next Agent" section
+- Not in required format
+- Cannot be copy-pasted to Crystal
 
 ### Example 2: Preston → Crystal (Merge Conflict)
 
