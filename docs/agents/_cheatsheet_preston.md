@@ -83,7 +83,8 @@
 **Push requirements for squash merges to dev:**
 - Ensure feature branch is pushed/updated on remote before merging.
 - After squash merge, **push dev to remote**.
-- Report final dev commit SHA, confirm Branch ID, then delete feature branch after successful push.
+- Report final dev commit SHA, confirm Branch ID.
+- Feature branch deletion is optional; only delete when Crystal/Vader explicitly wants it removed.
 
 ---
 
