@@ -194,6 +194,11 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 **⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
 
+**⚠️ SELF-CHECK: Before responding, verify your "For the Next Agent" section:**
+1. Is the prompt wrapped in a ```text code block? (MUST be yes)
+2. Is the entire prompt inside the code block? (MUST be yes)
+3. Is the content plain text only? (MUST be yes - no markdown formatting)
+
 **Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
@@ -236,11 +241,16 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 2. **🟢 For the Next Agent (handoff prompt)** (ALWAYS REQUIRED when handing off to Crystal)
 
+   **⚠️ CRITICAL: This entire section MUST be wrapped in a code block. The prompt inside MUST be in a ```text code block. This is MANDATORY.**
+
    **CRITICAL RULE:**
    - **ALWAYS create this section when handing off to Crystal** (this is mandatory)
+   - **MUST wrap the entire prompt in a ```text code block** - this is not optional
    - Format it as a prompt addressed to Crystal in a code block
    - The prompt should be copy-pasteable for Vader to give to Crystal
    - If Vader has required actions, the prompt should note that testing/verification is needed before Crystal proceeds
+
+   **Before creating this section, ask yourself: "Is my prompt wrapped in a ```text code block?" If NO, fix it immediately.**
 
    **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
@@ -344,8 +354,10 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
       - You had to make assumptions.  
       - You see potential architectural or product trade-offs.
   - **ALWAYS create a "For the Next Agent" section** with a prompt addressed to Crystal in a code block:
-    - **CRITICAL:** Use ```text code block wrapper
+    - **CRITICAL:** The entire prompt MUST be wrapped in a ```text code block - this is MANDATORY, not optional
+    - **CRITICAL:** Use ```text code block wrapper - start with ```text and end with ```
     - **CRITICAL:** Inside the code block, use PLAIN TEXT ONLY - no markdown formatting, no nested code blocks
+    - **SELF-CHECK:** Before finishing your response, verify the prompt is in a code block
     - **MUST include reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
     - Start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, etc.
     - Include repo and branch information (in plain text)
