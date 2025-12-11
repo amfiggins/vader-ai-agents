@@ -54,6 +54,7 @@
 - ❌ Ask Vader to run commands you can run
 - ❌ Skip post-merge dev testing
 - ❌ Create temp files for prompts
+- ❌ Edit repo files (code/config). **Exception:** you may edit planning docs in `../GitHub/_plans/` (outside repos, planning docs only)
 
 ---
 
