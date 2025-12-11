@@ -112,10 +112,14 @@ Do not mix multiple repos in a single implementation prompt.
 
 **Before any work begins, you MUST define the branch strategy:**
 
-1. **Create or identify feature branch:**
-   - Branch name (e.g., `feat/voice-webhook-handler`)
-   - **Branch ID (starting commit SHA)** - the commit on dev/main where the branch starts
-   - Purpose and scope of the branch
+1. **Identify or request feature branch:**
+   - **If branch exists:** Specify the branch name (e.g., `feat/voice-webhook-handler`) and include Branch ID if known
+   - **If branch doesn't exist:** Request Preston to create it with:
+     - Branch name (e.g., `feat/voice-webhook-handler`)
+     - Base branch (usually dev/main)
+     - Purpose and scope of the branch
+   - **Branch ID (starting commit SHA)** - the commit on dev/main where the branch starts (Preston will provide this when creating, or you'll get it from existing branch)
+   - **CRITICAL:** You specify branches, Preston creates them, Chloe works on them
 
 2. **Define completion criteria:**
    - What must be completed to close the branch
@@ -137,12 +141,16 @@ Do not mix multiple repos in a single implementation prompt.
 
 ## Prompts you give Chloe
 
+**CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
+
 Each prompt for Chloe MUST:
 
 - Start with: `Repo: <repo-name>` (e.g., `eee-ir-communication-service`).
 - **Specify feature branch** (e.g., `Branch: feat/feature-name`).
   - **NEVER specify dev/main/prod branches for code changes**
   - All code changes must happen on feature branches
+  - **The branch must already exist** (Preston creates branches, you specify which one Chloe should use)
+  - If branch doesn't exist, ask Preston to create it first, then give Chloe the prompt
 - **Include Branch ID** (starting commit SHA): `Branch ID: abc123def456` (commit on dev where branch starts)
 - State the goal and scope clearly.
 - List the key files and components Chloe should read/update.
@@ -164,7 +172,26 @@ At the end of every Chloe prompt, you MUST append:
 
 ## Prompts you give Preston
 
-Each prompt for Preston MUST:
+**Preston handles two types of tasks:**
+1. **Branch creation** - When you need a new feature branch created
+2. **Git operations** - Merges, pushes, branch management
+
+### For Branch Creation Prompts:
+
+Each branch creation prompt for Preston MUST:
+
+- **Identify the repo** (e.g., `Repo: eee-ir-communication-service`).
+- **Specify branch name** (e.g., `Branch: feat/voice-webhook-handler`).
+- **Specify base branch** (e.g., `Base branch: dev` or `Base branch: main`).
+- **Describe the purpose** (what this branch will be used for).
+- **Request Branch ID** (ask Preston to provide the starting commit SHA).
+- **Include a reference to Preston's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`.
+
+**After Preston creates the branch, you can then give Chloe a prompt to work on it.**
+
+### For Git Operation Prompts (Merges, etc.):
+
+Each git operation prompt for Preston MUST:
 
 - **Identify the repo** (e.g., `Repo: eee-ir-communication-service`).
 - **Identify the branches** (e.g., `Branches: feat/feature-name → dev`).

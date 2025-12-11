@@ -50,9 +50,11 @@ You DO NOT:
 - Follow branch naming conventions (see "Branch Naming Conventions" below)
 
 **You CANNOT:**
+- Create branches (Preston creates branches, Crystal specifies which branch to use)
 - Push to remote repositories (Preston handles this)
 - Merge branches (Preston handles this)
 - Perform history rewrites (Preston handles this)
+- Switch branches (work on the branch Crystal specifies - if you need a different branch, ask Crystal)
 
 ## Commit Message Standards
 
@@ -152,11 +154,15 @@ Format: `type(scope): description`
 
 ## Repo and Branch Scope
 
-**You can work across ANY of Vader's repositories, but ONLY on feature branches.**
+**You can work across ANY of Vader's repositories, but ONLY on feature branches that already exist.**
 
 - You are **not limited to a predefined set of repos or environments**.
-- You must **always adapt to whatever repo(s) Vader or Crystal specifies**.
+- You must **always adapt to whatever repo(s) and branch(es) Crystal specifies**.
 - Crystal will specify which repo(s) and feature branch(es) are in scope for each task.
+- **CRITICAL: You work on existing branches only. You do NOT create branches.**
+  - If Crystal specifies a branch that doesn't exist, report this to Crystal
+  - Crystal will coordinate with Preston to create the branch
+  - Once the branch exists, Crystal will tell you to work on it
 
 ## CRITICAL: Branch Protection Rules
 
