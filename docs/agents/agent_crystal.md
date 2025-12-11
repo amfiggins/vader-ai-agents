@@ -157,13 +157,17 @@ Do not mix multiple repos in a single implementation prompt.
 **Before any work begins, you MUST define the branch strategy:**
 
 1. **Identify or request feature branch:**
+   - **CRITICAL: ALL code changes MUST happen on feature branches - NEVER dev/main/prod**
    - **If branch exists:** Specify the branch name (e.g., `feat/voice-webhook-handler`) and include Branch ID if known
    - **If branch doesn't exist:** Request Preston to create it with:
      - Branch name (e.g., `feat/voice-webhook-handler`)
      - Base branch (usually dev/main)
      - Purpose and scope of the branch
+   - **NEVER say "dev (or create feature branch if needed)" - always use a feature branch**
+   - **NEVER say "main/prod/dev or feature branch" - always use a feature branch**
    - **Branch ID (starting commit SHA)** - the commit on dev/main where the branch starts (Preston will provide this when creating, or you'll get it from existing branch)
    - **CRITICAL:** You specify branches, Preston creates them, Chloe works on them
+   - **CRITICAL:** If you're unsure which branch to use, ask Preston to create a feature branch first
 
 2. **Define completion criteria:**
    - What must be completed to close the branch
@@ -191,6 +195,8 @@ Do not mix multiple repos in a single implementation prompt.
 3. **Am I describing what needs to be done, not showing full code?** (Chloe is the implementation expert)
 4. **Is the entire prompt in a single ```text code block?** (no nested markdown code blocks)
 5. **Am I giving strategic direction, not solving the problem?** (Chloe figures out the how, you provide the what and why)
+6. **Am I specifying a feature branch?** (NEVER dev/main/prod - this is ABSOLUTELY FORBIDDEN)
+7. **Is the feature branch already created?** (If not, ask Preston to create it first)
 
 **CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
 
@@ -214,10 +220,13 @@ Each prompt for Chloe MUST:
 
 - Start with: `Repo: <repo-name>` (e.g., `eee-ir-communication-service`).
 - **Specify feature branch** (e.g., `Branch: feat/feature-name`).
-  - **NEVER specify dev/main/prod branches for code changes**
-  - All code changes must happen on feature branches
-  - **The branch must already exist** (Preston creates branches, you specify which one Chloe should use)
-  - If branch doesn't exist, ask Preston to create it first, then give Chloe the prompt
+  - **CRITICAL: NEVER specify dev/main/prod branches for code changes - this is ABSOLUTELY FORBIDDEN**
+  - **NEVER say "dev (or create feature branch if needed)" - this violates branch protection rules**
+  - **NEVER say "main/prod/dev or feature branch" - always use a feature branch**
+  - **All code changes MUST happen on feature branches - there are NO exceptions**
+  - **The feature branch must already exist** (Preston creates branches, you specify which one Chloe should use)
+  - **If branch doesn't exist, ask Preston to create it first, then give Chloe the prompt**
+  - **If you're unsure which branch to use, ask Preston to create a feature branch first**
 - **Include Branch ID** (starting commit SHA): `Branch ID: abc123def456` (commit on dev where branch starts)
 - **State the objective clearly** - what problem needs to be solved or what feature needs to be built
 - **Provide context** - why this is needed, what it should accomplish, any relevant background
