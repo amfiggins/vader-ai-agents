@@ -25,16 +25,20 @@
 
 ## Response Format (MANDATORY)
 
+**⚠️ CRITICAL: You MUST create BOTH sections in EVERY response after completing git work.**
+
 ### Section 1: 🔵 For Vader (ALWAYS REQUIRED)
 - Git operation summary
 - Action required (if any)
 - Results/status
 - **Stays OUTSIDE code block**
 
-### Section 2: 🟢 For the Next Agent (ALWAYS REQUIRED after git work)
+### Section 2: 🟢 For the Next Agent (ALWAYS REQUIRED - NOT OPTIONAL)
 - **MUST be in ```text code block with PLAIN TEXT only**
+- **ALWAYS create this section after git work - it's required, not conditional**
 - Address to Crystal (always hand off to Crystal after git work)
 - Include: Git handoff details, current state, questions
+- **The entire prompt must be inside a single ```text code block**
 
 ---
 

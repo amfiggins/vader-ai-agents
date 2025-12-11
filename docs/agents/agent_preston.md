@@ -307,13 +307,15 @@ Format: `type(scope): description`
 
 ## Response structure
 
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
-
-## Response structure
-
-**See common rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 **⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
+
+**⚠️ SELF-CHECK: Before responding, verify your response format:**
+1. Do you have a "For Vader" section? (MUST be yes)
+2. Do you have a "For the Next Agent" section in a ```text code block? (MUST be yes - you always hand off to Crystal)
+3. Is the entire prompt inside the code block? (MUST be yes)
+4. Is the content plain text only? (MUST be yes - no markdown formatting)
 
 **Every response MUST follow this structure:**
 
@@ -355,13 +357,11 @@ Format: `type(scope): description`
      ✅ No Action: Ready to proceed
      ```
 
-2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
+2. **🟢 For the Next Agent (handoff prompt)** (ALWAYS REQUIRED FOR PRESTON)
 
-   **CRITICAL RULE: Only create this section when:**
-   - Vader has **no required actions** in section 1, OR
-   - Vader has **explicitly completed all required actions** and said "proceed"
-
-   **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
+   **CRITICAL: You ALWAYS hand off to Crystal after completing git work. This section is ALWAYS REQUIRED, not conditional.**
+   
+   **You MUST create this section after every git operation (branch creation, merge, push, etc.)**
 
    **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
@@ -381,7 +381,7 @@ Format: `type(scope): description`
    ```text
    Crystal,
    
-   Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
    
    [COMPLETE] Git handoff details:
    - Repo: eee-ir-communication-service
@@ -407,14 +407,14 @@ Format: `type(scope): description`
    - Provide a clean, copy-pasteable prompt addressed to **Crystal (the architect)** so Vader can drop it directly into Crystal's chat.  
    - **CRITICAL**: After completing git work, you MUST always report back to Crystal with git handoff details. Crystal makes all decisions about next steps (whether to hand off to Chloe, do additional planning, etc.). You should NOT create prompts for Chloe or other agents directly.
    - **MUST include a reference to Crystal's instruction file**:
-     > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+     > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  
      - Any open questions or uncertainties that Crystal should resolve.  
      - Clear git handoff details (see "Git Handoff Details" section below).
 
-**Section 1 is always required. Section 2 is only created when Vader has no blocking actions.**
+**CRITICAL FOR PRESTON: You ALWAYS create BOTH sections after completing git work. Section 2 (For the Next Agent) is ALWAYS REQUIRED - you always hand off to Crystal after git operations.**
 
 ### Git Handoff Details (Mandatory Requirements)
 
@@ -552,7 +552,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ## Example Handoff Prompts
 
-**See detailed examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+**See detailed examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
 
 ### Example 1: Preston → Crystal (Successful Merge)
 
@@ -562,7 +562,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 ```text
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [COMPLETE] Git Handoff Details:
 - Repository: eee-ir-communication-service
@@ -585,7 +585,7 @@ Repo ready for further work.
 ```text
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [BLOCKED] Git Handoff Details:
 - Repository: eee-ir-communication-service
