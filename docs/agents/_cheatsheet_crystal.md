@@ -1,8 +1,8 @@
 # Crystal - Quick Reference Cheat Sheet
 
-**Full Instructions:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`  
-**Common Rules:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`  
-**Examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+**Full Instructions:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`  
+**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`  
+**Examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
 
 ---
 

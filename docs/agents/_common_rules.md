@@ -2,7 +2,7 @@
 
 **⚠️ IMPORTANT: All agents must follow these common rules. This file is referenced by all agent instruction files.**
 
-**Reference URL:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_common_rules.md`
+**Reference Path:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
 ---
 

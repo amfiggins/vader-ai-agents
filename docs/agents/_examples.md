@@ -1,6 +1,6 @@
 # Example Handoff Prompts
 
-**Reference URL:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+**Reference Path:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
 
 This file contains detailed examples of handoff prompts for all agents. See your agent instruction file for concise examples and when to use these patterns.
 
@@ -24,7 +24,7 @@ This file contains detailed examples of handoff prompts for all agents. See your
 ```text
 Chloe,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
 
 Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
@@ -65,7 +65,7 @@ Chloe, after you complete this task, end your reply with two sections:
 ```text
 Chloe,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
 
 Repo: eee-bot-admin
 Branch: feat/payment-webhook-security
@@ -104,7 +104,7 @@ Chloe, after you complete this task, end your reply with two sections:
 ```text
 Preston,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md
 
 Repo: eee-ir-communication-service
 Branches: feat/voice-webhook-handler → dev
@@ -137,7 +137,7 @@ After you complete the merge, I will test on dev to validate everything works co
 ```text
 Preston,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md
 
 Repo: eee-bot-admin
 Base branch: dev
@@ -168,7 +168,7 @@ Expected outcome: Feature branch feat/bland-voice-picker exists and is pushed to
 ```text
 Winsley,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md
 
 Repo: eee-ir-communication-service
 Branch: docs/api-documentation-cleanup
@@ -226,7 +226,7 @@ No Action: Ready to proceed after tests pass
 
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [COMPLETE] Implementation Summary:
 - Repo: eee-ir-communication-service
@@ -264,7 +264,7 @@ Next Agent: Crystal (to resolve blocker)
 
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [BLOCKED] Implementation Summary:
 - Repo: eee-ir-communication-service
@@ -305,7 +305,7 @@ This change requires Vader review before merge due to payment processing and sec
 
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [NEEDS_REVIEW] Implementation Summary:
 - Repo: eee-bot-admin
@@ -332,7 +332,7 @@ Questions for Crystal:
 ```text
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [COMPLETE] Git Handoff Details:
 - Repository: eee-ir-communication-service
@@ -359,7 +359,7 @@ Repo is ready for further implementation work.
 ```text
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [BLOCKED] Git Handoff Details:
 - Repository: eee-ir-communication-service
@@ -385,7 +385,7 @@ C) Escalate to Vader?
 ```text
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [NEEDS_REVIEW] Git Handoff Details:
 - Repository: eee-bot-admin
