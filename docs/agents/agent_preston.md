@@ -249,6 +249,8 @@ Format: `type(scope): description`
 
 ## Response structure
 
+**⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
+
 **Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
@@ -297,17 +299,45 @@ Format: `type(scope): description`
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   **Format the prompt in a code block for easy copying:**
+   **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
-   When you do create this section, format it as:
+   **CRITICAL FORMATTING RULES:**
+   - Use a code block (```text) to wrap the entire prompt
+   - **Inside the code block, use PLAIN TEXT only** - no markdown formatting, no nested code blocks, no markdown syntax
+   - The prompt should be ready to copy-paste directly into Crystal's chat
+   - Do NOT use markdown code blocks (```typescript, ```json, etc.) inside the prompt
+   - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
+   - Use plain text descriptions instead
+
+   **Correct format:**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
    
    ```text
-   [Paste the complete prompt here in a code block]
+   Crystal,
+   
+   Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   
+   [COMPLETE] Git handoff details:
+   - Repo: eee-ir-communication-service
+   - Branches: feat/voice-webhook-handler → dev (squash merge)
+   - Branch ID: abc123def456
+   - Resulting commit: xyz789ghi012
+   - Current state: [describe in plain text]
+   
+   Questions for Crystal:
+   - [list questions in plain text]
+   
+   Next steps: [describe next steps in plain text]
    ```
    ````
+
+   **WRONG - Do NOT do this:**
+   - Using markdown code blocks inside: ```typescript or ```json
+   - Using markdown formatting: **bold**, ## headings
+   - Not using a code block wrapper
+   - Not including the instruction file reference
 
    The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to **Crystal (the architect)** so Vader can drop it directly into Crystal's chat.  
@@ -463,7 +493,10 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ### Example 1: Preston → Crystal (Successful Merge)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
@@ -473,10 +506,7 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 - Branches: feat/voice-webhook-handler → dev
 - Branch ID: xyz789abc123456 (commit on dev where feature branch started)
 - Strategy: Squash merge
-- Commands used:
-  - git checkout dev
-  - git pull origin dev
-  - git merge --squash feat/voice-webhook-handler
+- Commands used: git checkout dev, git pull origin dev, git merge --squash feat/voice-webhook-handler
   - git commit -m "feat(webhooks): add Bland voice webhook handler"
   - git push origin dev
   - git branch -d feat/voice-webhook-handler
@@ -486,10 +516,14 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo is ready for further implementation work.
 ```
+````
 
 ### Example 2: Preston → Crystal (Merge Conflict)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
@@ -499,9 +533,7 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 - Branches: feat/voice-webhook-handler → dev
 - Branch ID: xyz789abc123456 (commit on dev where feature branch started)
 - Issue: Merge conflict encountered
-- Conflicting files:
-  - src/webhooks/__init__.py (both modified)
-  - tests/conftest.py (both modified)
+- Conflicting files: src/webhooks/__init__.py (both modified), tests/conftest.py (both modified)
 - Conflict nature: Import statements conflict, test fixtures conflict
 - Suggested resolution: Need to merge import statements and combine test fixtures
 
@@ -510,10 +542,14 @@ A) Attempt resolution with your guidance?
 B) Have Chloe resolve conflicts?
 C) Escalate to Vader?
 ```
+````
 
 ### Example 3: Preston → Crystal (Review Required)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
@@ -527,7 +563,8 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 - Tests: All pass
 - Review requirement: Payment processing and security changes
 
-⚠️ This change requires Vader review before merge. I will not merge until Vader explicitly approves.
+This change requires Vader review before merge. I will not merge until Vader explicitly approves.
 
 Waiting for Vader approval before proceeding with merge.
 ```
+````

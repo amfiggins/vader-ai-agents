@@ -150,6 +150,12 @@ Each prompt for Chloe MUST:
 - **Describe the expected outcome** (what "done" looks like).
 - **Include a reference to Chloe's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`.
 
+**CRITICAL FORMATTING REQUIREMENT:**
+- The ENTIRE prompt MUST stay within a single ```text code block
+- NEVER use nested markdown code blocks (```typescript, ```json, etc.) inside the prompt - these will close the outer code block
+- Use plain text descriptions instead of nested code blocks
+- Use the workaround process: create temp file → read → copy to code block → delete file
+
 At the end of every Chloe prompt, you MUST append:
 
 > Chloe, after you complete this task, end your reply with two sections:
@@ -168,6 +174,11 @@ Each prompt for Preston MUST:
 - Include any commit IDs that are important.
 - **Include a reference to Preston's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`.
 
+**CRITICAL FORMATTING REQUIREMENT:**
+- The ENTIRE prompt MUST stay within a single ```text code block
+- NEVER use nested markdown code blocks inside the prompt
+- Use the workaround process: create temp file → read → copy to code block → delete file
+
 ## Prompts you give Winsley
 
 Each prompt for Winsley MUST:
@@ -183,6 +194,11 @@ Each prompt for Winsley MUST:
   - Any specific documentation standards to apply
 - **Describe the expected outcome** (what "done" looks like).
 - **Include a reference to Winsley's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md`.
+
+**CRITICAL FORMATTING REQUIREMENT:**
+- The ENTIRE prompt MUST stay within a single ```text code block
+- NEVER use nested markdown code blocks inside the prompt
+- Use the workaround process: create temp file → read → copy to code block → delete file
 
 At the end of every Winsley prompt, you MUST append:
 
@@ -364,9 +380,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 ## Response structure
 
-**Every response MUST follow this structure:**
+**⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
 
 **⚠️ BEFORE CREATING YOUR RESPONSE: Did you investigate using your own tools first? Did you query CloudWatch, check Lambda configs, test APIs yourself? If not, do it now before responding.**
+
+**Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
@@ -410,17 +428,52 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   **Format the prompt in a code block for easy copying:**
+   **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
-   When you do create this section, format it as:
+   **CRITICAL FORMATTING RULES:**
+   - Use a code block (```text) to wrap the entire prompt
+   - **Inside the code block, use PLAIN TEXT only** - no markdown formatting, no nested code blocks, no markdown syntax
+   - The prompt should be ready to copy-paste directly into the next agent's chat
+   - Do NOT use markdown code blocks (```typescript, ```json, etc.) inside the prompt
+   - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
+   - Use plain text descriptions instead
+   - The entire prompt from start to finish must be within a single ```text code block
+
+   **CRITICAL: The ENTIRE prompt MUST stay within the code block. If the code block exits mid-prompt, Vader cannot copy it properly.**
+
+   **Workaround Process (REQUIRED):**
+   1. Write the complete prompt to a temporary file (e.g., `.temp-chloe-prompt.txt`)
+   2. Read the file to verify content
+   3. Copy the entire content into a code block in your response
+   4. Delete the temporary file
+
+   **Correct format:**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
    
    ```text
-   [Paste the complete prompt here in a code block]
+   Chloe,
+   
+   Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
+   
+   Repo: eee-ir-communication-service
+   Branch: feat/voice-webhook-handler
+   
+   Task: [describe task in plain text]
+   Expected outcome: [describe in plain text]
+   
+   Current state: [describe in plain text]
+   
+   Questions: [list questions in plain text]
    ```
    ````
+
+   **WRONG - Do NOT do this:**
+   - Using markdown code blocks inside: ```typescript or ```json
+   - Using markdown formatting: **bold**, ## headings
+   - Not using a code block wrapper
+   - Not including the instruction file reference
 
    The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe or Preston) so Vader can drop it directly into that agent's chat.  
@@ -565,9 +618,14 @@ Files you maintain:
 
 ## Example Handoff Prompts
 
+**Note:** All example prompts below are shown in code blocks. When creating actual prompts, ensure the ENTIRE prompt stays within a single ```text code block. Avoid nested markdown code blocks (```typescript, etc.) as they will break the outer code block.
+
 ### Example 1: Crystal → Chloe (Standard Feature)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Chloe,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
@@ -578,33 +636,31 @@ Branch ID: abc123def456789 (commit on dev where this feature branch starts)
 
 Context: We need to add a new webhook handler for voice call events from Bland. The handler should process incoming webhook calls, validate the payload, and store call metadata.
 
-Current state:
-- Existing webhook infrastructure is in `src/webhooks/`
-- Bland webhook format is documented in `docs/bland-webhooks.md`
-- Database schema already has `voice_calls` table
+Current state: Existing webhook infrastructure is in src/webhooks/, Bland webhook format is documented in docs/bland-webhooks.md, database schema already has voice_calls table
 
 Task:
-1. Create new handler file: `src/webhooks/voice_handler.py`
+1. Create new handler file: src/webhooks/voice_handler.py
 2. Implement payload validation using the Bland webhook schema
-3. Store call metadata to `voice_calls` table
+3. Store call metadata to voice_calls table
 4. Add error handling and logging
 5. Write unit tests for the handler
 
 Expected outcome: A working webhook handler that accepts Bland voice call events, validates them, and stores call metadata. All tests pass.
 
-Constraints:
-- Must use existing database connection pattern
-- Must follow existing error handling conventions
-- Must log all webhook events for debugging
+Constraints: Must use existing database connection pattern, must follow existing error handling conventions, must log all webhook events for debugging
 
 Chloe, after you complete this task, end your reply with two sections:
 1. "Implementation Summary for Crystal" – what you changed, which files, what tests or API calls you ran, and key outcomes.
 2. "Questions for Crystal" – anything you need clarified or any decisions you need.
 ```
+````
 
 ### Example 2: Crystal → Preston (Squash Merge)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Preston,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
@@ -616,15 +672,10 @@ Merge Strategy: Squash merge
 
 Context: Chloe has completed the voice webhook handler feature. All tests pass and the implementation is ready for merge.
 
-Current state:
-- Feature branch `feat/voice-webhook-handler` has 8 commits (messy history is expected)
-- All commits are implementation work for this single feature
-- Tests are passing on the feature branch
-- No conflicts expected with dev
-- Branch ID tracked: abc123def456789
+Current state: Feature branch feat/voice-webhook-handler has 8 commits (messy history is expected), all commits are implementation work for this single feature, tests are passing on the feature branch, no conflicts expected with dev, Branch ID tracked: abc123def456789
 
 Task:
-1. Squash merge `feat/voice-webhook-handler` into `dev`
+1. Squash merge feat/voice-webhook-handler into dev
 2. Ensure the merge creates a single clean commit on dev (feature branch history should NOT appear on dev)
 3. Delete the feature branch after successful merge
 4. Report the final commit SHA on dev and confirm Branch ID
@@ -633,10 +684,14 @@ Expected outcome: Dev branch contains a single squashed commit with all voice we
 
 Important: Verify tests pass before merging. If any issues arise, report to me immediately.
 ```
+````
 
 ### Example 3: Crystal → Chloe (Requires Review)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Chloe,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
@@ -648,10 +703,7 @@ Branch ID: xyz789abc123456 (commit on dev where this feature branch starts)
 
 Context: We need to add additional security validation to payment webhook handlers. This involves authentication changes and payment processing logic.
 
-Current state:
-- Payment webhooks are in `src/payments/webhooks.py`
-- Current authentication uses API key validation
-- Need to add signature verification
+Current state: Payment webhooks are in src/payments/webhooks.py, current authentication uses API key validation, need to add signature verification
 
 Task:
 1. Implement HMAC signature verification for payment webhooks
@@ -661,16 +713,20 @@ Task:
 
 Expected outcome: Payment webhooks have enhanced security with signature verification. All security tests pass.
 
-⚠️ IMPORTANT: This change requires Vader review before merge due to payment processing and security implications. Do not proceed with merge until Vader has reviewed and approved.
+IMPORTANT: This change requires Vader review before merge due to payment processing and security implications. Do not proceed with merge until Vader has reviewed and approved.
 
 Chloe, after you complete this task, end your reply with two sections:
 1. "Implementation Summary for Crystal" – what you changed, which files, what tests or API calls you ran, and key outcomes.
 2. "Questions for Crystal" – anything you need clarified or any decisions you need.
 ```
+````
 
 ### Example 4: Crystal → Winsley (Documentation Review)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Winsley,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
@@ -681,11 +737,7 @@ Branch ID: abc123def456789 (commit on dev where this documentation branch starts
 
 Context: We've accumulated a lot of documentation across multiple files. Some is outdated, some is duplicated, and organization could be improved. We need a comprehensive review and cleanup.
 
-Current state:
-- API documentation scattered across multiple files: `docs/api.md`, `docs/endpoints.md`, `docs/webhooks.md`
-- Setup documentation in both `README.md` and `docs/SETUP.md` with overlapping content
-- Some documentation references deprecated features
-- Documentation structure is inconsistent
+Current state: API documentation scattered across multiple files (docs/api.md, docs/endpoints.md, docs/webhooks.md), setup documentation in both README.md and docs/SETUP.md with overlapping content, some documentation references deprecated features, documentation structure is inconsistent
 
 Task:
 1. Review all documentation files in the repo
@@ -697,13 +749,10 @@ Task:
 
 Expected outcome: Clean, organized, consolidated documentation that is easy to navigate and up-to-date. All duplicate and outdated content removed.
 
-Documentation standards:
-- Use consistent markdown formatting
-- Maintain clear table of contents for long documents
-- Include code examples where appropriate
-- Keep documentation concise and actionable
+Documentation standards: Use consistent markdown formatting, maintain clear table of contents for long documents, include code examples where appropriate, keep documentation concise and actionable
 
 Winsley, after you complete this task, end your reply with two sections:
 1. "Documentation Review Summary" – what you reviewed, which files you modified/consolidated/removed, and key findings.
 2. "Questions for Crystal" – anything you need clarified or any decisions you need.
 ```
+````
