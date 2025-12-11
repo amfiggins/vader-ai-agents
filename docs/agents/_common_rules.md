@@ -228,3 +228,84 @@
 - Track status across all repos and agents
 - Update status as work progresses
 
+---
+
+## Date Handling When Modifying Files
+
+**CRITICAL: When you modify files that contain date fields (e.g., "Last Updated", version dates, package.json dates, documentation headers):**
+
+- **NEVER guess or hardcode a date**
+- **NEVER use a date from your training data or previous examples**
+- **ALWAYS get the current date yourself using a command:**
+  - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
+  - Use the output from this command as the date value
+- **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
+- **You MUST run the date command yourself** - do not ask Vader or other agents for the date
+- **Why this matters:** Dates must be accurate to track when files were last updated. Using incorrect dates causes confusion and breaks version tracking.
+
+**Common files that may contain dates:**
+- `package.json` (version dates, publish dates)
+- Documentation files with "Last Updated" headers
+- Configuration files with version/date metadata
+- Instruction files with version/date fields
+- Any file with date stamps or version information
+
+---
+
+## File Version Control Standards
+
+**All agents MUST follow these version control standards when modifying files:**
+
+### Version Number Format
+
+**Semantic Versioning (SemVer):** `MAJOR.MINOR.PATCH`
+
+- **MAJOR:** Increment for breaking changes (incompatible API changes, major architectural changes)
+- **MINOR:** Increment for new features (backward-compatible additions, new functionality)
+- **PATCH:** Increment for bug fixes (backward-compatible bug fixes, small corrections)
+
+**Examples:**
+- `1.0.0` → `1.0.1` (bug fix)
+- `1.0.1` → `1.1.0` (new feature)
+- `1.1.0` → `2.0.0` (breaking change)
+
+### Version Field Requirements
+
+**When files contain version fields, you MUST:**
+- **Increment version appropriately** based on the type of change:
+  - Bug fixes → increment PATCH (e.g., 2.1.0 → 2.1.1)
+  - New features → increment MINOR (e.g., 2.1.0 → 2.2.0)
+  - Breaking changes → increment MAJOR (e.g., 2.1.0 → 3.0.0)
+- **Update "Last Updated" date** using the date handling process above
+- **Maintain version consistency** across related files when appropriate
+- **Document version changes** in commit messages or changelogs when applicable
+
+### Version Tracking in Files
+
+**Common version field formats:**
+- `"version": "1.2.3"` (package.json, config files)
+- `**Version:** 1.2.3` (documentation headers)
+- `version = "1.2.3"` (configuration files)
+- `VERSION = "1.2.3"` (environment files)
+
+**When updating version fields:**
+- Use semantic versioning format
+- Increment based on change type (major/minor/patch)
+- Update date fields using `date +%Y-%m-%d` command
+- Keep version and date updates together in the same change
+
+### Changelog and Version History
+
+**For significant changes, maintain version history:**
+- Document version changes in commit messages
+- Update changelogs when they exist
+- Note breaking changes clearly
+- Track version progression over time
+
+**Version update checklist:**
+1. Determine change type (major/minor/patch)
+2. Get current date using `date +%Y-%m-%d`
+3. Update version number appropriately
+4. Update "Last Updated" date
+5. Document changes in commit message or changelog
+

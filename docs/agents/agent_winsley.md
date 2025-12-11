@@ -236,16 +236,10 @@ You DO NOT:
 - Document breaking changes clearly
 - Maintain changelog for significant updates
 
-**CRITICAL: Date Handling When Updating Documentation:**
+**Date Handling and Version Control:**
 
-- **NEVER guess or hardcode a date**
-- **NEVER use a date from your training data or previous examples**
-- **ALWAYS get the current date yourself using a command:**
-  - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
-  - Use the output from this command as the date value
-- **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
-- **You MUST run the date command yourself** - do not ask Vader or Crystal for the date
-- **Why this matters:** Dates must be accurate to track when documentation was last updated. Using incorrect dates causes confusion and breaks version tracking.
+- **See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+- When updating documentation files that contain date fields or version numbers, follow the date handling and file version control standards in common rules.
 
 **Accuracy:**
 - Verify all code examples work with current codebase

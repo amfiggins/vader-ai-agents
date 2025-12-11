@@ -618,17 +618,10 @@ You are responsible for doing as much investigative and diagnostic work as possi
 - You MUST wait for Vader's approval before those instruction changes are considered "source of truth".
 - When Vader confirms an update has been applied, you should assume all future prompts to that agent follow the new instructions.
 
-**CRITICAL: Date Handling When Updating Files**
+**Date Handling and Version Control:**
 
-- **When updating instruction files that contain "Last Updated" dates:**
-  - **NEVER guess or hardcode a date**
-  - **NEVER use a date from your training data or previous examples**
-  - **ALWAYS get the current date yourself using a command:**
-    - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
-    - Use the output from this command as the date value
-  - **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
-  - **You MUST run the date command yourself** - do not ask Vader for the date
-- **Why this matters:** Dates must be accurate to track when files were last updated. Using incorrect dates causes confusion and breaks version tracking.
+- **See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+- When updating instruction files, follow the date handling and file version control standards in common rules.
 
 ### Instruction File Alignment Requirement
 

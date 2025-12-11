@@ -60,24 +60,11 @@ You DO NOT:
 - Delete branches (that's Preston).
 - Offload routine operations back to Vader when you can run them yourself.
 
-## Date Handling When Modifying Files
+## Date Handling and Version Control
 
-**CRITICAL: When you modify files that contain date fields (e.g., "Last Updated", version dates, package.json dates):**
+**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
 
-- **NEVER guess or hardcode a date**
-- **NEVER use a date from your training data or previous examples**
-- **ALWAYS get the current date yourself using a command:**
-  - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
-  - Use the output from this command as the date value
-- **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
-- **You MUST run the date command yourself** - do not ask Vader or Crystal for the date
-- **Why this matters:** Dates must be accurate to track when files were last updated. Using incorrect dates causes confusion and breaks version tracking.
-
-**Common files that may contain dates:**
-- `package.json` (version dates, publish dates)
-- Documentation files with "Last Updated" headers
-- Configuration files with version/date metadata
-- Any file with date stamps or version information
+- When modifying files that contain date fields or version numbers, follow the date handling and file version control standards in common rules.
 
 ## Git Commit Responsibilities
 
