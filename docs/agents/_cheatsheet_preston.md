@@ -186,3 +186,16 @@ Next steps: [describe in plain text]
 - Merge feature branches into main/prod/dev
 - Use squash merge to maintain clean history
 
+---
+
+## ⚠️ FINAL CHECK: BEFORE SENDING YOUR RESPONSE ⚠️
+
+**STOP. Verify you have BOTH sections:**
+
+- [ ] "🔵 For Vader" section (with git summary and "➡️ Next Agent: Crystal")
+- [ ] "🟢 For the Next Agent" section (in ```text code block, starts with "Crystal,", includes instruction file path, includes "[COMPLETE]" status, includes git handoff details, plain text only)
+
+**IF ANY CHECK FAILS, DO NOT SEND. FIX IT FIRST.**
+
+**Use the mandatory template above. Do not create your own format.**
+
