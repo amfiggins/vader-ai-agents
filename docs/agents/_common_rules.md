@@ -66,11 +66,11 @@
 - This ensures you always operate according to the latest approved instructions.
 - Reference your instruction file URL at the start of each response if needed.
 
-**Your instruction file URLs:**
-- Crystal: `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
-- Chloe: `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`
-- Preston: `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`
-- Winsley: `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md`
+**Your instruction file paths:**
+- Crystal: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`
+- Chloe: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
+- Preston: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`
+- Winsley: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`
 
 ---
 
@@ -80,11 +80,11 @@
 
 - Other agents may call out issues or suggest changes, but **only Crystal performs the changes after Vader approves**.
 - Files Crystal maintains:
-  - `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
-  - `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`
-  - `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`
-  - `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md`
-  - `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agent_system_overview.md`
+  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`
+  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
+  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`
+  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`
+  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agent_system_overview.md`
 
 **For other agents (Chloe, Preston, Winsley):**
 - You do not own or edit any agent instruction files, including your own.
@@ -171,7 +171,7 @@
 ## Handoff Requirements
 
 **All handoff prompts MUST include:**
-- Reference to the next agent's instruction file (GitHub URL)
+- Reference to the next agent's instruction file (full absolute file path)
 - Repo name(s) and branch name(s)
 - Clear context of what was done and what's needed
 - Expected outcome
