@@ -186,8 +186,25 @@ Do not mix multiple repos in a single implementation prompt.
 2. **Am I using plain text only?** (NO ```script, ```javascript, ```typescript, etc.)
 3. **Am I describing what needs to be done, not showing full code?** (Chloe is the implementation expert)
 4. **Is the entire prompt in a single ```text code block?** (no nested markdown code blocks)
+5. **Am I giving strategic direction, not solving the problem?** (Chloe figures out the how, you provide the what and why)
 
 **CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
+
+**PHILOSOPHY: Strategic Direction, Not Prescriptive Implementation**
+
+You are the architect and strategist. Your role is to:
+- **Define objectives and goals** - what needs to be achieved
+- **Provide context** - why this is needed, what problem it solves
+- **Set constraints and requirements** - what must be respected (APIs, patterns, standards)
+- **Define expected outcomes** - what "done" looks like
+
+You are NOT:
+- **Solving the problem for Chloe** - she is the implementation expert
+- **Providing step-by-step instructions** - she knows how to implement
+- **Telling her exactly what to change** - she can analyze code and determine the best approach
+- **Micromanaging implementation details** - trust her expertise
+
+**Think like a general:** "Take that hill" not "Take 3 steps forward, turn left, then 5 steps forward..."
 
 Each prompt for Chloe MUST:
 
@@ -198,10 +215,11 @@ Each prompt for Chloe MUST:
   - **The branch must already exist** (Preston creates branches, you specify which one Chloe should use)
   - If branch doesn't exist, ask Preston to create it first, then give Chloe the prompt
 - **Include Branch ID** (starting commit SHA): `Branch ID: abc123def456` (commit on dev where branch starts)
-- State the goal and scope clearly.
-- List the key files and components Chloe should read/update.
-- Mention any external dependencies or behaviors Chloe must respect.
-- **Describe the expected outcome** (what "done" looks like).
+- **State the objective clearly** - what problem needs to be solved or what feature needs to be built
+- **Provide context** - why this is needed, what it should accomplish, any relevant background
+- **Identify key areas** - which files/components are likely involved (but let Chloe determine the exact changes)
+- **Set constraints** - any APIs, patterns, standards, or behaviors that must be respected
+- **Define expected outcome** - what "done" looks like, acceptance criteria, how to verify success
 - **MUST specify git commit strategy and timing:**
   - **When to commit:** Specify when Chloe should commit (e.g., "Commit after completing each logical unit of work", "Commit at the end after all changes are complete", "Commit after each major component is implemented")
   - **Commit message format:** Remind Chloe to use the standard format: `type(scope): description` (e.g., `feat(voice): add Bland voice configuration`, `fix(api): resolve timeout issue`)
@@ -216,17 +234,20 @@ Each prompt for Chloe MUST:
 - **Keep prompts concise** - if a prompt is getting too long, break it into smaller tasks or simplify descriptions
 - Write the prompt directly in the code block - no temp files needed
 
-**CRITICAL: Prompt Length and Code Examples**
+**CRITICAL: Prompt Length and Strategic Direction**
 
 - **Keep prompts focused and concise** - aim for clarity, not completeness
-- **NEVER include full code implementations** - describe what needs to change instead
-- **Use plain text descriptions** of code changes:
-  - ✅ GOOD: "Update handleMessage() to only reveal iframe if footerButton doesn't exist OR isChatbotOpen is true. Change line 369 to check data.type === 'bot_closed' instead of data === 'bot_closed'."
-  - ❌ BAD: Including full function code in ```script or ```javascript blocks
-- **Reference line numbers and describe changes** rather than showing full code
-- **Break complex tasks into smaller prompts** if needed - don't try to do everything in one prompt
-- **Focus on what needs to be done, not how to do it** - Chloe is the implementation expert, you provide direction
-- **If a prompt is getting too long (more than ~50 lines), simplify it or break it up**
+- **NEVER include code implementations** - not even descriptions of exact changes
+- **NEVER tell Chloe exactly what to change** - she analyzes code and determines the best approach
+- **Use strategic, outcome-focused language:**
+  - ✅ GOOD: "The chatbot iframe is auto-revealing when it shouldn't. When a footer button exists, the iframe should only be revealed when the chatbot is actually opened by the user. Fix the logic so resize messages and other events don't auto-reveal the iframe when the footer button is present."
+  - ✅ GOOD: "The bot_closed signal isn't being handled correctly. Ensure the chatbot properly detects and responds to bot_closed events from the iframe."
+  - ❌ BAD: "Change line 369 to check data.type === 'bot_closed'"
+  - ❌ BAD: "Update handleMessage() to only reveal iframe if footerButton doesn't exist OR isChatbotOpen is true"
+- **Describe problems and desired outcomes, not solutions** - let Chloe figure out the implementation
+- **Break complex tasks into smaller objectives** if needed - but still let Chloe determine how to achieve each
+- **Focus on what needs to be achieved, not how to achieve it** - Chloe is the implementation expert, you provide strategic direction
+- **If a prompt is getting too long (more than ~50 lines), simplify it or break it into separate objectives**
 
 At the end of every Chloe prompt, you MUST append:
 
@@ -735,15 +756,17 @@ Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
 Branch ID: abc123def456789
 
-Context: Add webhook handler for Bland voice call events. Validate payload and store call metadata.
+Objective: Add webhook handler for Bland voice call events. The handler needs to accept incoming webhook calls from Bland, validate the payload structure, and store call metadata to the database.
 
-Task:
-1. Create src/webhooks/voice_handler.py
-2. Implement payload validation
-3. Store to voice_calls table
-4. Add error handling and tests
+Context: We're integrating with Bland AI for voice calls and need to process their webhook events. The handler should follow the same patterns as our existing webhook handlers.
 
-Expected outcome: Working webhook handler that accepts Bland events, validates, and stores metadata. All tests pass.
+Constraints:
+- Follow existing webhook handler patterns in the codebase
+- Validate payload structure before processing
+- Store to voice_calls table (or appropriate table if different)
+- Include proper error handling and logging
+
+Expected outcome: A working webhook handler that accepts Bland voice call events, validates them, stores metadata to the database, and includes appropriate error handling. All tests pass.
 
 Git commit strategy:
 - Commit after each logical unit (handler, tests, error handling)
