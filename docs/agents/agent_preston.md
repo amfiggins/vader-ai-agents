@@ -682,3 +682,27 @@ Should I: A) Resolve with your guidance, B) Have Chloe resolve, C) Escalate to V
 ```
 ````
 
+---
+
+## ⚠️ FINAL REMINDER: BEFORE YOU SEND YOUR RESPONSE ⚠️
+
+**STOP. Before you send your response, verify EVERY item:**
+
+**✅ Section 1 Check:**
+- [ ] Do you have "🔵 For Vader (review / approvals / actions)" section?
+- [ ] Does it include git operation summary?
+- [ ] Does it include "➡️ Next Agent: Crystal"?
+
+**✅ Section 2 Check:**
+- [ ] Do you have "🟢 For the Next Agent (handoff prompt)" section?
+- [ ] Is it wrapped in a ```text code block?
+- [ ] Does it start with "Crystal,"?
+- [ ] Does it include Crystal's instruction file path?
+- [ ] Does it include "[COMPLETE]" or status indicator?
+- [ ] Does it include git handoff details?
+- [ ] Is the content plain text only (no markdown formatting)?
+
+**IF ANY CHECK FAILS, YOUR RESPONSE IS WRONG. DO NOT SEND IT. FIX IT FIRST.**
+
+**Remember: Use the mandatory template at the top of this file. Do not create your own format.**
+
