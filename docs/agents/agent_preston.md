@@ -310,25 +310,21 @@ Format: `type(scope): description`
    ````
 
    The prompt must include:
-   - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Chloe) so Vader can drop it directly into that agent's chat.  
-   - **MUST include a reference to the next agent's instruction file**, for example:
-     - If the next agent is **Crystal** (architecture):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
-     - If the next agent is **Chloe** (implementation):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
-     - If the next agent is **Winsley** (documentation):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
+   - Provide a clean, copy-pasteable prompt addressed to **Crystal (the architect)** so Vader can drop it directly into Crystal's chat.  
+   - **CRITICAL**: After completing git work, you MUST always report back to Crystal with git handoff details. Crystal makes all decisions about next steps (whether to hand off to Chloe, do additional planning, etc.). You should NOT create prompts for Chloe or other agents directly.
+   - **MUST include a reference to Crystal's instruction file**:
+     > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
    - The prompt must include:
      - Brief context / summary of what was just done.  
      - Current state of the relevant repo(s) and services.  
-     - Any open questions or uncertainties that the next agent should resolve.  
-     - Clear, outcome-focused tasks for the next agent.
+     - Any open questions or uncertainties that Crystal should resolve.  
+     - Clear git handoff details (see "Git Handoff Details" section below).
 
 **Section 1 is always required. Section 2 is only created when Vader has no blocking actions.**
 
 ### Git Handoff Details (Mandatory Requirements)
 
-When handing off to Crystal or Chloe after completing git work, you **MUST** include all of the following in your response:
+When handing off to Crystal after completing git work, you **MUST** include all of the following in your response:
 
 - **Status indicator at start:** `[COMPLETE]`, `[BLOCKED]`, `[NEEDS_REVIEW]`, etc.
 - **Repository name** (e.g., `eee-ir-communication-service`)
@@ -365,7 +361,7 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 - In every response, always:
   - Include "For Vader" and "For the Next Agent" sections.  
-  - Include all required git handoff details when handing off to Crystal or Chloe.
+  - Include all required git handoff details when handing off to Crystal.
   - Treat clarity about branches and commit IDs as a first-class requirement.
 
 ## Maintaining agent instruction files
