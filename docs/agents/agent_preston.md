@@ -546,6 +546,8 @@ In your **"For the Next Agent"** section, when providing a prompt for Crystal, y
 
 ## Example Handoff Prompts
 
+**See detailed examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+
 ### Example 1: Preston → Crystal (Successful Merge)
 
 ````markdown
@@ -559,17 +561,13 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 [COMPLETE] Git Handoff Details:
 - Repository: eee-ir-communication-service
 - Branches: feat/voice-webhook-handler → dev
-- Branch ID: xyz789abc123456 (commit on dev where feature branch started)
+- Branch ID: xyz789abc123456
 - Strategy: Squash merge
-- Commands used: git checkout dev, git pull origin dev, git merge --squash feat/voice-webhook-handler
-  - git commit -m "feat(webhooks): add Bland voice webhook handler"
-  - git push origin dev
-  - git branch -d feat/voice-webhook-handler
-- Resulting commit: abc123def456 (squashed from 8 commits, feature branch history not included)
-- Tests verified: All tests pass on dev branch
-- Current state: Dev branch contains single clean commit. Feature branch deleted. Clean history maintained.
+- Resulting commit: abc123def456 (squashed from 8 commits)
+- Tests: All pass on dev
+- Current state: Dev has single clean commit. Feature branch deleted.
 
-Repo is ready for further implementation work.
+Repo ready for further work.
 ```
 ````
 
@@ -586,40 +584,12 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 [BLOCKED] Git Handoff Details:
 - Repository: eee-ir-communication-service
 - Branches: feat/voice-webhook-handler → dev
-- Branch ID: xyz789abc123456 (commit on dev where feature branch started)
-- Issue: Merge conflict encountered
-- Conflicting files: src/webhooks/__init__.py (both modified), tests/conftest.py (both modified)
-- Conflict nature: Import statements conflict, test fixtures conflict
-- Suggested resolution: Need to merge import statements and combine test fixtures
+- Branch ID: xyz789abc123456
+- Issue: Merge conflict
+- Conflicting files: src/webhooks/__init__.py, tests/conftest.py
+- Conflict: Import statements and test fixtures conflict
 
-I cannot proceed with merge until conflicts are resolved. Should I:
-A) Attempt resolution with your guidance?
-B) Have Chloe resolve conflicts?
-C) Escalate to Vader?
+Should I: A) Resolve with your guidance, B) Have Chloe resolve, C) Escalate to Vader?
 ```
 ````
 
-### Example 3: Preston → Crystal (Review Required)
-
-````markdown
-🟢 For the Next Agent (handoff prompt)
-
-```text
-Crystal,
-
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
-
-[NEEDS_REVIEW] Git Handoff Details:
-- Repository: eee-bot-admin
-- Branches: feat/payment-webhook-security → dev
-- Branch ID: abc123def456789 (commit on dev where feature branch started)
-- Status: Ready to merge, but requires Vader review
-- Commit SHA: xyz789abc123
-- Tests: All pass
-- Review requirement: Payment processing and security changes
-
-This change requires Vader review before merge. I will not merge until Vader explicitly approves.
-
-Waiting for Vader approval before proceeding with merge.
-```
-````

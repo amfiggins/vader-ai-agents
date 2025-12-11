@@ -687,6 +687,8 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 ## Example Handoff Prompts
 
+**See detailed examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+
 **Note:** All example prompts below are shown in code blocks. When creating actual prompts, ensure the ENTIRE prompt stays within a single ```text code block. Avoid nested markdown code blocks (```typescript, etc.) as they will break the outer code block.
 
 **⚠️ CRITICAL REMINDERS:**
@@ -707,32 +709,26 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
-Branch ID: abc123def456789 (commit on dev where this feature branch starts)
+Branch ID: abc123def456789
 
-Context: We need to add a new webhook handler for voice call events from Bland. The handler should process incoming webhook calls, validate the payload, and store call metadata.
-
-Current state: Existing webhook infrastructure is in src/webhooks/, Bland webhook format is documented in docs/bland-webhooks.md, database schema already has voice_calls table
+Context: Add webhook handler for Bland voice call events. Validate payload and store call metadata.
 
 Task:
-1. Create new handler file: src/webhooks/voice_handler.py
-2. Implement payload validation using the Bland webhook schema
-3. Store call metadata to voice_calls table
-4. Add error handling and logging
-5. Write unit tests for the handler
+1. Create src/webhooks/voice_handler.py
+2. Implement payload validation
+3. Store to voice_calls table
+4. Add error handling and tests
 
-Expected outcome: A working webhook handler that accepts Bland voice call events, validates them, and stores call metadata. All tests pass.
-
-Constraints: Must use existing database connection pattern, must follow existing error handling conventions, must log all webhook events for debugging
+Expected outcome: Working webhook handler that accepts Bland events, validates, and stores metadata. All tests pass.
 
 Git commit strategy:
-- When to commit: Commit after completing each logical unit of work (handler implementation, tests, error handling)
-- Commit message format: Use standard format type(scope): description (e.g., feat(webhooks): add voice handler, test(webhooks): add unit tests)
-- Commit frequency: Commit frequently for checkpointing - messy history on feature branches is expected and encouraged
-- MANDATORY: You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote.
+- Commit after each logical unit (handler, tests, error handling)
+- Format: type(scope): description (e.g., feat(webhooks): add voice handler)
+- Commit frequently - messy history on feature branches is expected
 
-Chloe, after you complete this task, end your reply with two sections:
-1. "Implementation Summary for Crystal" – what you changed, which files, what tests or API calls you ran, and key outcomes.
-2. "Questions for Crystal" – anything you need clarified or any decisions you need.
+Chloe, after you complete this task, end your reply with:
+1. "Implementation Summary for Crystal" – what you changed, files, tests, outcomes
+2. "Questions for Crystal" – any clarifications or decisions needed
 ```
 ````
 
@@ -748,94 +744,19 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 Repo: eee-ir-communication-service
 Branches: feat/voice-webhook-handler → dev
-Branch ID: abc123def456789 (commit on dev where feature branch started)
+Branch ID: abc123def456789
 Merge Strategy: Squash merge
 
-Context: Chloe has completed the voice webhook handler feature. All tests pass and the implementation is ready for merge.
-
-Current state: Feature branch feat/voice-webhook-handler has 8 commits (messy history is expected), all commits are implementation work for this single feature, tests are passing on the feature branch, no conflicts expected with dev, Branch ID tracked: abc123def456789
+Context: Feature complete, all tests pass, ready for merge.
 
 Task:
 1. Squash merge feat/voice-webhook-handler into dev
-2. Ensure the merge creates a single clean commit on dev (feature branch history should NOT appear on dev)
-3. Delete the feature branch after successful merge
-4. Report the final commit SHA on dev and confirm Branch ID
+2. Ensure single clean commit (feature branch history NOT on dev)
+3. Delete feature branch after merge
+4. Report final commit SHA and confirm Branch ID
 
-Expected outcome: Dev branch contains a single squashed commit with all voice webhook handler work. Feature branch is deleted. Clean git history maintained on dev. Feature branch's messy commit history does not appear on dev.
+Expected outcome: Dev has single squashed commit. Feature branch deleted. Clean history maintained.
 
-Important: Verify tests pass before merging. If any issues arise, report to me immediately.
-
-After you complete the merge, I will test on dev to validate everything works correctly before marking this feature as complete and signed off.
-```
-````
-
-### Example 3: Crystal → Chloe (Requires Review)
-
-````markdown
-🟢 For the Next Agent (handoff prompt)
-
-```text
-Chloe,
-
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
-
-Repo: eee-bot-admin
-Branch: feat/payment-webhook-security
-Branch ID: xyz789abc123456 (commit on dev where this feature branch starts)
-[REQUIRES VADER REVIEW BEFORE MERGE]
-
-Context: We need to add additional security validation to payment webhook handlers. This involves authentication changes and payment processing logic.
-
-Current state: Payment webhooks are in src/payments/webhooks.py, current authentication uses API key validation, need to add signature verification
-
-Task:
-1. Implement HMAC signature verification for payment webhooks
-2. Add validation for payment amounts and currency
-3. Add logging for all payment webhook events
-4. Write comprehensive tests including security test cases
-
-Expected outcome: Payment webhooks have enhanced security with signature verification. All security tests pass.
-
-IMPORTANT: This change requires Vader review before merge due to payment processing and security implications. Do not proceed with merge until Vader has reviewed and approved.
-
-Chloe, after you complete this task, end your reply with two sections:
-1. "Implementation Summary for Crystal" – what you changed, which files, what tests or API calls you ran, and key outcomes.
-2. "Questions for Crystal" – anything you need clarified or any decisions you need.
-```
-````
-
-### Example 4: Crystal → Winsley (Documentation Review)
-
-````markdown
-🟢 For the Next Agent (handoff prompt)
-
-```text
-Winsley,
-
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
-
-Repo: eee-ir-communication-service
-Branch: docs/api-documentation-cleanup
-Branch ID: abc123def456789 (commit on dev where this documentation branch starts)
-
-Context: We've accumulated a lot of documentation across multiple files. Some is outdated, some is duplicated, and organization could be improved. We need a comprehensive review and cleanup.
-
-Current state: API documentation scattered across multiple files (docs/api.md, docs/endpoints.md, docs/webhooks.md), setup documentation in both README.md and docs/SETUP.md with overlapping content, some documentation references deprecated features, documentation structure is inconsistent
-
-Task:
-1. Review all documentation files in the repo
-2. Consolidate API documentation into a single, well-organized file
-3. Merge duplicate setup documentation
-4. Remove outdated documentation and references to deprecated features
-5. Organize documentation with clear structure and navigation
-6. Ensure all documentation matches current codebase
-
-Expected outcome: Clean, organized, consolidated documentation that is easy to navigate and up-to-date. All duplicate and outdated content removed.
-
-Documentation standards: Use consistent markdown formatting, maintain clear table of contents for long documents, include code examples where appropriate, keep documentation concise and actionable
-
-Winsley, after you complete this task, end your reply with two sections:
-1. "Documentation Review Summary" – what you reviewed, which files you modified/consolidated/removed, and key findings.
-2. "Questions for Crystal" – anything you need clarified or any decisions you need.
+After merge, I will test on dev to validate before marking complete.
 ```
 ````

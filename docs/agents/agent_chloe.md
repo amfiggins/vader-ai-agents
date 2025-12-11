@@ -563,6 +563,8 @@ If the repo or environment is unclear, say what you are assuming and proceed; Cr
 
 ## Example Handoff Prompts
 
+**See detailed examples:** `https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/_examples.md`
+
 ### Example 1: Chloe → Crystal (Standard Completion)
 
 **🟢 For the Next Agent (handoff prompt)**
@@ -595,16 +597,13 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 [COMPLETE] Implementation Summary:
 - Repo: eee-ir-communication-service
-- Files modified: src/webhooks/voice_handler.py (new, 245 lines), tests/test_voice_handler.py (new, 180 lines), src/webhooks/__init__.py (updated imports)
-- Tests run: pytest tests/test_voice_handler.py - all 12 tests passed, manual webhook test with curl - successful, data stored correctly
-- Behavior: Webhook handler accepts Bland voice call events, validates payload, stores to database
+- Files: src/webhooks/voice_handler.py (new), tests/test_voice_handler.py (new)
+- Tests: All 12 tests passed, manual webhook test successful
+- Behavior: Webhook handler accepts Bland events, validates, stores to database
 
-Questions for Crystal:
-- No questions at this time.
+Questions for Crystal: None
 
-Current state: Webhook handler implementation is complete and tested. Ready for merge to dev.
-
-Next steps: Ready for Crystal to coordinate merge with Preston.
+Ready for merge to dev.
 ```
 ````
 
@@ -633,54 +632,12 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 
 [BLOCKED] Implementation Summary:
 - Repo: eee-ir-communication-service
-- Files modified: src/webhooks/voice_handler.py (partial, 180 lines)
-- Blocked on: AWS Secrets Manager access - need secret "bland/webhook/signing-key", error AccessDeniedException, tried AWS CLI and boto3 SDK, both failed with permission error
+- Files: src/webhooks/voice_handler.py (partial, 180 lines)
+- Blocked: AWS Secrets Manager access denied for "bland/webhook/signing-key"
 
 Questions for Crystal:
-- Do I need Vader to grant AWS permissions, or is the secret configured differently?
-- Should I proceed with a placeholder and update after secret is available?
-
-I cannot proceed until AWS secret access is resolved.
+- Do I need Vader to grant permissions, or is secret configured differently?
+- Should I use a placeholder and update after secret is available?
 ```
 ````
 
-### Example 3: Chloe → Crystal (Needs Review)
-
-````markdown
-🟢 For the Next Agent (handoff prompt)
-
-```text
-For Vader (review / approvals / actions)
-
-Modified: 2 files in eee-bot-admin (payment webhook security)
-
-Action Required:
-- Review payment webhook security changes before merge
-- Verify HMAC signature verification implementation
-
-Testing:
-- All 18 tests passed including security tests
-- Signature validation and replay attack prevention verified
-
-Next Agent: Crystal (after Vader review)
-
-This change requires Vader review before merge due to payment processing and security implications.
-
----
-
-Crystal,
-
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
-
-[NEEDS_REVIEW] Implementation Summary:
-- Repo: eee-bot-admin
-- Files modified: src/payments/webhooks.py (added HMAC verification, 95 lines added), tests/test_payment_security.py (new, 220 lines)
-- Tests run: pytest tests/test_payment_security.py - all 18 tests passed, security tests for signature validation and replay attack prevention all pass
-- Behavior: Payment webhooks now verify HMAC signatures before processing
-
-This change requires Vader review before merge due to payment processing and security implications.
-
-Questions for Crystal:
-- Should I wait for Vader review before any further work, or can I proceed with documentation?
-```
-````
