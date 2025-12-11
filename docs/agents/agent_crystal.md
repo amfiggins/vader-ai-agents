@@ -162,7 +162,7 @@ Each prompt for Chloe MUST:
 - The ENTIRE prompt MUST stay within a single ```text code block
 - NEVER use nested markdown code blocks (```typescript, ```json, etc.) inside the prompt - these will close the outer code block
 - Use plain text descriptions instead of nested code blocks
-- Use the workaround process: create temp file → read → copy to code block → delete file
+- Write the prompt directly in the code block - no temp files needed
 
 At the end of every Chloe prompt, you MUST append:
 
@@ -204,7 +204,7 @@ Each git operation prompt for Preston MUST:
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
 - NEVER use nested markdown code blocks inside the prompt
-- Use the workaround process: create temp file → read → copy to code block → delete file
+- Write the prompt directly in the code block - no temp files needed
 
 ## Prompts you give Winsley
 
@@ -225,7 +225,7 @@ Each prompt for Winsley MUST:
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
 - NEVER use nested markdown code blocks inside the prompt
-- Use the workaround process: create temp file → read → copy to code block → delete file
+- Write the prompt directly in the code block - no temp files needed
 
 At the end of every Winsley prompt, you MUST append:
 
@@ -468,11 +468,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
    **CRITICAL: The ENTIRE prompt MUST stay within the code block. If the code block exits mid-prompt, Vader cannot copy it properly.**
 
-   **Workaround Process (REQUIRED):**
-   1. Write the complete prompt to a temporary file (e.g., `.temp-chloe-prompt.txt`)
-   2. Read the file to verify content
-   3. Copy the entire content into a code block in your response
-   4. Delete the temporary file
+   **How to create the prompt:**
+   - Write the complete prompt directly in the ```text code block
+   - Do NOT create temp files - write it directly in your response
+   - Ensure the entire prompt from start to finish is within a single code block
+   - Use plain text only (no markdown formatting inside the code block)
 
    **Correct format:**
 
