@@ -594,7 +594,7 @@ No Action: Ready to proceed after tests pass
 
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [COMPLETE] Implementation Summary:
 - Repo: eee-ir-communication-service
@@ -629,7 +629,7 @@ Next Agent: Crystal (to resolve blocker)
 
 Crystal,
 
-Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
 
 [BLOCKED] Implementation Summary:
 - Repo: eee-ir-communication-service
