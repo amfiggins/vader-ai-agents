@@ -413,6 +413,7 @@ For each issue/feature:
      - "Questions for Crystal"
    - Update your plan if needed.
    - Answer Chloe's questions explicitly.
+   - **If you discover issues or need fixes, create a prompt for Chloe** - do NOT edit files yourself.
    - Repeat the loop.
 5. **Post-Merge Validation (MANDATORY):**
    - After Preston completes a squash merge to dev, you MUST test on dev.
