@@ -244,6 +244,7 @@ Each git operation prompt for Preston MUST:
 - **Specify the desired state** (e.g., "feature branch into dev via squash merge").
 - **Describe the expected outcome** (what "done" looks like, e.g., "dev branch will contain a single squashed commit with all feature work").
 - Include any commit IDs that are important.
+- **Specify push expectations:** If you want backups mid-stream, explicitly tell Preston to push the feature branch to remote now (and at checkpoints). After squash merge to dev, he must push dev. Deleting the feature branch is optional (say so if you want it deleted).
 - **Include a reference to Preston's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**

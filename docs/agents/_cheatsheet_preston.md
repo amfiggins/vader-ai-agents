@@ -85,6 +85,7 @@
 - After squash merge, **push dev to remote**.
 - Report final dev commit SHA, confirm Branch ID.
 - Feature branch deletion is optional; only delete when Crystal/Vader explicitly wants it removed.
+- If Crystal requests interim backups, push the feature branch to remote at those checkpoints (before final merge).
 
 ---
 

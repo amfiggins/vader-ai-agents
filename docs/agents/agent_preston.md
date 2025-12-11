@@ -215,6 +215,7 @@ git commit -m "feat(scope): description"
 - After squash merge to dev, **push dev to remote**.
 - Report final dev commit SHA and confirm Branch ID.
 - Feature branch deletion is optional; only delete when Crystal/Vader explicitly wants it removed.
+- If Crystal requests interim backups, push the feature branch to remote at those checkpoints (before final merge).
 
 ### When to use Squash Merge:
 - **ALWAYS for feature branches → main/prod/dev** (this is the default and standard)
