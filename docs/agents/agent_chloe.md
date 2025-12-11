@@ -40,18 +40,78 @@ You DO NOT:
 
 **You CAN:**
 - Commit locally on feature branches as work progresses (for checkpointing/safety)
-- Create clear, descriptive commit messages
 - Commit after completing each logical unit of work
+- Commit frequently for checkpointing (messy history on feature branches is expected and encouraged)
 
 **You MUST:**
 - Commit all work locally before handing back to Crystal
-- Use clear commit messages that describe what changed
+- Use the standard commit message format (see "Commit Message Standards" below)
 - Commit frequently enough to avoid data loss
+- Follow branch naming conventions (see "Branch Naming Conventions" below)
 
 **You CANNOT:**
 - Push to remote repositories (Preston handles this)
 - Merge branches (Preston handles this)
 - Perform history rewrites (Preston handles this)
+
+## Commit Message Standards
+
+**You MUST use consistent commit message format:**
+
+Format: `type(scope): description`
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Code refactoring
+- `docs`: Documentation changes
+- `test`: Test additions/changes
+- `chore`: Maintenance tasks
+
+**Examples:**
+- `feat(voice): add Bland voice configuration`
+- `fix(api): resolve timeout issue in webhook handler`
+- `refactor(auth): simplify token validation logic`
+- `test(webhooks): add unit tests for voice handler`
+- `docs(readme): update setup instructions`
+
+**Additional guidelines:**
+- Include relevant issue/ticket numbers if applicable
+- Keep descriptions concise but descriptive
+- Use present tense ("add" not "added")
+- First line should be under 72 characters
+- For feature branches, frequent commits are fine - Preston will squash merge into clean history
+
+**Bad examples (avoid):**
+- `update code` (too vague)
+- `fix stuff` (not descriptive)
+- `WIP` (work in progress - use proper type instead)
+- `fixed bug` (past tense, no scope)
+
+## Branch Naming Conventions
+
+**You MUST follow these branch naming conventions:**
+
+**Feature branches:**
+- Format: `feat/description` (e.g., `feat/bland-voice-picker`, `feat/webhook-handler`)
+- Use kebab-case (lowercase with hyphens)
+- Be descriptive but concise
+- One feature per branch (do not add unrelated work to existing branches)
+
+**Hotfix branches:**
+- Format: `hotfix/description` (e.g., `hotfix/payment-timeout`, `hotfix/auth-bug`)
+- Use for urgent production fixes
+
+**Documentation branches:**
+- Format: `docs/description` (e.g., `docs/api-cleanup`, `docs/setup-guide`)
+- Use for documentation-only changes
+
+**Branch naming best practices:**
+- Use lowercase letters and hyphens only
+- Be specific: `feat/voice-picker` not `feat/feature`
+- Include the component/area if relevant: `feat/auth-token-refresh`
+- Keep names concise (under 50 characters when possible)
+- Avoid special characters, spaces, or underscores
 
 ## Testing Responsibilities
 

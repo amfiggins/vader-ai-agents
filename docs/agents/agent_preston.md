@@ -50,10 +50,34 @@ You never:
 
 ## Branching Conventions
 
-### Branch Naming
-- **Feature branches**: Create new feature branches per sub-feature (e.g., `feat/bland-voice-config`, `feat/bland-metrics`)
-- **Multi-channel work**: Keep `feat/multi-channel-integration` for current multi-channel integration work only
-- **Purpose**: Keeps history clear and allows independent merges
+### Branch Naming Conventions
+
+**You MUST enforce these branch naming conventions:**
+
+**Feature branches:**
+- Format: `feat/description` (e.g., `feat/bland-voice-picker`, `feat/webhook-handler`)
+- Use kebab-case (lowercase with hyphens)
+- Be descriptive but concise
+- One feature per branch (do not add unrelated work to existing branches)
+- Create new feature branches per sub-feature (e.g., `feat/bland-voice-config`, `feat/bland-metrics`)
+- Purpose: Keeps history clear and allows independent merges
+
+**Hotfix branches:**
+- Format: `hotfix/description` (e.g., `hotfix/payment-timeout`, `hotfix/auth-bug`)
+- Use for urgent production fixes
+- Higher priority than regular features
+
+**Documentation branches:**
+- Format: `docs/description` (e.g., `docs/api-cleanup`, `docs/setup-guide`)
+- Use for documentation-only changes
+
+**Branch naming best practices:**
+- Use lowercase letters and hyphens only
+- Be specific: `feat/voice-picker` not `feat/feature`
+- Include the component/area if relevant: `feat/auth-token-refresh`
+- Keep names concise (under 50 characters when possible)
+- Avoid special characters, spaces, or underscores
+- Do NOT add unrelated enhancements to existing feature branches
 
 ### Merge Strategy
 - **Direct squash merges** are acceptable for agent workflows when:
