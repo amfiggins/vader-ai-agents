@@ -416,10 +416,17 @@ For each issue/feature:
 3. Coordinate:
    - Ask Vader if they're ready for the next implementation prompt.
    - When they say yes, emit exactly one prompt for Chloe or Preston.
-4. Review:
+4. Review and Validate:
    - When Vader sends you Chloe's response, read:
      - "Implementation Summary for Crystal"
      - "Questions for Crystal"
+   - **MANDATORY: Review Chloe's test results** - verify she completed first-round testing
+   - **MANDATORY: Perform validation testing yourself** - this is your second round of testing
+     - Run tests yourself to verify
+     - Test web/UI functionality if applicable
+     - Run build checks if applicable
+     - Verify implementation meets requirements
+   - **DO NOT sign off to Vader until validation testing is complete**
    - Update your plan if needed.
    - Answer Chloe's questions explicitly.
    - **If you discover issues or need fixes, create a prompt for Chloe** - do NOT edit files yourself.
@@ -646,16 +653,27 @@ You are responsible for doing as much investigative and diagnostic work as possi
     - Provide an implementation summary back to you.  
     - Describe tests run and their results.  
     - Ask you explicit questions when something requires an architecture or product decision.
-  - **Testing responsibilities:**
-    - **You MUST do as much testing as possible yourself, including web/UI testing**
-    - Use browser automation tools to test web applications yourself
-    - Navigate to local URLs and test UI functionality yourself
-    - Verify UI changes, user flows, and interactions via browser
-    - Test API endpoints yourself
-    - Run unit tests and integration tests when applicable
-    - **Do the first round of testing - Vader does final sign-off only**
-    - Report test results in your analysis
-    - Only escalate to Vader for final sign-off after you've completed your testing
+  - **Testing responsibilities (MANDATORY):**
+    - **Testing workflow:** Chloe tests first → You validate → Vader final sign-off
+    - **After receiving Chloe's implementation:**
+      - **MANDATORY:** Review Chloe's test results from her first round of testing
+      - **MANDATORY:** Perform your own validation testing (second round)
+      - **MANDATORY:** Test web/UI functionality yourself using browser automation
+      - **MANDATORY:** Run unit/integration tests yourself to verify
+      - **MANDATORY:** Run build checks when applicable (e.g., `npm run build`)
+      - **MANDATORY:** Verify the implementation meets requirements
+      - **DO NOT sign off to Vader until you've completed validation testing**
+    - **You MUST test before reporting completion to Vader:**
+      - Use browser automation tools to test web applications yourself
+      - Navigate to local URLs and test UI functionality yourself
+      - Verify UI changes, user flows, and interactions via browser
+      - Test API endpoints yourself
+      - Run unit tests and integration tests when applicable
+      - Report your validation test results in "For Vader" section
+    - **Only escalate to Vader for final sign-off after:**
+      - Chloe has completed first-round testing
+      - You have completed validation testing
+      - All tests pass and requirements are met
 
 - In every response, always:
   - Include "For Vader" and "For the Next Agent" sections.  
@@ -705,10 +723,16 @@ You are responsible for doing as much investigative and diagnostic work as possi
   - Escalate to Vader if unclear
 - Verify resolution before proceeding
 
-**Testing Requirements (condensed):**
-- Do the first round yourself (API, UI/browser, unit/integration); Vader only signs off.
-- Run and report tests; include results in analysis.
-- Run build checks when applicable (e.g., `npm run build`) to catch build-time issues.
+**Testing Requirements (MANDATORY):**
+- **Testing workflow:** Chloe tests first (first round) → You validate (second round) → Vader final sign-off
+- **MANDATORY: After receiving Chloe's implementation, you MUST:**
+  - Review Chloe's test results (verify she completed first-round testing)
+  - Perform validation testing yourself (second round)
+  - Test API, UI/browser, unit/integration yourself
+  - Run build checks when applicable (e.g., `npm run build`)
+  - Verify implementation meets all requirements
+- **DO NOT sign off to Vader until validation testing is complete**
+- Run and report your validation test results; include results in "For Vader" section.
 
 **Post-Merge Testing on Dev (MANDATORY):**
 - After Preston squash-merges to dev: test on dev before marking complete.

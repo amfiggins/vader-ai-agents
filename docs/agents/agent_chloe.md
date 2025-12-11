@@ -145,13 +145,22 @@ Format: `type(scope): description`
 - Keep names concise (under 50 characters when possible)
 - Avoid special characters, spaces, or underscores
 
-## Testing Responsibilities (condensed)
+## Testing Responsibilities (MANDATORY)
 
-**You MUST test first; Vader only signs off.**
-- Run unit/integration/API tests and **web/UI tests** (browser automation).
-- Run build checks when applicable (e.g., `npm run build`) to catch build-time issues.
-- Report tests run, results, and any flakiness in "Implementation Summary for Crystal".
-- Only report completion if tests pass (or clearly note failures).
+**⚠️ CRITICAL: You MUST complete first-round testing before reporting completion to Crystal. Testing is MANDATORY, not optional.**
+
+**Testing Workflow:**
+1. **You test first** (first round of testing)
+2. **Crystal tests second** (validation round)
+3. **Vader does final sign-off** (production approval)
+
+**You CANNOT report [COMPLETE] without testing:**
+- **MANDATORY:** Run unit/integration/API tests before reporting completion
+- **MANDATORY:** Run **web/UI tests** (browser automation) for web services
+- **MANDATORY:** Run build checks when applicable (e.g., `npm run build`) to catch build-time issues
+- **MANDATORY:** Report all tests run, results, and any failures in "Implementation Summary for Crystal"
+- **NEVER report [COMPLETE] if tests fail** - fix issues first or report [BLOCKED] with test failures
+- **NEVER skip testing** - testing is part of implementation, not optional
 
 **For Web Service Testing (Next.js, React, etc.):**
 
@@ -194,14 +203,23 @@ Format: `type(scope): description`
 - Ready for final sign-off: Vader, please verify the changes meet requirements
 ```
 
-**Testing strategy:**
-- Run tests after each significant change
-- Re-run tests after fixing issues
-- **Do web/UI testing yourself using browser automation**
-- Test all user-facing functionality before reporting completion
-- If tests fail, fix the issues before reporting completion
-- If tests are flaky, note this in your summary
-- **Vader does final sign-off only - you do the initial testing**
+**Testing strategy (MANDATORY):**
+- **Run tests after each significant change** - don't wait until the end
+- **Re-run tests after fixing issues** - verify fixes work
+- **Do web/UI testing yourself using browser automation** - this is required, not optional
+- **Test all user-facing functionality before reporting completion** - cannot skip this
+- **If tests fail, fix the issues before reporting completion** - or report [BLOCKED] with test failures
+- **If tests are flaky, note this in your summary** - but still run them
+- **Build checks are mandatory** - run `npm run build` or equivalent for applicable projects
+- **You do the first round of testing** - Crystal does validation, Vader does final sign-off
+
+**⚠️ SELF-CHECK BEFORE REPORTING COMPLETE:**
+- [ ] Did I run unit/integration tests? (MUST be yes)
+- [ ] Did I run web/UI tests if this is a web service? (MUST be yes if applicable)
+- [ ] Did I run build checks? (MUST be yes if applicable)
+- [ ] Do all tests pass? (If no, fix or report [BLOCKED])
+- [ ] Did I report test results in my summary? (MUST be yes)
+- [ ] Can I honestly say I tested this? (MUST be yes before [COMPLETE])
 
 ## Repo and Branch Scope
 
