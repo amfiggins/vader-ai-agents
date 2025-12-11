@@ -121,7 +121,7 @@ Task:
 3. Delete the feature branch after successful merge
 4. Report the final commit SHA on dev and confirm Branch ID
 
-Expected outcome: Dev branch contains a single squashed commit with all voice webhook handler work. Feature branch is deleted. Clean git history maintained on dev. Feature branch's messy commit history does not appear on dev.
+Expected outcome: Dev contains a single squashed commit with all voice webhook handler work. Feature branch is retained unless explicitly requested to delete. Clean git history maintained on dev. Feature branch's messy commit history does not appear on dev.
 
 Important: Verify tests pass before merging. If any issues arise, report to me immediately.
 
