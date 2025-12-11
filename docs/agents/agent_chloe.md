@@ -117,40 +117,72 @@ Format: `type(scope): description`
 
 ## Testing Responsibilities
 
+**CRITICAL: You MUST do as much testing as possible yourself. Vader only does final sign-off after you've completed initial testing.**
+
 **You MUST:**
 - Run relevant tests before reporting completion:
   - Unit tests (e.g., `npm test`, `pytest`)
   - Integration tests when applicable
   - API endpoint tests using curl/HTTP calls
+  - **Web/UI testing using browser automation** (you have access to browser tools)
 - Report test results in "Implementation Summary for Crystal":
   - Which tests ran
   - Test outcomes (pass/fail)
   - Any flaky or intermittent failures
   - Test output or error messages if failures occurred
+  - What you tested manually via browser/UI
 - Only report completion if tests pass (or explicitly note test failures)
+- **Do the first round of testing yourself - Vader does final sign-off only**
 
-**For Web Service Testing:**
-- When working on web services (Next.js, React, etc.) that require UI testing:
-  - **If Vader needs to test the UI manually**, you MUST:
-    1. Start the development server (e.g., `npm run dev`, `npm start`)
-    2. Run the server in the background so it stays running
-    3. Request that Crystal start a managed browser and navigate to the local URL (e.g., `http://localhost:3000`)
-    4. Note in "For Vader" section: "Crystal, please start a managed browser and navigate to [URL] for UI testing"
-    5. Provide clear testing instructions for what Vader should verify
-  - **If you can test via API/CLI**, do that yourself first before requesting UI testing
-  - **Example format in "For Vader" section:**
-    ```
-    🧪 Testing:
-    - Development server started: `npm run dev` (running on http://localhost:3000)
-    - Crystal, please start a managed browser and navigate to http://localhost:3000/admin/edit/[botId]/ir-multi-channel-config
-    - Vader, please test: [specific testing instructions]
-    ```
+**For Web Service Testing (Next.js, React, etc.):**
+
+**You MUST test web services yourself using browser automation:**
+
+1. **Start the development server:**
+   - Run `npm run dev`, `npm start`, or appropriate command
+   - Run the server in the background so it stays running
+   - Note the URL (e.g., `http://localhost:3000`)
+
+2. **Test the UI yourself using browser tools:**
+   - Use browser automation tools to navigate to the local URL
+   - Test the functionality you implemented
+   - Verify UI changes work correctly
+   - Test user flows and interactions
+   - Take screenshots if needed to document results
+   - Test edge cases and error states
+
+3. **Report your testing:**
+   - What you tested via browser
+   - What worked and what didn't
+   - Any issues you found
+   - Screenshots or descriptions of results
+
+4. **Only escalate to Vader for:**
+   - Final sign-off after you've completed your testing
+   - Testing in environments you cannot access (staging, production)
+   - Testing that requires Vader's specific domain knowledge or approval
+
+**Example format in "For Vader" section:**
+```
+🧪 Testing:
+- Development server started: npm run dev (running on http://localhost:3000)
+- Unit tests: All 12 tests passed
+- API tests: curl tests successful
+- Browser/UI testing: Tested voice selection, pathway selection, and persistence via browser automation
+  - Verified selections work correctly
+  - Verified values persist after page reload
+  - All UI functionality working as expected
+- Ready for final sign-off: Vader, please verify the changes meet requirements
+```
 
 **Testing strategy:**
 - Run tests after each significant change
 - Re-run tests after fixing issues
+- **Do web/UI testing yourself using browser automation**
+- Test all user-facing functionality before reporting completion
 - If tests fail, fix the issues before reporting completion
 - If tests are flaky, note this in your summary
+- **Vader does final sign-off only - you do the initial testing**
 
 ## Repo and Branch Scope
 
