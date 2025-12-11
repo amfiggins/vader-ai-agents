@@ -411,6 +411,13 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 **⚠️ BEFORE CREATING YOUR RESPONSE: Did you investigate using your own tools first? Did you query CloudWatch, check Lambda configs, test APIs yourself? If not, do it now before responding.**
 
+**⚠️ CRITICAL STRUCTURE RULES:**
+- Section 1 ("For Vader") stays OUTSIDE the code block - it's for Vader to see
+- Section 2 ("For the Next Agent") contains ONLY the prompt to the next agent in a code block
+- Do NOT put "For Vader" content inside the code block
+- Address the prompt to the correct agent (Chloe, Preston, or Winsley - NOT Crystal)
+- NEVER create temp files - write the prompt directly in the code block
+
 **Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
@@ -455,10 +462,14 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
+   **⚠️ CRITICAL: The "For Vader" section (Section 1) stays OUTSIDE the code block. Only the prompt to the next agent goes INSIDE the code block.**
+
    **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
    **CRITICAL FORMATTING RULES:**
-   - Use a code block (```text) to wrap the entire prompt
+   - Use a code block (```text) to wrap the prompt to the next agent
+   - **The "For Vader" section does NOT go in the code block** - it stays in Section 1 (outside)
+   - **Only the prompt to the next agent goes in the code block**
    - **Inside the code block, use PLAIN TEXT only** - no markdown formatting, no nested code blocks, no markdown syntax
    - The prompt should be ready to copy-paste directly into the next agent's chat
    - Do NOT use markdown code blocks (```typescript, ```json, etc.) inside the prompt
@@ -470,9 +481,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
    **How to create the prompt:**
    - Write the complete prompt directly in the ```text code block
-   - Do NOT create temp files - write it directly in your response
+   - **NEVER create temp files** - write it directly in your response
+   - **Do NOT use file operations** - just type the prompt directly in the code block
    - Ensure the entire prompt from start to finish is within a single code block
    - Use plain text only (no markdown formatting inside the code block)
+   - **Address the prompt to the correct agent** (Chloe, Preston, or Winsley - NOT Crystal)
 
    **Correct format:**
 
@@ -502,8 +515,9 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Not using a code block wrapper
    - Not including the instruction file reference
 
-   The prompt must include:
-   - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe or Preston) so Vader can drop it directly into that agent's chat.  
+   **The prompt must include:**
+   - **Address the prompt to the correct agent** - start with "Chloe," or "Preston," or "Winsley," (NOT "Crystal," - you are Crystal, you're giving the prompt TO the other agent)
+   - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe, Preston, or Winsley) so Vader can drop it directly into that agent's chat
    - **MUST include a reference to the next agent's instruction file**, for example:
      - If the next agent is **Chloe** (implementation):
        > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md
@@ -646,6 +660,12 @@ Files you maintain:
 ## Example Handoff Prompts
 
 **Note:** All example prompts below are shown in code blocks. When creating actual prompts, ensure the ENTIRE prompt stays within a single ```text code block. Avoid nested markdown code blocks (```typescript, etc.) as they will break the outer code block.
+
+**⚠️ CRITICAL REMINDERS:**
+- The "For Vader" section (Section 1) is NOT shown in these examples - it goes OUTSIDE the code block
+- Only the prompt to the next agent goes in the code block
+- Address prompts to the correct agent (Chloe, Preston, or Winsley - NOT Crystal)
+- NEVER create temp files - write directly in the code block
 
 ### Example 1: Crystal → Chloe (Standard Feature)
 
