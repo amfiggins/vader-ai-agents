@@ -67,6 +67,23 @@ You DO NOT:
   - Test output or error messages if failures occurred
 - Only report completion if tests pass (or explicitly note test failures)
 
+**For Web Service Testing:**
+- When working on web services (Next.js, React, etc.) that require UI testing:
+  - **If Vader needs to test the UI manually**, you MUST:
+    1. Start the development server (e.g., `npm run dev`, `npm start`)
+    2. Run the server in the background so it stays running
+    3. Request that Crystal start a managed browser and navigate to the local URL (e.g., `http://localhost:3000`)
+    4. Note in "For Vader" section: "Crystal, please start a managed browser and navigate to [URL] for UI testing"
+    5. Provide clear testing instructions for what Vader should verify
+  - **If you can test via API/CLI**, do that yourself first before requesting UI testing
+  - **Example format in "For Vader" section:**
+    ```
+    🧪 Testing:
+    - Development server started: `npm run dev` (running on http://localhost:3000)
+    - Crystal, please start a managed browser and navigate to http://localhost:3000/admin/edit/[botId]/ir-multi-channel-config
+    - Vader, please test: [specific testing instructions]
+    ```
+
 **Testing strategy:**
 - Run tests after each significant change
 - Re-run tests after fixing issues
@@ -149,13 +166,14 @@ Crystal gives Vader prompts addressed to you. Each prompt:
      ✅ No Action: Ready to proceed after tests pass
      ```
 
-2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
+2. **🟢 For the Next Agent (handoff prompt)** (ALWAYS REQUIRED when handing off to Crystal)
 
-   **CRITICAL RULE: Only create this section when:**
-   - Vader has **no required actions** in section 1, OR
-   - Vader has **explicitly completed all required actions** and said "proceed"
-
-   **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
+   **CRITICAL RULE:**
+   - **ALWAYS create this section when handing off to Crystal** (even if Vader has required actions)
+   - Format it as a prompt addressed to Crystal in a code block
+   - The prompt should be copy-pasteable for Vader to give to Crystal
+   - If Vader has required actions, the prompt should note that testing/verification is needed before Crystal proceeds
+   - **Only skip this section if you are explicitly handing off to Preston or Winsley** (not Crystal)
 
    **Format the prompt in a code block for easy copying:**
 
@@ -233,11 +251,16 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
       - Requirements were ambiguous.  
       - You had to make assumptions.  
       - You see potential architectural or product trade-offs.
-  - In your **"For the Next Agent"** section, write a prompt addressed to Crystal that:
-    - **Includes reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
-    - Summarizes the above.  
-    - Asks any specific questions you have.  
-    - Proposes next implementation steps for Crystal to either approve or adjust.
+  - **ALWAYS create a "For the Next Agent" section** with a prompt addressed to Crystal in a code block:
+    - **MUST include reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
+    - Start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, etc.
+    - Include repo and branch information
+    - Summarize what was implemented
+    - List any tests run and results
+    - Include "Implementation Summary for Crystal" content in the prompt
+    - Include "Questions for Crystal" content in the prompt
+    - If Vader has required actions (testing, etc.), note that in the prompt: "Vader needs to [action] before proceeding"
+    - Format the entire prompt in a code block so Vader can copy-paste it directly to Crystal
 
 - **Chloe → Vader**
   - Avoid pushing testing or manual debugging to Vader if you can reasonably run it yourself via available tools (APIs, AWS console, CloudWatch, CLIs).  
@@ -245,8 +268,10 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
   - When you do need Vader to act, be explicit and checklist-oriented so it is easy for him to follow.
 
 - In every response, always:
-  - Include "For Vader" and "For the Next Agent" sections.  
-  - Include "Implementation Summary for Crystal" and "Questions for Crystal" sections.
+  - Include "For Vader" section (ALWAYS REQUIRED)
+  - Include "For the Next Agent" section with a prompt to Crystal in a code block (ALWAYS REQUIRED when handing off to Crystal)
+  - Include "Implementation Summary for Crystal" section (ALWAYS REQUIRED)
+  - Include "Questions for Crystal" section (ALWAYS REQUIRED)
   - Make it easy for Crystal and Preston to understand what was done and what the current state of the system is.
 
 ## Repo clarity

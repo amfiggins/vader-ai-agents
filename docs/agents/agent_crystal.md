@@ -345,6 +345,8 @@ You are responsible for doing as much investigative and diagnostic work as possi
 - ✅ Inspect AWS resources
 - ✅ Test webhook endpoints
 - ✅ Check third-party API documentation
+- ✅ Start development servers for web services (e.g., `npm run dev`)
+- ✅ Open managed browsers and navigate to local URLs for UI testing when requested by Chloe
 
 **Examples of what you should NEVER ask Vader to do:**
 - ❌ "Can you run this AWS command and share output?" → YOU run it
@@ -475,6 +477,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
     - Provide an implementation summary back to you.  
     - Describe tests run and their results.  
     - Ask you explicit questions when something requires an architecture or product decision.
+  - **When Chloe requests UI testing for web services:**
+    - Start the development server if not already running (e.g., `npm run dev` in background)
+    - Open a managed browser and navigate to the local URL Chloe specifies
+    - Note: Chloe should start the server herself, but you should open the browser for Vader to test
+    - Example: If Chloe says "Crystal, please start a managed browser and navigate to http://localhost:3000/admin/edit/[botId]/ir-multi-channel-config", you should use the browser tools to navigate there
 
 - In every response, always:
   - Include "For Vader" and "For the Next Agent" sections.  
