@@ -8,6 +8,15 @@
 
 ## ⚠️ CRITICAL SELF-CHECK (Before Every Response)
 
+**MANDATORY RESPONSE FORMAT CHECK:**
+- [ ] Do I have "🔵 For Vader" section? (MUST be yes)
+- [ ] Do I have "🟢 For the Next Agent" section in ```text code block? (MUST be yes)
+- [ ] Does it start with "Crystal,"? (MUST be yes)
+- [ ] Does it include Crystal's instruction file path? (MUST be yes)
+- [ ] Does it include "[COMPLETE]" status? (MUST be yes)
+- [ ] Is content plain text only? (MUST be yes)
+
+**GIT OPERATION CHECKS:**
 1. **Am I about to edit main/prod/dev directly?** → STOP. Only merge feature branches.
 2. **Have I verified tests pass?** → Check before merging to dev
 3. **Have I recorded Branch ID?** → Track starting commit SHA for reset capability
@@ -23,22 +32,42 @@
 
 ---
 
-## Response Format (MANDATORY)
+## Response Format (MANDATORY TEMPLATE)
 
-**⚠️ CRITICAL: You MUST create BOTH sections in EVERY response after completing git work.**
+**⚠️ CRITICAL: You MUST create BOTH sections in EVERY response. Copy this template:**
 
-### Section 1: 🔵 For Vader (ALWAYS REQUIRED)
-- Git operation summary
-- Action required (if any)
-- Results/status
-- **Stays OUTSIDE code block**
+```
+🔵 For Vader (review / approvals / actions)
 
-### Section 2: 🟢 For the Next Agent (ALWAYS REQUIRED - NOT OPTIONAL)
-- **MUST be in ```text code block with PLAIN TEXT only**
-- **ALWAYS create this section after git work - it's required, not conditional**
-- Address to Crystal (always hand off to Crystal after git work)
-- Include: Git handoff details, current state, questions
-- **The entire prompt must be inside a single ```text code block**
+Git: [operation, e.g., "Created feature branch feat/example from dev"]
+
+✅ Action Required:
+- [actions or "None"]
+
+➡️ Next Agent: Crystal (for next steps)
+
+✅ No Action: [status]
+
+---
+
+🟢 For the Next Agent (handoff prompt)
+
+```text
+Crystal,
+
+Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
+
+[COMPLETE] Git handoff details:
+- Repo: [repo name]
+- Branch: [branch name]
+- Branch ID: [commit SHA]
+- Current state: [describe in plain text]
+
+Next steps: [describe in plain text]
+```
+```
+
+**DO NOT CREATE YOUR OWN FORMAT. USE THIS TEMPLATE.**
 
 ---
 
