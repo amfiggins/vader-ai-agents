@@ -126,6 +126,8 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 ## Response structure
 
+**⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
+
 **Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
@@ -169,40 +171,64 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 2. **🟢 For the Next Agent (handoff prompt)** (ALWAYS REQUIRED when handing off to Crystal)
 
    **CRITICAL RULE:**
-   - **ALWAYS create this section when handing off to Crystal** (even if Vader has required actions)
+   - **ALWAYS create this section when handing off to Crystal** (this is mandatory)
    - Format it as a prompt addressed to Crystal in a code block
    - The prompt should be copy-pasteable for Vader to give to Crystal
    - If Vader has required actions, the prompt should note that testing/verification is needed before Crystal proceeds
-   - **Only skip this section if you are explicitly handing off to Preston or Winsley** (not Crystal)
 
-   **Format the prompt in a code block for easy copying:**
+   **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
-   When you do create this section, format it as:
+   **CRITICAL FORMATTING RULES:**
+   - Use a code block (```text) to wrap the entire prompt
+   - **Inside the code block, use PLAIN TEXT only** - no markdown formatting, no nested code blocks, no markdown syntax
+   - The prompt should be ready to copy-paste directly into Crystal's chat
+   - Do NOT use markdown code blocks (```typescript, ```json, etc.) inside the prompt
+   - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
+   - Use plain text descriptions instead
+
+   **Correct format:**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
    
    ```text
-   [Paste the complete prompt here in a code block]
+   Crystal,
+   
+   Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   
+   [COMPLETE] Implementation Summary:
+   - Repo: eee-bot-admin
+   - Branch: feat/bland-voice-picker
+   - Files modified: [list files]
+   - Changes: [describe changes in plain text]
+   
+   Current state: [describe current state in plain text]
+   
+   Questions for Crystal:
+   - [list questions in plain text]
+   
+   Next steps: [describe next steps in plain text]
    ```
    ````
 
-   The prompt must include:
-   - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal or Preston) so Vader can drop it directly into that agent's chat.  
-   - **MUST include a reference to the next agent's instruction file**, for example:
-     - If the next agent is **Crystal** (architecture):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
-     - If the next agent is **Preston** (git / branches):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_preston.md
-     - If the next agent is **Winsley** (documentation):
-       > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_winsley.md
-   - The prompt must include:
-     - Brief context / summary of what was just done.  
-     - Current state of the relevant repo(s) and services.  
-     - Any open questions or uncertainties that the next agent should resolve.  
-     - Clear, outcome-focused tasks for the next agent.
+   **WRONG - Do NOT do this:**
+   - Using markdown code blocks inside: ```typescript or ```json
+   - Using markdown formatting: **bold**, ## headings
+   - Not using a code block wrapper
+   - Not including the instruction file reference
 
-**Section 1 is always required. Section 2 is only created when Vader has no blocking actions.**
+   **The prompt must include:**
+   - Address to Crystal: "Crystal,"
+   - **MUST include a reference to Crystal's instruction file:**
+     > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   - Brief context / summary of what was just done (in plain text)
+   - Current state of the relevant repo(s) and services (in plain text)
+   - Implementation Summary (in plain text, no markdown)
+   - Questions for Crystal (in plain text)
+   - Any open questions or uncertainties that Crystal should resolve
+   - Clear, outcome-focused tasks for Crystal
+
+**Section 1 is always required. Section 2 is ALWAYS required when handing off to Crystal.**
 
 ### Mandatory Sections Within Every Response
 
@@ -252,15 +278,18 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
       - You had to make assumptions.  
       - You see potential architectural or product trade-offs.
   - **ALWAYS create a "For the Next Agent" section** with a prompt addressed to Crystal in a code block:
-    - **MUST include reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`.
+    - **CRITICAL:** Use ```text code block wrapper
+    - **CRITICAL:** Inside the code block, use PLAIN TEXT ONLY - no markdown formatting, no nested code blocks
+    - **MUST include reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
     - Start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, etc.
-    - Include repo and branch information
-    - Summarize what was implemented
-    - List any tests run and results
-    - Include "Implementation Summary for Crystal" content in the prompt
-    - Include "Questions for Crystal" content in the prompt
+    - Include repo and branch information (in plain text)
+    - Summarize what was implemented (in plain text, describe files/changes)
+    - List any tests run and results (in plain text)
+    - Include "Implementation Summary for Crystal" content in the prompt (in plain text)
+    - Include "Questions for Crystal" content in the prompt (in plain text)
     - If Vader has required actions (testing, etc.), note that in the prompt: "Vader needs to [action] before proceeding"
-    - Format the entire prompt in a code block so Vader can copy-paste it directly to Crystal
+    - Format the entire prompt in a ```text code block so Vader can copy-paste it directly to Crystal
+    - **Do NOT use markdown code blocks (```typescript, ```json) inside the prompt - use plain text descriptions instead**
 
 - **Chloe → Vader**
   - Avoid pushing testing or manual debugging to Vader if you can reasonably run it yourself via available tools (APIs, AWS console, CloudWatch, CLIs).  
@@ -410,6 +439,9 @@ Modified: 3 files in eee-ir-communication-service (webhook handler implementatio
 
 **🟢 For the Next Agent (handoff prompt)**
 
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
 ```text
 Crystal,
 
@@ -418,13 +450,8 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 [COMPLETE] Implementation Summary:
 - Repo: eee-ir-communication-service
 - Branch: feat/voice-webhook-handler
-- Files modified:
-  - src/webhooks/voice_handler.py (new, 245 lines)
-  - tests/test_voice_handler.py (new, 180 lines)
-  - src/webhooks/__init__.py (updated imports)
-- Tests run:
-  - pytest tests/test_voice_handler.py - all 12 tests passed
-  - Manual webhook test with curl - successful, data stored correctly
+- Files modified: src/webhooks/voice_handler.py (new, 245 lines), tests/test_voice_handler.py (new, 180 lines), src/webhooks/__init__.py (updated imports)
+- Tests run: pytest tests/test_voice_handler.py - all 12 tests passed, manual webhook test with curl - successful, data stored correctly
 - Behavior: Webhook handler accepts Bland voice call events, validates payload, stores to database
 
 Questions for Crystal:
@@ -432,10 +459,14 @@ Questions for Crystal:
 
 Next steps: Ready for Preston to merge to dev.
 ```
+````
 
 ### Example 2: Chloe → Crystal (Blocked)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
@@ -443,12 +474,8 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 [BLOCKED] Implementation Summary:
 - Repo: eee-ir-communication-service
 - Branch: feat/voice-webhook-handler
-- Files modified:
-  - src/webhooks/voice_handler.py (partial, 180 lines)
-- Blocked on: AWS Secrets Manager access
-  - Need secret: "bland/webhook/signing-key"
-  - Error: AccessDeniedException
-  - Tried: AWS CLI, boto3 SDK, both failed with permission error
+- Files modified: src/webhooks/voice_handler.py (partial, 180 lines)
+- Blocked on: AWS Secrets Manager access - need secret "bland/webhook/signing-key", error AccessDeniedException, tried AWS CLI and boto3 SDK, both failed with permission error
 
 Questions for Crystal:
 - Do I need Vader to grant AWS permissions, or is the secret configured differently?
@@ -456,10 +483,14 @@ Questions for Crystal:
 
 I cannot proceed until AWS secret access is resolved.
 ```
+````
 
 ### Example 3: Chloe → Crystal (Needs Review)
 
-```
+````markdown
+🟢 For the Next Agent (handoff prompt)
+
+```text
 Crystal,
 
 Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
@@ -467,16 +498,13 @@ Please read your agent instructions at https://github.com/amfiggins/vader-ai-age
 [NEEDS_REVIEW] Implementation Summary:
 - Repo: eee-bot-admin
 - Branch: feat/payment-webhook-security
-- Files modified:
-  - src/payments/webhooks.py (added HMAC verification, 95 lines added)
-  - tests/test_payment_security.py (new, 220 lines)
-- Tests run:
-  - pytest tests/test_payment_security.py - all 18 tests passed
-  - Security tests: signature validation, replay attack prevention, all pass
+- Files modified: src/payments/webhooks.py (added HMAC verification, 95 lines added), tests/test_payment_security.py (new, 220 lines)
+- Tests run: pytest tests/test_payment_security.py - all 18 tests passed, security tests for signature validation and replay attack prevention all pass
 - Behavior: Payment webhooks now verify HMAC signatures before processing
 
-⚠️ This change requires Vader review before merge due to payment processing and security implications.
+This change requires Vader review before merge due to payment processing and security implications.
 
 Questions for Crystal:
 - Should I wait for Vader review before any further work, or can I proceed with documentation?
 ```
+````
