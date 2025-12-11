@@ -124,6 +124,8 @@ You DO NOT:
 
 ## Response structure
 
+**⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
+
 **Every response MUST follow this structure:**
 
 1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
@@ -171,17 +173,45 @@ You DO NOT:
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
 
-   **Format the prompt in a code block for easy copying:**
+   **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
-   When you do create this section, format it as:
+   **CRITICAL FORMATTING RULES:**
+   - Use a code block (```text) to wrap the entire prompt
+   - **Inside the code block, use PLAIN TEXT only** - no markdown formatting, no nested code blocks, no markdown syntax
+   - The prompt should be ready to copy-paste directly into the next agent's chat
+   - Do NOT use markdown code blocks (```typescript, ```json, etc.) inside the prompt
+   - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
+   - Use plain text descriptions instead
+
+   **Correct format:**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
    
    ```text
-   [Paste the complete prompt here in a code block]
+   Crystal,
+   
+   Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   
+   [COMPLETE] Documentation Review Summary:
+   - Repo: eee-ir-communication-service
+   - Branch: docs/api-documentation-cleanup
+   - Files reviewed: [list in plain text]
+   - Files consolidated: [describe in plain text]
+   - Files removed: [list in plain text]
+   
+   Questions for Crystal:
+   - [list questions in plain text]
+   
+   Next steps: [describe next steps in plain text]
    ```
    ````
+
+   **WRONG - Do NOT do this:**
+   - Using markdown code blocks inside: ```typescript or ```json
+   - Using markdown formatting: **bold**, ## headings
+   - Not using a code block wrapper
+   - Not including the instruction file reference
 
    The prompt must include:
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Crystal, Chloe, or Preston) so Vader can drop it directly into that agent's chat.  
@@ -239,10 +269,13 @@ Include:
     - Identify documentation gaps
     - Provide recommendations
   - In your **"For the Next Agent"** section, write a prompt addressed to Crystal that:
+    - **CRITICAL:** Use ```text code block wrapper
+    - **CRITICAL:** Inside the code block, use PLAIN TEXT ONLY - no markdown formatting, no nested code blocks
     - **Includes reference to Crystal's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md`
-    - Summarizes the documentation review
-    - Asks any specific questions you have
-    - Proposes next steps for Crystal to either approve or adjust
+    - Summarizes the documentation review (in plain text)
+    - Asks any specific questions you have (in plain text)
+    - Proposes next steps for Crystal to either approve or adjust (in plain text)
+    - **Do NOT use markdown code blocks (```typescript, ```json) inside the prompt - use plain text descriptions instead**
 
 - **Winsley → Vader**
   - Avoid asking Vader to review documentation unless it's critical
