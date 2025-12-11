@@ -210,6 +210,11 @@ git commit -m "feat(scope): description"
 
 **Default: Squash merge** (always for feature branches → main/prod/dev)
 
+**Required push steps for squash merges to dev:**
+- Ensure the feature branch is pushed/updated on remote before merging.
+- After squash merge to dev, **push dev to remote**.
+- Report final dev commit SHA and confirm Branch ID; delete feature branch after successful push.
+
 ### When to use Squash Merge:
 - **ALWAYS for feature branches → main/prod/dev** (this is the default and standard)
 - Single feature, clean history desired
