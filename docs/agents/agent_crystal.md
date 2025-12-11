@@ -156,6 +156,11 @@ Each prompt for Chloe MUST:
 - List the key files and components Chloe should read/update.
 - Mention any external dependencies or behaviors Chloe must respect.
 - **Describe the expected outcome** (what "done" looks like).
+- **MUST specify git commit strategy and timing:**
+  - **When to commit:** Specify when Chloe should commit (e.g., "Commit after completing each logical unit of work", "Commit at the end after all changes are complete", "Commit after each major component is implemented")
+  - **Commit message format:** Remind Chloe to use the standard format: `type(scope): description` (e.g., `feat(voice): add Bland voice configuration`, `fix(api): resolve timeout issue`)
+  - **Commit frequency:** Specify if frequent commits are expected (e.g., "Commit frequently for checkpointing - messy history on feature branches is expected and encouraged") or if commits should be consolidated
+  - **MANDATORY:** Always include: "You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote."
 - **Include a reference to Chloe's instruction file**: `Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_chloe.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**
@@ -695,6 +700,12 @@ Task:
 Expected outcome: A working webhook handler that accepts Bland voice call events, validates them, and stores call metadata. All tests pass.
 
 Constraints: Must use existing database connection pattern, must follow existing error handling conventions, must log all webhook events for debugging
+
+Git commit strategy:
+- When to commit: Commit after completing each logical unit of work (handler implementation, tests, error handling)
+- Commit message format: Use standard format type(scope): description (e.g., feat(webhooks): add voice handler, test(webhooks): add unit tests)
+- Commit frequency: Commit frequently for checkpointing - messy history on feature branches is expected and encouraged
+- MANDATORY: You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote.
 
 Chloe, after you complete this task, end your reply with two sections:
 1. "Implementation Summary for Crystal" – what you changed, which files, what tests or API calls you ran, and key outcomes.
