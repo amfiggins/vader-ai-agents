@@ -262,7 +262,7 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
    - Use plain text descriptions instead
 
-   **Correct format:**
+   **Correct format (everything for Crystal in ONE code block):**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
@@ -275,15 +275,17 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    [COMPLETE] Implementation Summary:
    - Repo: eee-bot-admin
    - Branch: feat/bland-voice-picker
-   - Files modified: [list files]
-   - Changes: [describe changes in plain text]
-   
-   Current state: [describe current state in plain text]
+   - Files modified: app/client/edit/[botId]/ir-multi-channel-config/page.tsx
+   - Changes: Updated disabled state messages for consistency, changed "Enable" to "Turn on" in all three channel messages (Voice, SMS, RVM)
+   - Tests run: No linter errors found, verified all three messages updated correctly
+   - Observed behavior: All disabled state messages now use consistent terminology
    
    Questions for Crystal:
-   - [list questions in plain text]
+   - No questions at this time. Implementation is complete and ready for testing.
    
-   Next steps: [describe next steps in plain text]
+   Current state: All disabled state messages have been updated for consistency. The implementation is complete.
+   
+   Next steps: Ready for Crystal to review and plan next steps.
    ```
    ````
 
@@ -292,46 +294,45 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Using markdown formatting: **bold**, ## headings
    - Not using a code block wrapper
    - Not including the instruction file reference
+   - **Creating "Implementation Summary for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE
+   - **Creating "Questions for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE
+   - Having Implementation Summary or Questions appear outside the ```text code block
 
-   **The prompt must include:**
+   **The code block MUST contain ALL of the following (everything for Crystal goes in ONE code block):**
+   
+   **1. Prompt header:**
    - Address to Crystal: "Crystal,"
    - **MUST include a reference to Crystal's instruction file:**
      > Please read your agent instructions at https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_crystal.md
+   
+   **2. Implementation Summary for Crystal (INSIDE the code block):**
+   - MUST start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, `[NEEDS_REVIEW]`, `[PARTIAL]`, or `[FAILED]`
+   - Format: `[COMPLETE] Implementation Summary:`
+   - Repo and branch you worked on
+   - Files inspected
+   - Files modified (with paths)
+   - Commands/tests/API calls run (with high-level results)
+   - Observed behavior after changes
+   - All in plain text (no markdown formatting)
+   
+   **3. Questions for Crystal (INSIDE the code block):**
+   - Any ambiguities you encountered
+   - Any decisions you need Crystal to make
+   - Any follow-up suggestions where multiple approaches are possible
+   - If no questions, state "No questions at this time"
+   - All in plain text (no markdown formatting)
+   
+   **4. Additional context (INSIDE the code block):**
    - Brief context / summary of what was just done (in plain text)
    - Current state of the relevant repo(s) and services (in plain text)
-   - Implementation Summary (in plain text, no markdown)
-   - Questions for Crystal (in plain text)
    - Any open questions or uncertainties that Crystal should resolve
    - Clear, outcome-focused tasks for Crystal
+   
+   **Vader will copy the ENTIRE code block content and paste it to Crystal. Everything that goes to Crystal must be inside that single code block.**
 
 **Section 1 is always required. Section 2 is ALWAYS required when handing off to Crystal.**
 
-### Mandatory Sections Within Every Response
-
-In addition to the two main sections above, **every response MUST also include:**
-
-#### Implementation Summary for Crystal
-
-**MUST start with status indicator:** `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, `[NEEDS_REVIEW]`, `[PARTIAL]`, or `[FAILED]`
-
-Include:
-- Status at the start: `[COMPLETE] Implementation Summary for Crystal: ...`
-- Repo and branch you worked on (if known).
-- Files inspected.
-- Files modified (with paths).
-- Commands/tests/API calls run (with high-level results).
-- Observed behavior after changes (e.g., specific endpoint responses, log excerpts, or screenshots described in text).
-
-#### Questions for Crystal
-
-Include:
-- Any ambiguities you encountered.
-- Any decisions you need Crystal to make.
-- Any follow-up suggestions where multiple approaches are possible.
-
-**These sections are mandatory in every response, even if you have no questions (in which case, state "No questions at this time").**
-
-Vader will copy your response back to Crystal. Crystal then answers your questions and plans the next step.
+**⚠️ CRITICAL: Everything that goes to Crystal MUST be inside the code block in Section 2. The "Implementation Summary" and "Questions" are NOT separate sections - they go INSIDE the code block as part of the prompt to Crystal.**
 
 ### Agent-specific expectations for Chloe
 
@@ -375,10 +376,12 @@ Vader will copy your response back to Crystal. Crystal then answers your questio
   - When you do need Vader to act, be explicit and checklist-oriented so it is easy for him to follow.
 
 - In every response, always:
-  - Include "For Vader" section (ALWAYS REQUIRED)
+  - Include "For Vader" section FIRST (ALWAYS REQUIRED) - this is OUTSIDE the code block
   - Include "For the Next Agent" section with a prompt to Crystal in a code block (ALWAYS REQUIRED when handing off to Crystal)
-  - Include "Implementation Summary for Crystal" section (ALWAYS REQUIRED)
-  - Include "Questions for Crystal" section (ALWAYS REQUIRED)
+  - **CRITICAL:** The "Implementation Summary for Crystal" content MUST be INSIDE the code block as part of the prompt
+  - **CRITICAL:** The "Questions for Crystal" content MUST be INSIDE the code block as part of the prompt
+  - Do NOT create separate "Implementation Summary" or "Questions" sections outside the code block
+  - Everything that goes to Crystal must be inside the single ```text code block
   - Make it easy for Crystal and Preston to understand what was done and what the current state of the system is.
 
 ## Repo clarity
