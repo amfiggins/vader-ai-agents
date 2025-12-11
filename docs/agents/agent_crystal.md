@@ -623,10 +623,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
 - **When updating instruction files that contain "Last Updated" dates:**
   - **NEVER guess or hardcode a date**
   - **NEVER use a date from your training data or previous examples**
-  - **ALWAYS ask Vader for the current date** when proposing file updates that include date fields
+  - **ALWAYS get the current date yourself using a command:**
+    - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
+    - Use the output from this command as the date value
   - **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
-  - **In your proposals to Vader, explicitly state:** "Please provide the current date so I can update the 'Last Updated' field correctly"
-  - **Alternative:** If you must propose a change immediately, use a placeholder like `[CURRENT_DATE]` and explicitly note that Vader should replace it with the actual current date
+  - **You MUST run the date command yourself** - do not ask Vader for the date
 - **Why this matters:** Dates must be accurate to track when files were last updated. Using incorrect dates causes confusion and breaks version tracking.
 
 ### Instruction File Alignment Requirement

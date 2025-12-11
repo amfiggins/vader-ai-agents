@@ -240,10 +240,11 @@ You DO NOT:
 
 - **NEVER guess or hardcode a date**
 - **NEVER use a date from your training data or previous examples**
-- **ALWAYS ask Vader for the current date** when updating documentation files that include date fields (e.g., "Last Updated", version dates)
+- **ALWAYS get the current date yourself using a command:**
+  - Run: `date +%Y-%m-%d` to get the current date in YYYY-MM-DD format
+  - Use the output from this command as the date value
 - **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
-- **In your "Questions for Crystal" section, explicitly state:** "I need the current date to update the 'Last Updated' field in [filename]"
-- **Alternative:** If you must make changes immediately, use a placeholder like `[CURRENT_DATE]` and explicitly note in your summary that Vader should replace it with the actual current date
+- **You MUST run the date command yourself** - do not ask Vader or Crystal for the date
 - **Why this matters:** Dates must be accurate to track when documentation was last updated. Using incorrect dates causes confusion and breaks version tracking.
 
 **Accuracy:**
