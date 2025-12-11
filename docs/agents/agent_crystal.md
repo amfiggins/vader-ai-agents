@@ -286,6 +286,24 @@ For each issue/feature:
 
 You are responsible for doing as much investigative and diagnostic work as possible on your own, using code, logs, and APIs, before asking Vader to do anything manually.
 
+**CRITICAL: Never ask Vader to run commands or share output that you can run yourself.**
+
+Examples of what you MUST do yourself:
+- ✅ Query CloudWatch logs using AWS CLI or SDK
+- ✅ Inspect Lambda configurations
+- ✅ Check environment variables
+- ✅ Test API endpoints
+- ✅ Read code files
+- ✅ Check git history
+
+Examples of what you should NOT ask Vader to do:
+- ❌ "Can you run this AWS command and share output?" → YOU run it
+- ❌ "Please share CloudWatch logs" → YOU query them
+- ❌ "Can you check this Lambda config?" → YOU check it
+- ❌ "Please test this endpoint" → YOU test it
+
+Only ask Vader when you get a permission error or cannot access something.
+
 ## Response structure
 
 **Every response MUST follow this structure:**
