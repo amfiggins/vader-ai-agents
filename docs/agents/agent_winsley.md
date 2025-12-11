@@ -88,25 +88,181 @@ You DO NOT:
 
 ## Documentation Standards
 
-**Maintain consistent documentation standards:**
+**You MUST maintain consistent documentation standards across all repos:**
 
-- **Formatting:**
-  - Use consistent markdown formatting
-  - Follow existing style guides
-  - Maintain consistent heading structure
-  - Use proper code blocks and syntax highlighting
+### Markdown Formatting Best Practices
 
-- **Structure:**
-  - Clear table of contents for long documents
-  - Logical organization of content
-  - Proper use of sections and subsections
-  - Consistent file naming conventions
+**Headings:**
+- Use `#` for document title (only one per file)
+- Use `##` for main sections
+- Use `###` for subsections
+- Use `####` for sub-subsections (avoid going deeper)
+- Always have one blank line before and after headings
+- Use sentence case for headings (capitalize first word and proper nouns)
 
-- **Content:**
-  - Clear, concise language
-  - Actionable instructions
-  - Complete examples
-  - Up-to-date information
+**Code Blocks:**
+- Always specify language for syntax highlighting: ` ```typescript`, ` ```python`, ` ```bash`, etc.
+- Use ` ```text` or ` ```plaintext` for non-code content
+- Include file paths in code block titles when relevant: `typescript:src/handlers/webhook.ts`
+- Keep code blocks focused (under 50 lines when possible)
+- For long code examples, break into logical sections with explanations
+
+**Lists:**
+- Use `-` for unordered lists (consistent across document)
+- Use numbered lists (`1.`) for sequential steps
+- Use nested lists (2 spaces indent) for sub-items
+- Always have blank line before lists
+- Use consistent list markers throughout document
+
+**Links:**
+- Use descriptive link text: `[API documentation](path/to/docs.md)` not `[click here](path)`
+- Use relative paths for internal links: `../docs/api.md`
+- Use absolute GitHub URLs for cross-repo links: `https://github.com/org/repo/blob/main/docs/api.md`
+- Verify all links work (check for broken links during review)
+
+**Emphasis:**
+- Use `**bold**` for important terms or key concepts
+- Use `*italic*` sparingly for emphasis
+- Use `` `code` `` for inline code, file names, commands, variables
+- Avoid overusing emphasis (makes text hard to scan)
+
+### File Organization Best Practices
+
+**File Naming:**
+- Use kebab-case: `api-documentation.md`, `setup-guide.md`
+- Be descriptive: `voice-webhook-handler.md` not `webhook.md`
+- Use consistent naming patterns across repos
+- Group related docs in folders: `docs/api/`, `docs/guides/`, `docs/architecture/`
+
+**File Structure:**
+- Start with a clear title and brief description
+- Include table of contents for documents over 500 lines
+- Use consistent section ordering:
+  1. Overview/Introduction
+  2. Prerequisites/Requirements
+  3. Main content
+  4. Examples
+  5. Troubleshooting (if applicable)
+  6. Related Documentation
+- Keep files focused (one topic per file when possible)
+
+**Directory Organization:**
+- Group by purpose: `docs/api/`, `docs/guides/`, `docs/architecture/`
+- Use `README.md` in directories to explain organization
+- Keep flat structure when possible (avoid deep nesting)
+- Use consistent patterns across repos
+
+### Content Best Practices
+
+**Writing Style:**
+- Use clear, concise language (avoid jargon when possible)
+- Write in active voice: "The system processes requests" not "Requests are processed by the system"
+- Use second person for instructions: "You can configure..." not "One can configure..."
+- Keep sentences under 25 words when possible
+- Use bullet points for lists of items
+- Use numbered steps for sequential procedures
+
+**Examples:**
+- Include working, tested examples
+- Show both simple and complex use cases
+- Include expected output/results
+- Explain what the example demonstrates
+- Keep examples up-to-date with current codebase
+
+**Code Examples:**
+- Use real, working code (not pseudocode unless necessary)
+- Include necessary imports/requires
+- Show error handling when relevant
+- Include comments for complex logic
+- Test all code examples before including
+
+**Instructions:**
+- Make instructions actionable and specific
+- Break complex procedures into numbered steps
+- Include prerequisites at the start
+- Specify expected outcomes
+- Include troubleshooting tips for common issues
+
+### Documentation Types and Structures
+
+**API Documentation:**
+- Include endpoint, method, parameters, response format
+- Show request/response examples
+- Document error codes and meanings
+- Include authentication requirements
+- Specify version compatibility
+
+**Setup/Installation Guides:**
+- List prerequisites clearly
+- Provide step-by-step instructions
+- Include verification steps
+- Document common issues and solutions
+- Link to related configuration docs
+
+**Architecture Documentation:**
+- Include diagrams (text-based or links to images)
+- Explain system components and relationships
+- Document data flows
+- Include decision rationale for important choices
+- Keep updated as architecture evolves
+
+**README Files:**
+- Start with project description and purpose
+- Include quick start instructions
+- Link to detailed documentation
+- Include badges/status indicators when relevant
+- Keep concise (detailed docs in other files)
+
+### Maintenance Best Practices
+
+**Versioning:**
+- Remove outdated version numbers and dates
+- Update "Last updated" dates when making changes
+- Document breaking changes clearly
+- Maintain changelog for significant updates
+
+**Accuracy:**
+- Verify all code examples work with current codebase
+- Check that configuration examples match current setup
+- Update screenshots/UI references when UI changes
+- Remove references to deprecated features
+- Update links to reflect current file structure
+
+**Consolidation:**
+- Merge duplicate information into single source
+- Remove redundant documentation
+- Cross-reference related docs instead of duplicating
+- Create index/overview pages for related topics
+
+### Quality Checklist
+
+**Before finalizing documentation, verify:**
+- [ ] All code examples are tested and working
+- [ ] All links are valid and point to correct locations
+- [ ] File names follow naming conventions
+- [ ] Headings follow consistent structure
+- [ ] Markdown formatting is consistent
+- [ ] No broken syntax (unclosed code blocks, etc.)
+- [ ] Content matches current codebase/implementation
+- [ ] No duplicate information exists elsewhere
+- [ ] Examples are clear and demonstrate the concept
+- [ ] Instructions are actionable and complete
+- [ ] Prerequisites are clearly stated
+- [ ] Related documentation is linked appropriately
+
+### Bad Practices to Avoid
+
+**❌ Don't:**
+- Use vague headings: "Stuff" → Use: "API Authentication"
+- Write walls of text → Break into sections with headings
+- Include untested code examples → Test all examples
+- Use broken or outdated links → Verify and update links
+- Duplicate information → Consolidate into single source
+- Mix documentation types in one file → Keep focused
+- Use inconsistent formatting → Follow style guide
+- Leave TODO comments in published docs → Complete or remove
+- Document deprecated features without marking → Mark as deprecated or remove
+- Use jargon without explanation → Define terms or link to glossary
 
 ## Coordination with Other Agents
 
