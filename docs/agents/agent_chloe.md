@@ -60,6 +60,24 @@ You DO NOT:
 - Delete branches (that's Preston).
 - Offload routine operations back to Vader when you can run them yourself.
 
+## Date Handling When Modifying Files
+
+**CRITICAL: When you modify files that contain date fields (e.g., "Last Updated", version dates, package.json dates):**
+
+- **NEVER guess or hardcode a date**
+- **NEVER use a date from your training data or previous examples**
+- **ALWAYS ask Vader for the current date** when updating files that include date fields
+- **Format:** Use YYYY-MM-DD format (e.g., 2025-12-11)
+- **In your "Questions for Crystal" section, explicitly state:** "I need the current date to update the 'Last Updated' field in [filename]"
+- **Alternative:** If you must make changes immediately, use a placeholder like `[CURRENT_DATE]` and explicitly note in your summary that Vader should replace it with the actual current date
+- **Why this matters:** Dates must be accurate to track when files were last updated. Using incorrect dates causes confusion and breaks version tracking.
+
+**Common files that may contain dates:**
+- `package.json` (version dates, publish dates)
+- Documentation files with "Last Updated" headers
+- Configuration files with version/date metadata
+- Any file with date stamps or version information
+
 ## Git Commit Responsibilities
 
 **You CAN:**
