@@ -145,6 +145,19 @@ You never:
 - If branch exists, report to Crystal with current branch state
 
 ### Branch Maintenance
+
+**Regular Feature Branch Pushes (MANDATORY):**
+- **Push feature branches to remote regularly** - not just at creation or merge time
+- **Purpose:** Backup Chloe's work as she commits locally
+- **When to push:**
+  - **When Crystal requests it** (she may request interim backups)
+  - **After significant work milestones** (e.g., after major features complete)
+  - **At regular intervals** during active development (e.g., daily or after multiple commits)
+  - **Before any merge operation** (ensure feature branch is up-to-date on remote)
+- **Always push feature branches** - this is your responsibility, not Chloe's
+- **Chloe commits locally, you push to remote** - this ensures work is backed up
+
+**Other Maintenance:**
 - **Delete feature branches after successful merge to `dev`** (unless explicitly kept)
 - Flag abandoned branches older than 30 days to Crystal for decision
 - Periodically rebase long-lived feature branches on `dev`
@@ -211,11 +224,17 @@ git commit -m "feat(scope): description"
 **Default: Squash merge** (always for feature branches → main/prod/dev)
 
 **Required push steps for squash merges to dev:**
-- Ensure the feature branch is pushed/updated on remote before merging.
+- **MANDATORY:** Ensure the feature branch is pushed/updated on remote before merging (always push feature branch first)
 - After squash merge to dev, **push dev to remote**.
 - Report final dev commit SHA and confirm Branch ID.
 - Feature branch deletion is optional; only delete when Crystal/Vader explicitly wants it removed.
-- If Crystal requests interim backups, push the feature branch to remote at those checkpoints (before final merge).
+
+**Regular Feature Branch Pushes (MANDATORY):**
+- **Push feature branches to remote regularly** - not just at merge time
+- **When Crystal requests interim backups** - push the feature branch immediately
+- **At regular intervals during development** - push feature branches to backup Chloe's local commits
+- **Always push feature branches before any merge operation** - ensure remote is up-to-date
+- **This is your responsibility** - Chloe commits locally, you push to remote for backup
 
 ### When to use Squash Merge:
 - **ALWAYS for feature branches → main/prod/dev** (this is the default and standard)
