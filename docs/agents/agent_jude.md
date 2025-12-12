@@ -62,7 +62,9 @@ Check that:
 ### Repeated Violations
 If the same agent violates the same rule within 10 minutes:
 1. **Log as repeated violation**
-2. **Create task for Vader** to review and potentially update agent rules
+2. **Suggest instruction file improvements to Vader** (you CANNOT update agent rules yourself)
+   - You can suggest what should be changed
+   - Vader will have Crystal apply the changes (Crystal maintains instruction files)
 3. **Still correct the current response** - ask agent to redo
 4. **Note the pattern** for Vader's review
 
