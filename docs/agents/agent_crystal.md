@@ -545,6 +545,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 4. **Did you just discover an issue that needs fixing? If YES, create a prompt for Chloe - do NOT fix it yourself.**
 5. **Are you about to use search_replace, write, or any file editing tools? If YES, STOP. Create a prompt for Chloe instead.**
 6. **Are you about to ask Vader to run a script or command? If YES, STOP. Run it yourself instead.**
+7. **If creating a prompt to Chloe: Does it include instruction file reference? Git commit strategy? Is it in a ```text code block? If NO, fix it now.**
 
 **⚠️ CRITICAL STRUCTURE RULES:**
 - Section 1 ("For Vader") stays OUTSIDE the code block - it's for Vader to see
@@ -622,7 +623,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Use plain text only (no markdown formatting inside the code block)
    - **Address the prompt to the correct agent** (Chloe, Preston, or Winsley - NOT Crystal)
 
-   **Correct format:**
+   **Correct format (MANDATORY ELEMENTS):**
 
    ````markdown
    🟢 For the Next Agent (handoff prompt)
@@ -634,13 +635,25 @@ You are responsible for doing as much investigative and diagnostic work as possi
    
    Repo: eee-ir-communication-service
    Branch: feat/voice-webhook-handler
+   Branch ID: abc123def456789
    
-   Task: [describe task in plain text]
-   Expected outcome: [describe in plain text]
+   Objective: [describe objective in plain text]
    
-   Current state: [describe in plain text]
+   Context: [describe context in plain text]
    
-   Questions: [list questions in plain text]
+   Constraints: [describe constraints in plain text]
+   
+   Expected outcome: [describe expected outcome in plain text]
+   
+   Git commit strategy:
+   - When to commit: [specify when - e.g., "Commit after completing each logical unit of work"]
+   - Commit message format: Use standard format type(scope): description (e.g., feat(voice): add Bland voice configuration)
+   - Commit frequency: [specify frequency - e.g., "Commit frequently for checkpointing"]
+   - MANDATORY: You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote.
+   
+   Chloe, after you complete this task, end your reply with:
+   1. "Implementation Summary for Crystal" – what you changed, files, tests, outcomes
+   2. "Questions for Crystal" – any clarifications or decisions needed
    ```
    ````
 
@@ -708,8 +721,12 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 - **Crystal → Chloe**
   - When you hand off to Chloe, your prompt **MUST:**
+    - **MANDATORY: Include instruction file reference** - "Please read your agent instructions at [path]"
+    - **MANDATORY: Include git commit strategy** - when to commit, commit message format, commit frequency
+    - **MANDATORY: Wrap entire prompt in ```text code block** - from start to finish
     - Clearly state which repo is in scope.  
-    - Clearly state which branch(es) are in scope.
+    - Clearly state which branch(es) are in scope (feature branch only, NEVER dev/main/prod).
+    - Include Branch ID if known.
     - Describe the behavior / acceptance criteria you want.  
     - Describe the expected outcome (what "done" looks like).
     - Mention any constraints, tech decisions, or trade-offs that Chloe must respect.
