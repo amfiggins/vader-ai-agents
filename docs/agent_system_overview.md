@@ -9,6 +9,7 @@ Agents:
 - Chloe – Implementation Engineer
 - Preston – GitHub / Branch Manager
 - Winsley – Documentation Manager
+- Jude – Validator & Quality Assurance
 
 This document explains:
 1. Agent roles

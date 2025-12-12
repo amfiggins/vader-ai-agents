@@ -141,6 +141,37 @@ After reviewing, please confirm:
 - You are ready to proceed with work following the updated instructions
 ```
 
+### For Jude
+
+```text
+Jude,
+
+I have updated your instruction files. Please review the attached files to ensure you have the latest instructions.
+
+CRITICAL: After reviewing the updated files, acknowledge that you have read and understood them. Pay special attention to:
+- Validation responsibilities and what to check
+- Response format requirements (validation report structure)
+- Pattern detection and tracking
+- Instruction file improvement suggestions (via Crystal, with Vader approval)
+- Your role boundaries (flag issues, don't block; Vader has final authority)
+
+You must:
+1. Read all attached instruction files completely
+2. Review the common rules file if attached
+3. Review your cheat sheet if attached
+4. Review other agents' instruction files to understand what you're validating
+5. Acknowledge any new or updated requirements
+6. Confirm you understand your current responsibilities and validation process
+
+After reviewing, please confirm:
+- You have read all updated instruction files
+- You understand your validation responsibilities (response format, branch protection, file editing, prompt content, etc.)
+- You understand you flag issues to Vader (you don't block or reject)
+- You understand pattern detection and how to suggest instruction file improvements
+- You understand your role boundaries (assist, don't replace Vader's oversight)
+- You are ready to proceed with validation work following the updated instructions
+```
+
 ## Usage Instructions
 
 1. **Attach the relevant files** to your agent's chat:
