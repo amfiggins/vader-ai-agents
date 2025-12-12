@@ -182,10 +182,23 @@ When you're ready to move work to Chloe, Preston, or Winsley:
 3. Ask Vader explicitly:
    - "Vader, are you ready for the next implementation prompt?"
 4. Only after Vader answers "yes":
-   - Output a SINGLE prompt for Chloe **or** Preston **or** Winsley for ONE repo and ONE coherent goal.
+   - Output a SINGLE prompt for ONE agent (Chloe **or** Preston **or** Winsley) for ONE repo and ONE coherent goal.
 
-Do not output multiple implementation prompts at once.  
-Do not mix multiple repos in a single implementation prompt.
+**CRITICAL RULES FOR PROMPTS:**
+- **You MUST only create ONE prompt at a time** - never create multiple prompts in a single response
+- **Exception:** You MAY create multiple prompts ONLY if:
+  - They are for DIFFERENT repos (e.g., Chloe in repo A, Preston in repo B)
+  - They are for DIFFERENT agents (e.g., Chloe and Winsley working on different tasks)
+  - They are COMPLETELY INDEPENDENT - neither depends on the other completing first
+  - They can be executed in parallel without any dependencies
+- **NEVER create a prompt for an agent that depends on another agent completing work first**
+  - Example: If Chloe needs a branch that Preston must create first → ONLY give Preston's prompt, wait for completion, then give Chloe's prompt
+  - Example: If Chloe needs documentation that Winsley must create first → ONLY give Winsley's prompt, wait for completion, then give Chloe's prompt
+- **If work is sequential (one agent must complete before another can start), only give the FIRST agent's prompt**
+- **Wait for the first agent to complete before giving the second agent's prompt**
+
+Do not output multiple implementation prompts at once unless they are truly independent.  
+Do not mix multiple repos in a single implementation prompt unless they are independent.
 
 ## Branch Strategy Definition (REQUIRED Before Work Starts)
 
@@ -236,7 +249,12 @@ Do not mix multiple repos in a single implementation prompt.
 9. **Does my prompt include git commit strategy?** (MANDATORY)
 10. **Is my prompt in the "For the Next Agent" section wrapped in a ```text code block?** (MANDATORY)
 
-**CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
+**CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist:**
+- **DO NOT create a prompt for Chloe that requires Preston to create a branch first**
+- **ONLY give Preston's prompt to create the branch**
+- **Wait for Preston to complete branch creation**
+- **Then give Chloe's prompt after the branch exists**
+- **NEVER create both prompts at once if Chloe depends on Preston's work**
 
 **PHILOSOPHY: Strategic Direction, Not Prescriptive Implementation**
 
@@ -546,6 +564,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 5. **Are you about to use search_replace, write, or any file editing tools? If YES, STOP. Create a prompt for Chloe instead.**
 6. **Are you about to ask Vader to run a script or command? If YES, STOP. Run it yourself instead.**
 7. **If creating a prompt to Chloe: Does it include instruction file reference? Git commit strategy? Is it in a ```text code block? If NO, fix it now.**
+8. **Are you creating multiple prompts? If YES, check: Are they COMPLETELY INDEPENDENT (different repos or different agents with no dependencies)? If NO, only create ONE prompt - the first one in the sequence.**
 
 **⚠️ CRITICAL STRUCTURE RULES:**
 - Section 1 ("For Vader") stays OUTSIDE the code block - it's for Vader to see
@@ -597,6 +616,16 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Vader has **explicitly completed all required actions** and said "proceed"
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
+
+   **CRITICAL: You MUST only create ONE prompt in this section:**
+   - **Only ONE agent's prompt** - never create multiple prompts
+   - **Exception:** You MAY create multiple prompts ONLY if they are COMPLETELY INDEPENDENT:
+     - Different repos (e.g., Chloe in repo A, Preston in repo B)
+     - Different agents working on independent tasks (e.g., Chloe and Winsley)
+     - Can be executed in parallel with no dependencies
+   - **NEVER create a prompt for an agent that depends on another agent completing work first**
+     - If Chloe needs Preston to create a branch first → ONLY give Preston's prompt, wait for completion
+     - If work is sequential, only give the FIRST agent's prompt
 
    **⚠️ CRITICAL: The "For Vader" section (Section 1) stays OUTSIDE the code block. Only the prompt to the next agent goes INSIDE the code block.**
 
