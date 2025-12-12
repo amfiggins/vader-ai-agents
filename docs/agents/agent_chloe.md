@@ -236,17 +236,24 @@ Format: `type(scope): description`
 
 **⚠️ DO NOT skip web testing. DO NOT just do basic API tests and pass to Crystal. You MUST test the full web application locally before reporting completion.**
 
-**Example format in "For Vader" section:**
+**Example format in "For Vader" section (for web applications):**
 ```
 🧪 Testing:
-- Development server started: npm run dev (running on http://localhost:3000)
-- Unit tests: All 12 tests passed
-- API tests: curl tests successful
-- Browser/UI testing: Tested voice selection, pathway selection, and persistence via browser automation
-  - Verified selections work correctly
-  - Verified values persist after page reload
+- Local environment: Development server started (npm run dev, running on http://localhost:3000)
+- Build check: npm run build completed successfully (no errors, no warnings)
+- Unit tests: All 12 tests passed (npm test)
+- Integration tests: All 5 integration tests passed
+- API tests: curl tests successful (tested 3 endpoints)
+- Browser/UI testing: Tested via browser automation
+  - Navigated to /voice-configuration page
+  - Tested voice selection dropdown (verified all options load)
+  - Tested pathway selection (verified validation works)
+  - Tested form submission (verified data saves correctly)
+  - Tested page reload (verified values persist)
+  - Tested error states (verified error messages display)
+  - Verified no console errors
   - All UI functionality working as expected
-- Ready for final sign-off: Vader, please verify the changes meet requirements
+- Ready for Crystal validation: All first-round testing complete
 ```
 
 **Testing strategy (MANDATORY):**
