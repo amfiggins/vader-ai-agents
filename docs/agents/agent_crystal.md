@@ -590,13 +590,20 @@ You are responsible for doing as much investigative and diagnostic work as possi
    **Format this section to be concise and scannable:**
    
    - **Use clear visual markers:**
-     - `✅ Action Required:` for actions Vader must take
-     - `❓ Decision Needed:` for decisions to approve
+     - `✅ Action Required:` for actions Vader must take (be specific about what you need)
+     - `❓ Decision Needed:` for decisions Vader must approve (be specific about the decision)
+     - `⏸️ Waiting for Vader:` if you need Vader's response before proceeding (be explicit about what you're waiting for)
+     - `➡️ Proceeding:` if you're providing a prompt to the next agent and don't need Vader's response
      - `🧪 Testing:` for testing instructions
-     - `➡️ Next Agent:` for which agent should be invoked next
+     - `➡️ Next Agent:` for which agent should be invoked next (if you're providing a prompt)
      - `📦 Git:` for commits/merges required
      - `➡️ Next Steps:` for what should happen next (ALWAYS include this, even if task is complete)
-     - `✅ No Action:` if no action is required (ONLY use if you've also provided "Next Steps")
+   
+   - **⚠️ CRITICAL: Always be clear about what you need from Vader**
+     - If you need Vader's response: Use `⏸️ Waiting for Vader:` and explicitly state what you're waiting for
+     - If you're proceeding: Use `➡️ Proceeding:` and state that you're providing a prompt to the next agent
+     - Never say "Action required: None" if you're providing a prompt to another agent - that's confusing
+     - Always make it clear whether Vader needs to respond or if you're proceeding
    
    - **⚠️ CRITICAL: Always include "Next Steps"**
      - Even when something is [COMPLETE], you MUST provide next steps
@@ -633,6 +640,12 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Vader has **explicitly completed all required actions** and said "proceed"
 
    **If your "For Vader" section contains ANY required actions, DO NOT create "For the Next Agent". Wait for Vader's response first.**
+
+   **⚠️ CRITICAL: If you're providing a prompt to the next agent:**
+   - **You MUST create this section** - don't just mention "Next Agent" in the "For Vader" section
+   - **Use `➡️ Proceeding:` in "For Vader" section** to make it clear you're providing a prompt
+   - **Never say "Action required: None" if you're providing a prompt** - that's confusing
+   - **Make it explicit** that you're proceeding with the next agent's prompt
 
    **⚠️ CRITICAL: Always Think About Next Steps**
    - **Even when something is [COMPLETE], you MUST think about what comes next**
