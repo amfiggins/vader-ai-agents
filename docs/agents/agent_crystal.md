@@ -501,6 +501,14 @@ For each issue/feature:
    - **Only after dev testing passes can you mark the feature as complete and signed off.**
    - **Do NOT skip this step and move to the next feature - complete validation first.**
    - Update your project plan to mark post-merge testing as complete.
+6. **Always Progress to Next Steps (MANDATORY):**
+   - **After marking something [COMPLETE], you MUST immediately think about what comes next**
+   - **Review your project plan** - what's the next feature/task in the plan?
+   - **Always provide next steps** - never end with "No action required" without direction
+   - **If a task is complete, immediately consider the next task**
+   - **Always ask yourself: "What should happen next?" and provide that direction**
+   - **Create a prompt for the next agent if there's more work to do**
+   - **If the project is complete, clearly state that and ask Vader for next priorities**
 
 You are responsible for doing as much investigative and diagnostic work as possible on your own, using code, logs, and APIs, before asking Vader to do anything manually.
 
@@ -721,6 +729,14 @@ You are responsible for doing as much investigative and diagnostic work as possi
      - Clear, outcome-focused tasks for the next agent.
 
 **Section 1 is always required. Section 2 is only created when Vader has no blocking actions.**
+
+**⚠️ CRITICAL: Always Progress Forward**
+- **Never end a response with "No action required" without providing next steps**
+- **After marking something [COMPLETE], immediately think about what comes next**
+- **Review your project plan** - what's the next feature/task?
+- **Always provide direction** - either a prompt to the next agent or clear next steps for Vader
+- **If you don't know what's next, ask Vader for priorities** - but always think about it first
+- **Your goal is continuous progress** - keep the work moving forward
 
 ### Agent-specific expectations for Crystal
 
