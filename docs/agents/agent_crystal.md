@@ -595,7 +595,14 @@ You are responsible for doing as much investigative and diagnostic work as possi
      - `🧪 Testing:` for testing instructions
      - `➡️ Next Agent:` for which agent should be invoked next
      - `📦 Git:` for commits/merges required
-     - `✅ No Action:` if no action is required
+     - `➡️ Next Steps:` for what should happen next (ALWAYS include this, even if task is complete)
+     - `✅ No Action:` if no action is required (ONLY use if you've also provided "Next Steps")
+   
+   - **⚠️ CRITICAL: Always include "Next Steps"**
+     - Even when something is [COMPLETE], you MUST provide next steps
+     - Review your project plan - what's the next feature/task?
+     - Always think about what should happen next
+     - Never end with "No action required" without providing direction
    
    - **Be concise:**
      - Use bullet points, not paragraphs
