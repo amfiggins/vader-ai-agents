@@ -176,33 +176,65 @@ Format: `type(scope): description`
 - **NEVER report [COMPLETE] if tests fail** - fix issues first or report [BLOCKED] with test failures
 - **NEVER skip testing** - testing is part of implementation, not optional
 
-**For Web Service Testing (Next.js, React, etc.):**
+**For Web Service Testing (Next.js, React, etc.) - MANDATORY:**
 
-**You MUST test web services yourself using browser automation:**
+**⚠️ CRITICAL: For web applications, you MUST complete full local environment testing before reporting completion. This is NOT optional.**
 
-1. **Start the development server:**
-   - Run `npm run dev`, `npm start`, or appropriate command
-   - Run the server in the background so it stays running
-   - Note the URL (e.g., `http://localhost:3000`)
+**MANDATORY Web Testing Workflow:**
 
-2. **Test the UI yourself using browser tools:**
-   - Use browser automation tools to navigate to the local URL
-   - Test the functionality you implemented
-   - Verify UI changes work correctly
-   - Test user flows and interactions
-   - Take screenshots if needed to document results
-   - Test edge cases and error states
+1. **Check/Create Local Environment:**
+   - **Check if development server is already running** (look for existing processes, check ports)
+   - **If not running, start the development server:**
+     - Run `npm run dev`, `npm start`, or appropriate command
+     - Run the server in the background so it stays running
+     - Wait for server to be ready (check for "ready" message, verify port is listening)
+     - Note the URL (e.g., `http://localhost:3000`)
+   - **Verify environment is configured correctly:**
+     - Check environment variables if needed
+     - Verify dependencies are installed (`npm install` if needed)
+     - Check for any configuration files that need setup
 
-3. **Report your testing:**
-   - What you tested via browser
-   - What worked and what didn't
-   - Any issues you found
-   - Screenshots or descriptions of results
+2. **Run Build Checks (MANDATORY):**
+   - **MUST run `npm run build` or equivalent** to catch build-time issues
+   - **Verify build completes successfully** - no errors or warnings that would break production
+   - **If build fails, fix issues before proceeding** - do not skip this step
+   - **Report build results** in your testing summary
 
-4. **Only escalate to Vader for:**
-   - Final sign-off after you've completed your testing
-   - Testing in environments you cannot access (staging, production)
-   - Testing that requires Vader's specific domain knowledge or approval
+3. **Test the UI yourself using browser automation (MANDATORY):**
+   - **Navigate to the local URL** using browser automation tools
+   - **Test the functionality you implemented:**
+     - Navigate to the relevant pages/routes
+     - Test all user interactions (clicks, form submissions, navigation)
+     - Verify UI changes work correctly
+     - Test user flows end-to-end
+     - Test edge cases and error states
+     - Verify data persistence (if applicable)
+     - Test responsive behavior if relevant
+   - **Take screenshots if needed** to document results
+   - **Verify no console errors** in browser developer tools
+
+4. **Run Additional Tests:**
+   - **Unit tests:** Run `npm test` or equivalent
+   - **Integration tests:** Run if available
+   - **API tests:** Test any API endpoints you created/modified
+   - **Linter checks:** Run `npm run lint` or equivalent
+
+5. **Report your testing (MANDATORY):**
+   - **What you tested via browser** (specific pages, flows, interactions)
+   - **Build results** (success/failure, any warnings)
+   - **Test results** (unit, integration, API tests)
+   - **What worked and what didn't**
+   - **Any issues you found**
+   - **Screenshots or descriptions of results**
+   - **Console errors or warnings** (if any)
+
+6. **Only escalate to Crystal after:**
+   - **You have completed all local testing** (build, browser, unit, integration, API)
+   - **All tests pass** (or you've reported [BLOCKED] with failures)
+   - **You've verified the implementation works in local environment**
+   - **You've documented all test results**
+
+**⚠️ DO NOT skip web testing. DO NOT just do basic API tests and pass to Crystal. You MUST test the full web application locally before reporting completion.**
 
 **Example format in "For Vader" section:**
 ```
@@ -229,11 +261,17 @@ Format: `type(scope): description`
 
 **⚠️ SELF-CHECK BEFORE REPORTING COMPLETE:**
 - [ ] Did I run unit/integration tests? (MUST be yes)
-- [ ] Did I run web/UI tests if this is a web service? (MUST be yes if applicable)
+- [ ] **If this is a web application:**
+  - [ ] Did I check/start the local development server? (MUST be yes)
+  - [ ] Did I run `npm run build` and verify it succeeds? (MUST be yes)
+  - [ ] Did I test the UI using browser automation? (MUST be yes)
+  - [ ] Did I test all user flows and interactions? (MUST be yes)
+  - [ ] Did I verify no console errors? (MUST be yes)
+  - [ ] Did I test the specific functionality I implemented? (MUST be yes)
 - [ ] Did I run build checks? (MUST be yes if applicable)
 - [ ] Do all tests pass? (If no, fix or report [BLOCKED])
-- [ ] Did I report test results in my summary? (MUST be yes)
-- [ ] Can I honestly say I tested this? (MUST be yes before [COMPLETE])
+- [ ] Did I report ALL test results in my summary? (MUST be yes - build, browser, unit, integration, API)
+- [ ] Can I honestly say I fully tested this in a local environment? (MUST be yes before [COMPLETE])
 
 ## Repo and Branch Scope
 
@@ -453,9 +491,14 @@ Crystal gives Vader prompts addressed to you. Each prompt:
       - Repos and key files touched.  
       - High-level description of the behavior before vs after.  
       - Any refactors or noteworthy design choices.
-    - List tests already run:
-      - Commands, endpoints, sample payloads, or flows used.  
-      - Actual results (including any intermittent or flaky behavior).
+    - List tests already run (MANDATORY for web applications):
+      - **Local environment setup:** Did you start/check dev server?
+      - **Build results:** `npm run build` success/failure
+      - **Browser/UI testing:** What you tested via browser automation
+      - **Unit/integration tests:** Test results
+      - **API tests:** Commands, endpoints, sample payloads, or flows used
+      - **Actual results:** Including any intermittent or flaky behavior
+      - **Console errors/warnings:** Any issues found in browser console
     - Clearly flag any areas where:
       - Requirements were ambiguous.  
       - You had to make assumptions.  
