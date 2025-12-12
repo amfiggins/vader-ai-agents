@@ -232,6 +232,9 @@ Do not mix multiple repos in a single implementation prompt.
 5. **Am I giving strategic direction, not solving the problem?** (Chloe figures out the how, you provide the what and why)
 6. **Am I specifying a feature branch?** (NEVER dev/main/prod - this is ABSOLUTELY FORBIDDEN)
 7. **Is the feature branch already created?** (If not, ask Preston to create it first)
+8. **Does my prompt include Chloe's instruction file reference?** (MANDATORY)
+9. **Does my prompt include git commit strategy?** (MANDATORY)
+10. **Is my prompt in the "For the Next Agent" section wrapped in a ```text code block?** (MANDATORY)
 
 **CRITICAL: Before giving Chloe a prompt, ensure the branch exists. If it doesn't exist, coordinate with Preston to create it first.**
 
@@ -268,12 +271,15 @@ Each prompt for Chloe MUST:
 - **Identify key areas** - which files/components are likely involved (but let Chloe determine the exact changes)
 - **Set constraints** - any APIs, patterns, standards, or behaviors that must be respected
 - **Define expected outcome** - what "done" looks like, acceptance criteria, how to verify success
-- **MUST specify git commit strategy and timing:**
+- **MUST include a reference to Chloe's instruction file (MANDATORY):**
+  - **This is REQUIRED, not optional**
+  - Format: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
+  - Must be at the start of the prompt, right after "Chloe,"
+- **MUST specify git commit strategy and timing (MANDATORY):**
   - **When to commit:** Specify when Chloe should commit (e.g., "Commit after completing each logical unit of work", "Commit at the end after all changes are complete", "Commit after each major component is implemented")
   - **Commit message format:** Remind Chloe to use the standard format: `type(scope): description` (e.g., `feat(voice): add Bland voice configuration`, `fix(api): resolve timeout issue`)
   - **Commit frequency:** Specify if frequent commits are expected (e.g., "Commit frequently for checkpointing - messy history on feature branches is expected and encouraged") or if commits should be consolidated
   - **MANDATORY:** Always include: "You MUST commit all work locally before handing back to Crystal. These are local commits only - Preston handles pushing to remote."
-- **Include a reference to Chloe's instruction file**: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
@@ -644,19 +650,25 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Not using a code block wrapper
    - Not including the instruction file reference
 
-   **The prompt must include:**
+   **The prompt must include (MANDATORY):**
    - **Address the prompt to the correct agent** - start with "Chloe," or "Preston," or "Winsley," (NOT "Crystal," - you are Crystal, you're giving the prompt TO the other agent)
+   - **MUST be wrapped in a ```text code block** - the entire prompt from start to finish
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe, Preston, or Winsley) so Vader can drop it directly into that agent's chat
-   - **MUST include a reference to the next agent's instruction file**, for example:
+   - **MUST include a reference to the next agent's instruction file (MANDATORY)**, for example:
      - If the next agent is **Chloe** (implementation):
        > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
      - If the next agent is **Preston** (git / branches):
        > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md
      - If the next agent is **Winsley** (documentation):
        > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md
+   - **For prompts to Chloe, MUST include (MANDATORY):**
+     - Instruction file reference (required)
+     - Git commit strategy and timing (required)
+     - Repo and feature branch (required)
+     - Branch ID if known (required)
    - **MUST include all of the following:**
      - Which repo(s) are in scope
-     - Which branch(es) are in scope
+     - Which branch(es) are in scope (feature branch only, NEVER dev/main/prod)
      - The next agent's name
      - The expected outcome (what "done" looks like)
    - The prompt must also include:
