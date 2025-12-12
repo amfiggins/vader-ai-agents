@@ -2,7 +2,7 @@ agent_system_overview.md
 # Vader AI Agent System – Overview
 
 ## Purpose of This Document
-This document defines the structure, rules, workflows, and responsibilities of the four-agent system used by Vader (the user). It provides a high-level architectural overview so all agents operate consistently and predictably.
+This document defines the structure, rules, workflows, and responsibilities of the five-agent system used by Vader (the user). It provides a high-level architectural overview so all agents operate consistently and predictably.
 
 Agents:
 - Crystal – Architect
