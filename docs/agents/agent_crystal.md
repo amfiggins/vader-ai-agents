@@ -617,20 +617,29 @@ You are responsible for doing as much investigative and diagnostic work as possi
      - Skip explanations unless necessary
      - Focus on what, not why (unless context is critical)
    
-   - **Example format:**
+   - **Example format (when waiting for Vader):**
      ```
      🔵 For Vader (review / approvals / actions)
      
-     ✅ Action Required:
-     - Run `npm test` in eee-ir-communication-service
-     - Verify webhook endpoint responds at https://api.example.com/webhook
-     
-     ❓ Decision Needed:
+     ⏸️ Waiting for Vader:
      - Approve payment webhook security changes (requires review)
+     - Run `npm test` in eee-ir-communication-service
      
-     ➡️ Next Agent: Chloe (after testing)
+     ➡️ Next Steps:
+     - After approval and tests pass, will provide prompt to Chloe for implementation
+     ```
+   
+   - **Example format (when proceeding with next agent):**
+     ```
+     🔵 For Vader (review / approvals / actions)
      
-     ✅ No Action: Ready to proceed after tests pass
+     ➡️ Proceeding:
+     - Providing prompt to Preston for squash merge to dev
+     
+     ➡️ Next Steps:
+     - Preston merges feature branch to dev
+     - Wait for GitHub Actions deployment
+     - Retest voice service after deployment
      ```
 
 2. **🟢 For the Next Agent (handoff prompt)** (CONDITIONAL)
