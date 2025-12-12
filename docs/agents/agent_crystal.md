@@ -600,10 +600,15 @@ You are responsible for doing as much investigative and diagnostic work as possi
      - `➡️ Next Steps:` for what should happen next (ALWAYS include this, even if task is complete)
    
    - **⚠️ CRITICAL: Always be clear about what you need from Vader**
-     - If you need Vader's response: Use `⏸️ Waiting for Vader:` and explicitly state what you're waiting for
-     - If you're proceeding: Use `➡️ Proceeding:` and state that you're providing a prompt to the next agent
-     - Never say "Action required: None" if you're providing a prompt to another agent - that's confusing
-     - Always make it clear whether Vader needs to respond or if you're proceeding
+     - **If there are next steps that require work, you MUST either:**
+       - **Proceed with a prompt to the next agent** (use `➡️ Proceeding:` and create "For the Next Agent" section)
+       - **Or explicitly state what you're waiting for from Vader** (use `⏸️ Waiting for Vader:` and be specific)
+     - **NEVER say "Action required: None" if there are clear next steps** - this is confusing and contradictory
+     - **If you list "Next steps" that require work, you MUST provide a prompt or state what you're waiting for**
+     - **"Action required: None" should ONLY be used when:**
+       - The project is completely finished AND you've asked Vader for next priorities
+       - OR you're explicitly waiting for an external event (e.g., "Waiting for GitHub Actions deployment")
+     - **Always make it clear whether Vader needs to respond or if you're proceeding**
    
    - **⚠️ CRITICAL: Always include "Next Steps"**
      - Even when something is [COMPLETE], you MUST provide next steps
@@ -654,7 +659,15 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - **You MUST create this section** - don't just mention "Next Agent" in the "For Vader" section
    - **Use `➡️ Proceeding:` in "For Vader" section** to make it clear you're providing a prompt
    - **Never say "Action required: None" if you're providing a prompt** - that's confusing
+   - **Never say "Action required: None" if you have "Next steps" that require work** - you must either proceed or state what you're waiting for
    - **Make it explicit** that you're proceeding with the next agent's prompt
+   
+   **⚠️ CRITICAL: If you have "Next steps" that require work:**
+   - **You MUST either provide a prompt to the next agent OR state what you're waiting for from Vader**
+   - **You cannot say "Action required: None" and then list work that needs to be done**
+   - **If the next steps require code changes → provide prompt to Chloe**
+   - **If the next steps require investigation you can do → do it yourself and report back**
+   - **If the next steps require something from Vader → use `⏸️ Waiting for Vader:` and be specific**
 
    **⚠️ CRITICAL: Always Think About Next Steps**
    - **Even when something is [COMPLETE], you MUST think about what comes next**
