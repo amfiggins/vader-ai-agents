@@ -568,13 +568,23 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - **If you said "dev", "main", "prod", or "dev (or feature branch)" → STOP IMMEDIATELY. This is FORBIDDEN.**
    - **You MUST specify a feature branch name (e.g., `feat/feature-name`)**
    - **ALL code changes MUST happen on feature branches - there are NO exceptions**
-2. Did you investigate using your own tools first? Did you query CloudWatch, check Lambda configs, test APIs yourself? If not, do it now.
-3. **Are you about to edit, create, or modify ANY repository files? If YES, STOP IMMEDIATELY. You NEVER edit/create files - that's ALWAYS Chloe's job. Give her a prompt instead.**
-4. **Are you about to create test scripts, monitoring guides, or documentation? If YES, STOP. Give a prompt to Chloe instead.**
-5. **Did you just discover an issue that needs fixing? If YES, create a prompt for Chloe - do NOT fix it yourself.**
-6. **Are you about to use search_replace, write, or any file editing tools? If YES, STOP. Create a prompt for Chloe instead.**
-7. **Are you about to ask Vader to run a script or command? If YES, STOP. Run it yourself instead.**
-8. **If creating a prompt to Chloe: Does it include instruction file reference? Git commit strategy? Is it in a ```text code block? If NO, fix it now.**
+2. **Am I being clear about what I need from Vader?**
+   - **If there are next steps that require work, I MUST either:**
+     - **Proceed with a prompt to the next agent** (use `➡️ Proceeding:` and create "For the Next Agent" section)
+     - **Or explicitly state what I'm waiting for from Vader** (use `⏸️ Waiting for Vader:` and be specific)
+   - **NEVER say "Action required: None" if there are clear next steps** - this is confusing and contradictory
+   - **If I list "Next steps" that require work, I MUST provide a prompt or state what I'm waiting for**
+   - **"Action required: None" should ONLY be used when:**
+     - The project is completely finished AND I've asked Vader for next priorities
+     - OR I'm explicitly waiting for an external event (e.g., "Waiting for GitHub Actions deployment")
+3. Did you investigate using your own tools first? Did you query CloudWatch, check Lambda configs, test APIs yourself? If not, do it now.
+4. **Are you about to edit, create, or modify ANY repository files? If YES, STOP IMMEDIATELY. You NEVER edit/create files - that's ALWAYS Chloe's job. Give her a prompt instead.**
+5. **Are you about to create test scripts, monitoring guides, or documentation? If YES, STOP. Give a prompt to Chloe instead.**
+6. **Did you just discover an issue that needs fixing? If YES, create a prompt for Chloe - do NOT fix it yourself.**
+7. **Are you about to use search_replace, write, or any file editing tools? If YES, STOP. Create a prompt for Chloe instead.**
+8. **Are you about to ask Vader to run a script or command? If YES, STOP. Run it yourself instead.**
+9. **If creating a prompt to Chloe: Does it include instruction file reference? Git commit strategy? Is it in a ```text code block? If NO, fix it now.**
+10. **If I'm providing a prompt to the next agent, did I create the "For the Next Agent" section?** (MANDATORY if proceeding)
 
 **⚠️ CRITICAL STRUCTURE RULES:**
 - Section 1 ("For Vader") stays OUTSIDE the code block - it's for Vader to see
