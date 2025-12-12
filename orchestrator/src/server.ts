@@ -3,9 +3,11 @@
  */
 
 import express, { Request, Response } from 'express';
+import path from 'path';
 import { Orchestrator } from './orchestrator';
 import { AgentInterface, LLMAgentInterface, MockAgentInterface } from './agent-interface';
 import { AgentName } from './types';
+import { projectManager } from './project-manager';
 
 const app = express();
 app.use(express.json());
@@ -76,10 +78,76 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', service: 'vader-ai-orchestrator' });
 });
 
+// Serve static files from public directory
+const fs = require('fs');
+const publicPath = path.join(__dirname, '../public');
+const publicPathSrc = path.join(process.cwd(), 'public');
+const publicPathDist = path.join(process.cwd(), 'dist/public');
+
+// Determine which public path exists (check in order of preference)
+let staticPath = null;
+if (fs.existsSync(publicPathDist)) {
+  staticPath = publicPathDist;
+  console.log(`Serving static files from: ${staticPath}`);
+} else if (fs.existsSync(publicPathSrc)) {
+  staticPath = publicPathSrc;
+  console.log(`Serving static files from: ${staticPath}`);
+} else if (fs.existsSync(publicPath)) {
+  staticPath = publicPath;
+  console.log(`Serving static files from: ${staticPath}`);
+}
+
+if (staticPath) {
+  app.use(express.static(staticPath));
+  console.log(`Static files configured from: ${staticPath}`);
+} else {
+  console.warn('⚠️  No public directory found. Web interface will not be available.');
+}
+
+// Serve the web interface (dark 90s style)
+app.get('/', (req: Request, res: Response) => {
+  if (!staticPath) {
+    return res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>Vader AI Orchestrator</title></head>
+        <body style="font-family: -apple-system; padding: 40px; background: #1a1a1a; color: #00ff00;">
+          <h1>Vader AI Orchestrator API</h1>
+          <p>Web interface not found. API is available at:</p>
+          <ul>
+            <li>POST /workflows - Start workflow</li>
+            <li>GET /workflows/:id - Get workflow status</li>
+            <li>GET /projects - List projects</li>
+            <li>GET /agents - List agents</li>
+          </ul>
+        </body>
+      </html>
+    `);
+  }
+  
+  // Try dark 90s style first, then fallback to regular
+  const darkIndexPath = path.join(staticPath, 'index-dark-90s.html');
+  const indexPath = path.join(staticPath, 'index.html');
+  
+  if (fs.existsSync(darkIndexPath)) {
+    res.sendFile(darkIndexPath);
+  } else if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    // Try projects.html as fallback
+    const projectsPath = path.join(staticPath, 'projects.html');
+    if (fs.existsSync(projectsPath)) {
+      res.sendFile(projectsPath);
+    } else {
+      res.status(404).send('Web interface not found');
+    }
+  }
+});
+
 // Start a new workflow
 app.post('/workflows', async (req: Request, res: Response) => {
   try {
-    const { prompt, startingAgent } = req.body;
+    const { prompt, startingAgent, projectId } = req.body;
 
     if (!prompt) {
       return res.status(400).json({ error: 'Prompt is required' });
@@ -88,7 +156,8 @@ app.post('/workflows', async (req: Request, res: Response) => {
     const orch = initializeOrchestrator();
     const result = await orch.startWorkflow(
       prompt,
-      (startingAgent as AgentName) || 'crystal'
+      (startingAgent as AgentName) || 'crystal',
+      projectId
     );
 
     res.json(result);
@@ -198,6 +267,243 @@ app.get('/agents', (req: Request, res: Response) => {
     res.json({ agents });
   } catch (error) {
     console.error('Error listing agents:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// ===== PROJECT MANAGEMENT ENDPOINTS =====
+
+// Create project
+app.post('/projects', (req: Request, res: Response) => {
+  try {
+    const { name, description, directories, githubRepos } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: 'Project name is required' });
+    }
+
+    const project = projectManager.createProject({
+      name,
+      description: description || '',
+      directories: directories || [],
+      githubRepos: githubRepos || [],
+    });
+
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Get all projects
+app.get('/projects', (req: Request, res: Response) => {
+  try {
+    const activeOnly = req.query.active === 'true';
+    const projects = activeOnly
+      ? projectManager.getActiveProjects()
+      : projectManager.getAllProjects();
+    res.json({ projects });
+  } catch (error) {
+    console.error('Error listing projects:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Get project
+app.get('/projects/:id', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.getProject(req.params.id);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    const progress = projectManager.getProjectProgress(req.params.id);
+    res.json({ project, progress });
+  } catch (error) {
+    console.error('Error getting project:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Update project
+app.put('/projects/:id', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.updateProject(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error updating project:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Add directory to project
+app.post('/projects/:id/directories', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.addDirectory(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error adding directory:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Add GitHub repo to project
+app.post('/projects/:id/github-repos', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.addGitHubRepo(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error adding GitHub repo:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Add task to project
+app.post('/projects/:id/tasks', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.addTask(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error adding task:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Update task
+app.put('/projects/:id/tasks/:taskId', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.updateTask(req.params.id, req.params.taskId, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project or task not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Add milestone to project
+app.post('/projects/:id/milestones', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.addMilestone(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error adding milestone:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Add note to project
+app.post('/projects/:id/notes', (req: Request, res: Response) => {
+  try {
+    const project = projectManager.addNote(req.params.id, req.body);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('Error adding note:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Get user action items
+app.get('/user-actions', (req: Request, res: Response) => {
+  try {
+    const filters: any = {};
+    if (req.query.projectId) filters.projectId = req.query.projectId;
+    if (req.query.status) filters.status = req.query.status;
+    if (req.query.type) filters.type = req.query.type;
+
+    const items = projectManager.getUserActionItems(filters);
+    res.json({ items });
+  } catch (error) {
+    console.error('Error getting user action items:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Complete user action item
+app.post('/user-actions/:id/complete', (req: Request, res: Response) => {
+  try {
+    const { userNotes, triggerWorkflow } = req.body;
+    const item = projectManager.completeUserActionItem(
+      req.params.id,
+      userNotes,
+      triggerWorkflow !== false
+    );
+
+    if (!item) {
+      return res.status(404).json({ error: 'Action item not found' });
+    }
+
+    // If workflow should be triggered, continue the workflow
+    if (triggerWorkflow !== false && item.workflowId) {
+      const orch = initializeOrchestrator();
+      orch.continueWorkflow(item.workflowId, true).catch((err) => {
+        console.error('Error continuing workflow:', err);
+      });
+    }
+
+    res.json({ success: true, item });
+  } catch (error) {
+    console.error('Error completing action item:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Get project progress
+app.get('/projects/:id/progress', (req: Request, res: Response) => {
+  try {
+    const progress = projectManager.getProjectProgress(req.params.id);
+    if (!progress) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json({ progress });
+  } catch (error) {
+    console.error('Error getting project progress:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Unknown error',
     });

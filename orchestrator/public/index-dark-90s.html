@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vader AI Orchestrator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Monaco', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 0;
+            /* Accommodate macOS window controls */
+            padding-top: 28px;
+        }
+
+        /* macOS window controls area - no content here */
+        .window-controls-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: #1a1a1a;
+            z-index: 1000;
+            -webkit-app-region: drag;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: #2d2d2d;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px #00ff00;
+        }
+
+        .header h1 {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            background: #2d2d2d;
+            border: 2px solid #00ff00;
+            padding: 0;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #2d2d2d;
+            color: #888;
+            border-right: 2px solid #00ff00;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:last-child {
+            border-right: none;
+        }
+
+        .tab-btn:hover {
+            background: #3d3d3d;
+            color: #00ff00;
+        }
+
+        .tab-btn.active {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: #2d2d2d;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px #00ff00;
+        }
+
+        .card h2 {
+            color: #00ff00;
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #00ff00;
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background: #00ff00;
+            color: #000;
+            border: 2px solid #00ff00;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            transition: all 0.1s;
+        }
+
+        button:hover {
+            background: #00cc00;
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: #fff;
+            border-color: #666;
+        }
+
+        .btn-success {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .btn-danger {
+            background: #ff0000;
+            color: #fff;
+            border-color: #ff0000;
+        }
+
+        .workflow-item, .project-item {
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 3px 3px 0px #00ff00;
+        }
+
+        .workflow-header, .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .workflow-id, .project-name {
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border: 2px solid;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+        }
+
+        .status-pending { border-color: #ffaa00; color: #ffaa00; background: #1a1a1a; }
+        .status-in_progress { border-color: #00ff00; color: #00ff00; background: #1a1a1a; }
+        .status-waiting_approval { border-color: #ff0000; color: #ff0000; background: #1a1a1a; }
+        .status-completed { border-color: #00ff00; color: #00ff00; background: #1a1a1a; }
+        .status-failed { border-color: #ff0000; color: #ff0000; background: #1a1a1a; }
+        .status-blocked { border-color: #ff0000; color: #ff0000; background: #1a1a1a; }
+
+        .approval-section {
+            background: #3d3d3d;
+            border: 2px solid #ffaa00;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .approval-section h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-family: 'Courier New', monospace;
+        }
+
+        .error {
+            background: #3d1a1a;
+            color: #ff0000;
+            padding: 15px;
+            border: 2px solid #ff0000;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .success {
+            background: #1a3d1a;
+            color: #00ff00;
+            padding: 15px;
+            border: 2px solid #00ff00;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 90s style elements */
+        .pixel-border {
+            border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cpath d='M0,0 L4,0 L4,4 L0,4 Z' fill='%2300ff00'/%3E%3C/svg%3E") 2;
+        }
+
+        .retro-box {
+            background: #2d2d2d;
+            border: 3px solid #00ff00;
+            box-shadow: 
+                4px 4px 0px #00ff00,
+                inset 2px 2px 0px rgba(0, 255, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="window-controls-area"></div>
+    
+    <div class="container">
+        <div class="header retro-box">
+            <h1><i class="fas fa-robot"></i> Vader AI Orchestrator</h1>
+            <p>Agent Workflow Management System v1.0</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('workflows')">Workflows</button>
+            <button class="tab-btn" onclick="showTab('projects')">Projects</button>
+            <button class="tab-btn" onclick="showTab('user-actions')">My Tasks</button>
+            <button class="tab-btn" onclick="showTab('agents')">Agents</button>
+        </div>
+
+        <div id="messages"></div>
+
+        <!-- Workflows Tab -->
+        <div id="workflows-tab" class="tab-content active">
+            <div class="card retro-box">
+                <h2>Start New Workflow</h2>
+                <form id="workflowForm">
+                    <div class="form-group">
+                        <label for="prompt"><i class="fas fa-terminal"></i> Task Description</label>
+                        <textarea id="prompt" placeholder="e.g., Add authentication middleware to eee-bot-admin" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="startingAgent"><i class="fas fa-user-robot"></i> Starting Agent</label>
+                        <select id="startingAgent">
+                            <option value="crystal">Crystal (Architect)</option>
+                            <option value="chloe">Chloe (Implementation Engineer)</option>
+                            <option value="preston">Preston (Git Manager)</option>
+                            <option value="winsley">Winsley (Documentation Manager)</option>
+                        </select>
+                    </div>
+                    <button type="submit"><i class="fas fa-play"></i> Start Workflow</button>
+                </form>
+            </div>
+
+            <div class="card retro-box">
+                <h2>Active Workflows</h2>
+                <div id="workflowsList">
+                    <div class="loading">Loading workflows...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Tab -->
+        <div id="projects-tab" class="tab-content">
+            <div class="card retro-box">
+                <h2>All Projects</h2>
+                <div id="projectsList">
+                    <div class="loading">Loading projects...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Actions Tab -->
+        <div id="user-actions-tab" class="tab-content">
+            <div class="card retro-box">
+                <h2>My Tasks & Approvals</h2>
+                <div id="userActionsList">
+                    <div class="loading">Loading your tasks...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agents Tab -->
+        <div id="agents-tab" class="tab-content">
+            <div class="card retro-box">
+                <h2>Available Agents</h2>
+                <div id="agentsList">
+                    <div class="loading">Loading agents...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app-dark-90s.js"></script>
+</body>
+</html>

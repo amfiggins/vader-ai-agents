@@ -33,6 +33,13 @@ const AGENT_CONFIGS: Record<AgentName, AgentConfig> = {
     role: 'Documentation Manager',
     capabilities: ['documentation', 'review', 'organization', 'consolidation'],
   },
+  jude: {
+    name: 'jude',
+    displayName: 'Jude',
+    instructionFileUrl: 'https://github.com/amfiggins/vader-ai-agents/blob/main/docs/agents/agent_jude.md',
+    role: 'Compliance & Validation Manager',
+    capabilities: ['validation', 'compliance', 'boundary-enforcement', 'violation-tracking'],
+  },
 };
 
 export class AgentRegistry {
