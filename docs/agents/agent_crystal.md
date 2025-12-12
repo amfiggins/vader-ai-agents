@@ -312,7 +312,12 @@ Each git operation prompt for Preston MUST:
 - **Specify the desired state** (e.g., "feature branch into dev via squash merge").
 - **Describe the expected outcome** (what "done" looks like, e.g., "dev branch will contain a single squashed commit with all feature work").
 - Include any commit IDs that are important.
-- **Specify push expectations:** If you want backups mid-stream, explicitly tell Preston to push the feature branch to remote now (and at checkpoints). After squash merge to dev, he must push dev. Deleting the feature branch is optional (say so if you want it deleted).
+- **Specify push expectations (MANDATORY):**
+  - **Feature branch pushes:** Always request Preston to push feature branches regularly for backup (not just at merge time)
+  - **Request interim backups:** Tell Preston to push the feature branch to remote at checkpoints during development
+  - **After squash merge:** Preston must push dev to remote
+  - **Feature branch deletion:** Optional - only delete when explicitly requested
+  - **Why this matters:** Chloe commits locally, Preston pushes to remote - this ensures work is backed up and not lost
 - **Include a reference to Preston's instruction file**: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**
@@ -643,9 +648,13 @@ You are responsible for doing as much investigative and diagnostic work as possi
   - **When you discover issues or need fixes, create prompts for Chloe** - do NOT edit files yourself.
 
 - **Crystal → Preston**
+  - **Regular feature branch pushes (MANDATORY):**
+    - Always request Preston to push feature branches regularly for backup (not just at merge time)
+    - Request interim backups during development to ensure Chloe's local commits are backed up
+    - This is your responsibility - don't wait for Preston to do it automatically
   - When work in a repo reaches a stable checkpoint, explicitly tell Vader (in the "For Vader" section) that it is time for Preston to:
-    - Commit and push to the feature branch, and/or  
-    - Commit and push from feature into `dev` with the correct strategy (regular merge, squash, or rebase).  
+    - Push the feature branch to remote (for backup)
+    - After feature is complete: Squash merge feature branch into `dev` and push dev  
   - In the **"For the Next Agent"** section, include a prompt for Preston that **MUST specify:**
     - Which repo.  
     - Which branches (feature, dev, etc.).  
