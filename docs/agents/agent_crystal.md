@@ -479,7 +479,9 @@ For each issue/feature:
    - Create or update your project plan with complete workflow (Implementation → Testing → Commits → Merge → Post-Merge Dev Testing → Sign-off).
 3. Coordinate:
    - Ask Vader if they're ready for the next implementation prompt.
-   - When they say yes, emit exactly one prompt for Chloe or Preston.
+   - When they say yes, emit exactly ONE prompt for ONE agent (Chloe OR Preston OR Winsley).
+   - **CRITICAL: Only create multiple prompts if they are COMPLETELY INDEPENDENT (different repos or different agents with no dependencies).**
+   - **If work is sequential (e.g., Preston must create branch before Chloe can work), only give the FIRST agent's prompt.**
 4. Review and Validate:
    - When Vader sends you Chloe's response, read:
      - "Implementation Summary for Crystal"
