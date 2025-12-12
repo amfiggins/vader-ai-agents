@@ -75,6 +75,7 @@ Next steps: [describe in plain text]
 
 **You MUST:**
 - ✅ Create branches when Crystal specifies (you're the ONLY one who creates branches)
+- ✅ **Push feature branches to remote regularly** - backup Chloe's local commits (MANDATORY)
 - ✅ Use squash merge for clean history (default strategy)
 - ✅ Track Branch IDs (starting commit SHA)
 - ✅ Verify tests pass before merging to dev
