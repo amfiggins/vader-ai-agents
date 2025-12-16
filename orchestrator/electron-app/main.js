@@ -24,11 +24,32 @@ function startServer() {
     serverProcess = spawn('npm', ['run', 'dev'], {
       cwd: ORCHESTRATOR_DIR,
       stdio: 'ignore',
-      detached: true,
+      detached: false, // Keep attached so we can kill it
       env: { ...process.env, PORT: PORT.toString() },
     });
 
-    serverProcess.unref();
+    // Handle server process errors
+    serverProcess.on('error', (error) => {
+      console.error('Server process error:', error);
+      serverProcess = null;
+      reject(error);
+    });
+
+    // Handle server process exit
+    serverProcess.on('exit', (code, signal) => {
+      console.log(`Server process exited with code ${code} and signal ${signal}`);
+      serverProcess = null;
+      
+      // If server crashed unexpectedly, try to restart it
+      if (code !== 0 && code !== null) {
+        console.log('Server crashed, attempting to restart...');
+        setTimeout(() => {
+          startServer().catch((err) => {
+            console.error('Failed to restart server:', err);
+          });
+        }, 2000);
+      }
+    });
 
     // Wait for server to be ready
     let attempts = 0;
@@ -268,6 +289,26 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
-  // Optionally kill server process when app quits
-  // For now, we'll leave it running in the background
+  // Kill server process when app quits
+  if (serverProcess) {
+    console.log('Killing server process...');
+    try {
+      // Kill the process directly (since detached is false, we can kill it)
+      serverProcess.kill('SIGTERM');
+      
+      // Wait a bit, then force kill if still running
+      setTimeout(() => {
+        if (serverProcess && !serverProcess.killed) {
+          try {
+            serverProcess.kill('SIGKILL');
+          } catch (error) {
+            console.error('Error force killing server process:', error);
+          }
+        }
+      }, 2000);
+    } catch (error) {
+      console.error('Error killing server process:', error);
+    }
+    serverProcess = null;
+  }
 });

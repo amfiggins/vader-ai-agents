@@ -49,6 +49,9 @@ export class Orchestrator {
     }
 
     try {
+      // Track start time for duration calculation
+      const stepStartTime = Date.now();
+      
       // Invoke the starting agent
       const result = await this.invokeAgent(workflowId, startingAgent, initialPrompt);
 
@@ -119,6 +122,9 @@ export class Orchestrator {
           });
         }
 
+        // Track start time for Jude's correction
+        const judeStartTime = Date.now();
+        
         // Get correction from Jude
         const judeResult = await this.invokeAgent(
           workflowId,
@@ -132,15 +138,11 @@ export class Orchestrator {
 
         // Parse Jude's response
         const judeParsed = ResponseParser.parse(judeResult.response);
+        
+        // Calculate duration for Jude's correction
+        const judeDuration = Date.now() - judeStartTime;
 
-        // Update workflow state with both responses
-        stateManager.addStep(workflowId, {
-          agent: startingAgent,
-          input: initialPrompt,
-          output: agentResponse,
-          duration: Date.now(),
-        });
-
+        // Add Jude's correction step (this is not a duplicate - it's Jude's response)
         stateManager.addStep(workflowId, {
           agent: 'jude',
           input: validation.correctionPrompt || '',
@@ -151,10 +153,14 @@ export class Orchestrator {
             parsedSections: judeParsed,
             conversationId: judeResult.conversationId,
           },
+          duration: judeDuration,
         });
 
         // If Jude's response has a handoff back to the original agent, handle it
         if (judeParsed.forNextAgent && judeParsed.forNextAgent.targetAgent === startingAgent) {
+          // Track start time for corrected response
+          const correctedStartTime = Date.now();
+          
           // Agent will redo their response
           const correctedResult = await this.invokeAgent(
             workflowId,
@@ -194,21 +200,26 @@ export class Orchestrator {
             };
           }
 
-          // Use corrected response
+          // Use corrected response and update duration
           agentResponse.rawResponse = correctedResult.response;
           agentResponse.parsedSections = correctedParsed;
+          // Duration is total time from initial step start to corrected response completion
+          // This includes the original call, Jude's correction, and the corrected response
         } else {
           // Jude approved or provided different guidance
           // Continue with original response (Jude may have just noted the violation)
         }
       }
 
-      // Update workflow state
+      // Calculate duration for the starting agent's step
+      const stepDuration = Date.now() - stepStartTime;
+
+      // Update workflow state (only add step once, after all validation and correction logic)
       stateManager.addStep(workflowId, {
         agent: startingAgent,
         input: initialPrompt,
         output: agentResponse,
-        duration: Date.now(),
+        duration: stepDuration,
       });
 
       // Check if approval is needed
@@ -376,6 +387,9 @@ export class Orchestrator {
     const lastStep = workflow.history[workflow.history.length - 1];
     const previousResponse = lastStep?.output.rawResponse;
 
+    // Track start time for duration calculation
+    const stepStartTime = Date.now();
+
     // Invoke the next agent
     try {
       const result = await this.invokeAgent(workflowId, handoff.targetAgent, handoff.prompt, {
@@ -458,6 +472,9 @@ export class Orchestrator {
           });
         }
 
+        // Track start time for Jude's correction
+        const judeStartTime = Date.now();
+
         // Get correction from Jude
         const judeResult = await this.invokeAgent(
           workflowId,
@@ -471,14 +488,11 @@ export class Orchestrator {
 
         // Parse Jude's response
         const judeParsed = ResponseParser.parse(judeResult.response);
+        
+        // Calculate duration for Jude's correction
+        const judeDuration = Date.now() - judeStartTime;
 
-        // Add both responses to history
-        stateManager.addStep(workflowId, {
-          agent: handoff.targetAgent,
-          input: handoff.prompt,
-          output: agentResponse,
-        });
-
+        // Add Jude's correction step (this is not a duplicate - it's Jude's response)
         stateManager.addStep(workflowId, {
           agent: 'jude',
           input: validation.correctionPrompt || '',
@@ -489,10 +503,14 @@ export class Orchestrator {
             parsedSections: judeParsed,
             conversationId: judeResult.conversationId,
           },
+          duration: judeDuration,
         });
 
         // If Jude's response has a handoff back to the original agent, handle it
         if (judeParsed.forNextAgent && judeParsed.forNextAgent.targetAgent === handoff.targetAgent) {
+          // Track start time for corrected response
+          const correctedStartTime = Date.now();
+          
           // Agent will redo their response
           const correctedResult = await this.invokeAgent(
             workflowId,
@@ -535,14 +553,20 @@ export class Orchestrator {
           // Use corrected response
           agentResponse.rawResponse = correctedResult.response;
           agentResponse.parsedSections = correctedParsed;
+          // Duration is total time from initial step start to corrected response completion
+          // This includes the original call, Jude's correction, and the corrected response
         }
       }
 
-      // Add step to history
+      // Calculate duration for the target agent's step
+      const stepDuration = Date.now() - stepStartTime;
+
+      // Add step to history (only add step once, after all validation and correction logic)
       stateManager.addStep(workflowId, {
         agent: handoff.targetAgent,
         input: handoff.prompt,
         output: agentResponse,
+        duration: stepDuration,
       });
 
       // Check if approval is needed

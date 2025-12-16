@@ -4,6 +4,8 @@
 
 import express, { Request, Response } from 'express';
 import path from 'path';
+import { createServer } from 'http';
+import { Server } from 'net';
 import { Orchestrator } from './orchestrator';
 import { AgentInterface, LLMAgentInterface, MockAgentInterface } from './agent-interface';
 import { AgentName } from './types';
@@ -510,31 +512,65 @@ app.get('/projects/:id/progress', (req: Request, res: Response) => {
   }
 });
 
-// Start server
-const PORT = parseInt(process.env.PORT || '3001', 10);
+// Start server with dynamic port selection
+const DEFAULT_PORT = parseInt(process.env.PORT || '3002', 10);
 
-app.listen(PORT, () => {
-  console.log('🚀 Vader AI Orchestrator API Server');
-  console.log(`📍 Running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation:`);
-  console.log(`   POST   /workflows              - Start a new workflow`);
-  console.log(`   GET    /workflows/:id          - Get workflow status`);
-  console.log(`   POST   /workflows/:id/approve  - Approve and continue`);
-  console.log(`   POST   /workflows/:id/reject   - Reject and block`);
-  console.log(`   GET    /workflows/:id/history  - Get workflow history`);
-  console.log(`   GET    /workflows              - List all workflows`);
-  console.log(`   GET    /agents                 - List available agents`);
-  console.log(`   GET    /health                 - Health check`);
-  console.log('');
+/**
+ * Find an available port starting from the requested port
+ */
+function findAvailablePort(startPort: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = new Server();
+    
+    server.listen(startPort, () => {
+      const port = (server.address() as { port: number })?.port;
+      server.close(() => resolve(port || startPort));
+    });
+    
+    server.on('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
+        // Port is in use, try next port
+        findAvailablePort(startPort + 1).then(resolve).catch(reject);
+      } else {
+        reject(err);
+      }
+    });
+  });
+}
+
+// Start server with dynamic port selection
+findAvailablePort(DEFAULT_PORT).then((actualPort) => {
+  const httpServer = createServer(app);
   
-  if (!process.env.LLM_API_KEY) {
-    console.log('⚠️  Running in MOCK mode (no LLM API key configured)');
-    console.log('   Set LLM_PROVIDER and LLM_API_KEY to use real agents');
-    console.log('   Example: LLM_PROVIDER=openai LLM_API_KEY=sk-...');
-  } else {
-    const provider = process.env.LLM_PROVIDER || 'openai';
-    const model = process.env.LLM_MODEL || (provider === 'openai' ? 'gpt-4' : 'claude-3-5-sonnet-20241022');
-    console.log(`✅ Using ${provider} LLM provider (model: ${model})`);
-  }
-  console.log('');
+  httpServer.listen(actualPort, () => {
+    console.log('🚀 Vader AI Orchestrator API Server');
+    if (actualPort !== DEFAULT_PORT) {
+      console.log(`⚠️  Port ${DEFAULT_PORT} was in use, using port ${actualPort} instead`);
+    }
+    console.log(`📍 Running on http://localhost:${actualPort}`);
+    console.log(`📚 API Documentation:`);
+    console.log(`   POST   /workflows              - Start a new workflow`);
+    console.log(`   GET    /workflows/:id          - Get workflow status`);
+    console.log(`   POST   /workflows/:id/approve  - Approve and continue`);
+    console.log(`   POST   /workflows/:id/reject   - Reject and block`);
+    console.log(`   GET    /workflows/:id/history  - Get workflow history`);
+    console.log(`   GET    /workflows              - List all workflows`);
+    console.log(`   GET    /agents                 - List available agents`);
+    console.log(`   GET    /health                 - Health check`);
+    console.log('');
+    
+    if (!process.env.LLM_API_KEY) {
+      console.log('⚠️  Running in MOCK mode (no LLM API key configured)');
+      console.log('   Set LLM_PROVIDER and LLM_API_KEY to use real agents');
+      console.log('   Example: LLM_PROVIDER=openai LLM_API_KEY=sk-...');
+    } else {
+      const provider = process.env.LLM_PROVIDER || 'openai';
+      const model = process.env.LLM_MODEL || (provider === 'openai' ? 'gpt-4' : 'claude-3-5-sonnet-20241022');
+      console.log(`✅ Using ${provider} LLM provider (model: ${model})`);
+    }
+    console.log('');
+  });
+}).catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });
