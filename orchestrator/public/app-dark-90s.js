@@ -1,5 +1,175 @@
 const API_BASE = 'http://localhost:3002';
 
+// Inject spinner animation CSS if not already present
+if (!document.getElementById('spinner-styles')) {
+    const style = document.createElement('style');
+    style.id = 'spinner-styles';
+    style.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #00ff00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Helper functions for error recovery and loading states
+function showLoading(elementId, message = 'Loading...') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #00ff00;">
+                <div class="spinner" style="border: 3px solid #333; border-top: 3px solid #00ff00; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+}
+
+function showError(elementId, error, retryCallback = null, retryContext = null) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    let errorMessage = 'An error occurred';
+    let errorType = 'unknown';
+    
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Connection failed. The orchestrator server may not be running.';
+        errorType = 'connection';
+    } else if (error.message) {
+        errorMessage = error.message;
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorType = 'network';
+            errorMessage = 'Network error. Check your connection and ensure the orchestrator server is running on port 3002.';
+        } else if (error.message.includes('404')) {
+            errorType = 'notfound';
+            errorMessage = 'Resource not found. The requested item may have been deleted.';
+        } else if (error.message.includes('500')) {
+            errorType = 'server';
+            errorMessage = 'Server error. The orchestrator encountered an internal error.';
+        } else if (error.message.includes('400')) {
+            errorType = 'validation';
+            errorMessage = `Validation error: ${error.message}`;
+        }
+    }
+    
+    const retryButton = retryCallback ? `
+        <button class="btn-primary" onclick="retryOperation('${elementId}', '${retryCallback}', ${retryContext ? JSON.stringify(retryContext).replace(/'/g, "\\'") : 'null'})" style="margin-top: 10px;">
+            <i class="fas fa-redo"></i> Retry
+        </button>
+    ` : '';
+    
+    element.innerHTML = `
+        <div class="error" style="background: #2a0000; border: 2px solid #ff0000; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <i class="fas fa-exclamation-triangle" style="color: #ff0000; font-size: 24px; margin-right: 10px;"></i>
+                <h3 style="color: #ff0000; margin: 0;">Error: ${errorType === 'connection' ? 'Connection Failed' : errorType === 'network' ? 'Network Error' : errorType === 'server' ? 'Server Error' : errorType === 'validation' ? 'Validation Error' : 'Error'}</h3>
+            </div>
+            <p style="color: #ffaaaa; margin: 10px 0;">${errorMessage}</p>
+            ${errorType === 'connection' || errorType === 'network' ? '<p style="color: #888; font-size: 12px; margin-top: 10px;">💡 Tip: Make sure the orchestrator server is running. Check the terminal or Electron app.</p>' : ''}
+            ${retryButton}
+            <button class="btn-secondary" onclick="document.getElementById('${elementId}').innerHTML = ''" style="margin-top: 10px; margin-left: 10px;">
+                <i class="fas fa-times"></i> Dismiss
+            </button>
+        </div>
+    `;
+}
+
+async function retryOperation(elementId, callbackName, context, retryCount = 0) {
+    const maxRetries = 3;
+    const baseDelay = 1000; // 1 second
+    
+    if (retryCount >= maxRetries) {
+        showError(elementId, new Error('Maximum retry attempts reached. Please check the server and try again later.'), null);
+        return;
+    }
+    
+    showLoading(elementId, `Retrying... (Attempt ${retryCount + 1}/${maxRetries})`);
+    
+    // Exponential backoff
+    const delay = baseDelay * Math.pow(2, retryCount);
+    await new Promise(resolve => setTimeout(resolve, delay));
+    
+    try {
+        const callback = window[callbackName];
+        if (typeof callback === 'function') {
+            await callback(context);
+        } else {
+            throw new Error('Retry callback not found');
+        }
+    } catch (error) {
+        if (retryCount < maxRetries - 1) {
+            setTimeout(() => retryOperation(elementId, callbackName, context, retryCount + 1), delay);
+        } else {
+            showError(elementId, error, callbackName, context);
+        }
+    }
+}
+
+function setLoadingState(button, isLoading, loadingText = 'Loading...') {
+    if (button) {
+        button.disabled = isLoading;
+        if (isLoading) {
+            button.dataset.originalText = button.innerHTML;
+            button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${loadingText}`;
+        } else {
+            button.innerHTML = button.dataset.originalText || button.innerHTML;
+        }
+    }
+}
+
+function disableForm(formId, disabled) {
+    const form = document.getElementById(formId);
+    if (form) {
+        const inputs = form.querySelectorAll('input, button, select, textarea');
+        inputs.forEach(input => {
+            input.disabled = disabled;
+        });
+    }
+}
+
+// Enhanced fetch with retry logic
+async function fetchWithRetry(url, options = {}, maxRetries = 3) {
+    let lastError;
+    
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}: ${response.statusText}` }));
+                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            lastError = error;
+            
+            // Don't retry on client errors (4xx) except 408 (timeout)
+            if (error.message.includes('400') || error.message.includes('401') || error.message.includes('403') || error.message.includes('404')) {
+                throw error;
+            }
+            
+            // Exponential backoff for retries
+            if (i < maxRetries - 1) {
+                const delay = 1000 * Math.pow(2, i);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+    }
+    
+    throw lastError;
+}
+
 // Tab management
 function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(tab => {
@@ -34,15 +204,18 @@ document.getElementById('workflowForm').addEventListener('submit', async (e) => 
     e.preventDefault();
     const prompt = document.getElementById('prompt').value;
     const startingAgent = document.getElementById('startingAgent').value;
+    const submitButton = e.target.querySelector('button[type="submit"]');
+
+    // Disable form and show loading
+    disableForm('workflowForm', true);
+    setLoadingState(submitButton, true, 'Starting workflow...');
 
     try {
-        const response = await fetch(`${API_BASE}/workflows`, {
+        const data = await fetchWithRetry(`${API_BASE}/workflows`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ prompt, startingAgent })
         });
-
-        const data = await response.json();
         
         if (data.success) {
             showMessage(`Workflow started: ${data.workflowId}`);
@@ -56,17 +229,22 @@ document.getElementById('workflowForm').addEventListener('submit', async (e) => 
             showMessage(`Error: ${data.error}`, 'error');
         }
     } catch (error) {
-        showMessage(`Failed to start workflow: ${error.message}`, 'error');
+        showError('messages', error, 'retryWorkflowSubmit', null);
+    } finally {
+        disableForm('workflowForm', false);
+        setLoadingState(submitButton, false);
     }
 });
 
 // Load workflows
 async function loadWorkflows() {
+    const workflowsDiv = document.getElementById('workflowsList');
+    if (!workflowsDiv) return;
+    
+    showLoading('workflowsList', 'Loading workflows...');
+    
     try {
-        const response = await fetch(`${API_BASE}/workflows?active=true`);
-        const data = await response.json();
-        
-        const workflowsDiv = document.getElementById('workflowsList');
+        const data = await fetchWithRetry(`${API_BASE}/workflows?active=true`);
         
         if (data.workflows && data.workflows.length > 0) {
             workflowsDiv.innerHTML = data.workflows.map(wf => `
@@ -102,21 +280,21 @@ async function loadWorkflows() {
             workflowsDiv.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No active workflows</p>';
         }
     } catch (error) {
-        document.getElementById('workflowsList').innerHTML = 
-            `<div class="error">Failed to load workflows: ${error.message}</div>`;
+        showError('workflowsList', error, 'loadWorkflows', null);
     }
 }
 
 // Approve workflow
 async function approveWorkflow(workflowId, approved) {
+    const button = event?.target || document.querySelector(`button[onclick*="approveWorkflow('${workflowId}'"]`);
+    setLoadingState(button, true, approved ? 'Approving...' : 'Rejecting...');
+    
     try {
-        const response = await fetch(`${API_BASE}/workflows/${workflowId}/approve`, {
+        const data = await fetchWithRetry(`${API_BASE}/workflows/${workflowId}/approve`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ approved })
         });
-
-        const data = await response.json();
         
         if (data.success) {
             showMessage(`Workflow ${approved ? 'approved' : 'rejected'}`);
@@ -125,7 +303,9 @@ async function approveWorkflow(workflowId, approved) {
             showMessage(`Error: ${data.error}`, 'error');
         }
     } catch (error) {
-        showMessage(`Failed to approve workflow: ${error.message}`, 'error');
+        showError('messages', error, 'retryApproveWorkflow', { workflowId, approved });
+    } finally {
+        setLoadingState(button, false);
     }
 }
 
@@ -158,11 +338,13 @@ async function viewHistory(workflowId) {
 
 // Load projects
 async function loadProjects() {
+    const projectsDiv = document.getElementById('projectsList');
+    if (!projectsDiv) return;
+    
+    showLoading('projectsList', 'Loading projects...');
+    
     try {
-        const response = await fetch(`${API_BASE}/projects`);
-        const data = await response.json();
-        
-        const projectsDiv = document.getElementById('projectsList');
+        const data = await fetchWithRetry(`${API_BASE}/projects`);
         
         if (data.projects && data.projects.length > 0) {
             projectsDiv.innerHTML = await Promise.all(data.projects.map(async (project) => {
@@ -194,8 +376,7 @@ async function loadProjects() {
             projectsDiv.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No projects yet. Create one to get started!</p>';
         }
     } catch (error) {
-        document.getElementById('projectsList').innerHTML = 
-            `<div class="error">Failed to load projects: ${error.message}</div>`;
+        showError('projectsList', error, 'loadProjects', null);
     }
 }
 
@@ -212,11 +393,13 @@ async function getProjectProgress(projectId) {
 
 // Load user action items
 async function loadUserActions() {
+    const actionsDiv = document.getElementById('userActionsList');
+    if (!actionsDiv) return;
+    
+    showLoading('userActionsList', 'Loading tasks...');
+    
     try {
-        const response = await fetch(`${API_BASE}/user-actions?status=pending`);
-        const data = await response.json();
-        
-        const actionsDiv = document.getElementById('userActionsList');
+        const data = await fetchWithRetry(`${API_BASE}/user-actions?status=pending`);
         
         if (data.items && data.items.length > 0) {
             actionsDiv.innerHTML = data.items.map(item => `
@@ -240,17 +423,18 @@ async function loadUserActions() {
             actionsDiv.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No pending tasks. You\'re all caught up! 🎉</p>';
         }
     } catch (error) {
-        document.getElementById('userActionsList').innerHTML = 
-            `<div class="error">Failed to load tasks: ${error.message}</div>`;
+        showError('userActionsList', error, 'loadUserActions', null);
     }
 }
 
 // Complete action
 async function completeAction(actionId, approved) {
     const userNotes = prompt('Add any notes (optional):');
+    const button = event?.target || document.querySelector(`button[onclick*="completeAction('${actionId}'"]`);
+    setLoadingState(button, true, 'Completing...');
     
     try {
-        const response = await fetch(`${API_BASE}/user-actions/${actionId}/complete`, {
+        const data = await fetchWithRetry(`${API_BASE}/user-actions/${actionId}/complete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -258,8 +442,6 @@ async function completeAction(actionId, approved) {
                 triggerWorkflow: true,
             })
         });
-
-        const data = await response.json();
         
         if (data.success) {
             showMessage('Task completed! Workflow will continue.');
@@ -268,7 +450,9 @@ async function completeAction(actionId, approved) {
             showMessage(`Error: ${data.error}`, 'error');
         }
     } catch (error) {
-        showMessage(`Failed to complete task: ${error.message}`, 'error');
+        showError('messages', error, 'retryCompleteAction', { actionId, approved });
+    } finally {
+        setLoadingState(button, false);
     }
 }
 
@@ -279,11 +463,13 @@ async function viewActionDetails(actionId) {
 
 // Load agents
 async function loadAgents() {
+    const agentsDiv = document.getElementById('agentsList');
+    if (!agentsDiv) return;
+    
+    showLoading('agentsList', 'Loading agents...');
+    
     try {
-        const response = await fetch(`${API_BASE}/agents`);
-        const data = await response.json();
-        
-        const agentsDiv = document.getElementById('agentsList');
+        const data = await fetchWithRetry(`${API_BASE}/agents`);
         agentsDiv.innerHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">' + 
             data.agents.map(agent => `
                 <div class="workflow-item">
@@ -293,9 +479,21 @@ async function loadAgents() {
                 </div>
             `).join('') + '</div>';
     } catch (error) {
-        document.getElementById('agentsList').innerHTML = 
-            `<div class="error">Failed to load agents: ${error.message}</div>`;
+        showError('agentsList', error, 'loadAgents', null);
     }
+}
+
+// Retry helper functions
+function retryWorkflowSubmit() {
+    document.getElementById('workflowForm').dispatchEvent(new Event('submit'));
+}
+
+function retryApproveWorkflow(context) {
+    approveWorkflow(context.workflowId, context.approved);
+}
+
+function retryCompleteAction(context) {
+    completeAction(context.actionId, context.approved);
 }
 
 // Initial load

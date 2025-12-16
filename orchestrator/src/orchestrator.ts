@@ -58,7 +58,7 @@ export class Orchestrator {
       // Parse the response
       const parsed = ResponseParser.parse(result.response);
 
-      const agentResponse = {
+      let agentResponse = {
         agent: startingAgent,
         timestamp: new Date(),
         rawResponse: result.response,
@@ -73,24 +73,15 @@ export class Orchestrator {
         initialPrompt
       );
 
-      // If validation failed and should stop, create task for Vader
-      if (validation.shouldStop) {
-        if (projectId) {
-          projectManager.createUserActionItem({
-            projectId,
-            workflowId,
-            type: 'task',
-            title: `URGENT: ${startingAgent} has 3 violations - Workflow Stopped`,
-            description: `Agent ${startingAgent} has violated rules 3 times in 10 minutes. Workflow stopped. Review violations and decide next steps.`,
-            priority: 'critical',
-            status: 'pending',
-            notes: JSON.stringify(validation.violations, null, 2),
-            metadata: { violations: validation.violations },
-            createdBy: 'jude',
-          });
-        }
+      // Handle violations and check if workflow should stop
+      const violationResult = await this.handleViolations(
+        workflowId,
+        startingAgent,
+        validation,
+        projectId
+      );
 
-        stateManager.updateStatus(workflowId, 'blocked');
+      if (violationResult.shouldStop) {
         return {
           success: false,
           workflowId,
@@ -100,115 +91,30 @@ export class Orchestrator {
         };
       }
 
-      // If correction needed, send back to agent
+      // If correction needed, handle correction flow
       if (validation.correctionNeeded) {
-        const isRepeated = validation.violations.some((v) =>
-          violationTracker.isRepeatedViolation(startingAgent, v.type, v.ruleViolated)
-        );
-
-        // If repeated violation, create task for Vader
-        if (isRepeated && projectId) {
-          projectManager.createUserActionItem({
-            projectId,
-            workflowId,
-            type: 'task',
-            title: `Repeated Violation: ${startingAgent}`,
-            description: `Agent ${startingAgent} has repeated a violation. Consider updating agent rules.`,
-            priority: 'high',
-            status: 'pending',
-            notes: JSON.stringify(validation.violations, null, 2),
-            metadata: { violations: validation.violations },
-            createdBy: 'jude',
-          });
-        }
-
-        // Track start time for Jude's correction
-        const judeStartTime = Date.now();
-        
-        // Get correction from Jude
-        const judeResult = await this.invokeAgent(
+        const correctionResult = await this.handleCorrection(
           workflowId,
-          'jude',
-          validation.correctionPrompt || 'Please correct the response',
-          {
-            previousAgent: startingAgent,
-            previousResponse: result.response,
-          }
+          startingAgent,
+          agentResponse,
+          validation,
+          projectId,
+          stepStartTime,
+          result.response
         );
 
-        // Parse Jude's response
-        const judeParsed = ResponseParser.parse(judeResult.response);
-        
-        // Calculate duration for Jude's correction
-        const judeDuration = Date.now() - judeStartTime;
-
-        // Add Jude's correction step (this is not a duplicate - it's Jude's response)
-        stateManager.addStep(workflowId, {
-          agent: 'jude',
-          input: validation.correctionPrompt || '',
-          output: {
-            agent: 'jude',
-            timestamp: new Date(),
-            rawResponse: judeResult.response,
-            parsedSections: judeParsed,
-            conversationId: judeResult.conversationId,
-          },
-          duration: judeDuration,
-        });
-
-        // If Jude's response has a handoff back to the original agent, handle it
-        if (judeParsed.forNextAgent && judeParsed.forNextAgent.targetAgent === startingAgent) {
-          // Track start time for corrected response
-          const correctedStartTime = Date.now();
-          
-          // Agent will redo their response
-          const correctedResult = await this.invokeAgent(
+        if (correctionResult.shouldStop) {
+          return {
+            success: false,
             workflowId,
-            startingAgent,
-            judeParsed.forNextAgent.prompt,
-            {
-              previousAgent: 'jude',
-              previousResponse: judeResult.response,
-            }
-          );
-
-          // Re-validate the corrected response
-          const correctedParsed = ResponseParser.parse(correctedResult.response);
-          const correctedResponse = {
-            agent: startingAgent,
-            timestamp: new Date(),
-            rawResponse: correctedResult.response,
-            parsedSections: correctedParsed,
-            conversationId: correctedResult.conversationId,
+            currentAgent: startingAgent,
+            status: 'blocked',
+            error: 'Agent failed to correct violations. Workflow stopped.',
           };
-
-          const reValidation = await judeValidator.validateResponse(
-            startingAgent,
-            correctedResponse,
-            judeParsed.forNextAgent.prompt
-          );
-
-          if (!reValidation.isValid && reValidation.shouldStop) {
-            // Still failing after correction - stop
-            stateManager.updateStatus(workflowId, 'blocked');
-            return {
-              success: false,
-              workflowId,
-              currentAgent: startingAgent,
-              status: 'blocked',
-              error: 'Agent failed to correct violations. Workflow stopped.',
-            };
-          }
-
-          // Use corrected response and update duration
-          agentResponse.rawResponse = correctedResult.response;
-          agentResponse.parsedSections = correctedParsed;
-          // Duration is total time from initial step start to corrected response completion
-          // This includes the original call, Jude's correction, and the corrected response
-        } else {
-          // Jude approved or provided different guidance
-          // Continue with original response (Jude may have just noted the violation)
         }
+
+        // Update agentResponse with corrected response if applicable
+        agentResponse = correctionResult.agentResponse;
       }
 
       // Calculate duration for the starting agent's step
@@ -402,7 +308,7 @@ export class Orchestrator {
       // Parse the response
       const parsed = ResponseParser.parse(result.response);
 
-      const agentResponse = {
+      let agentResponse = {
         agent: handoff.targetAgent,
         timestamp: new Date(),
         rawResponse: result.response,
@@ -417,27 +323,19 @@ export class Orchestrator {
         handoff.prompt
       );
 
-      // If validation failed and should stop, create task for Vader
-      if (validation.shouldStop) {
-        const workflow = stateManager.getWorkflow(workflowId);
-        const projectId = workflow?.metadata?.projectId as string | undefined;
+      // Get projectId from workflow metadata
+      const workflow = stateManager.getWorkflow(workflowId);
+      const projectId = workflow?.metadata?.projectId as string | undefined;
 
-        if (projectId) {
-          projectManager.createUserActionItem({
-            projectId,
-            workflowId,
-            type: 'task',
-            title: `URGENT: ${handoff.targetAgent} has 3 violations - Workflow Stopped`,
-            description: `Agent ${handoff.targetAgent} has violated rules 3 times in 10 minutes. Workflow stopped. Review violations and decide next steps.`,
-            priority: 'critical',
-            status: 'pending',
-            notes: JSON.stringify(validation.violations, null, 2),
-            metadata: { violations: validation.violations },
-            createdBy: 'jude',
-          });
-        }
+      // Handle violations and check if workflow should stop
+      const violationResult = await this.handleViolations(
+        workflowId,
+        handoff.targetAgent,
+        validation,
+        projectId
+      );
 
-        stateManager.updateStatus(workflowId, 'blocked');
+      if (violationResult.shouldStop) {
         return {
           success: false,
           workflowId,
@@ -447,115 +345,30 @@ export class Orchestrator {
         };
       }
 
-      // If correction needed, send back to agent via Jude
+      // If correction needed, handle correction flow
       if (validation.correctionNeeded) {
-        const workflow = stateManager.getWorkflow(workflowId);
-        const projectId = workflow?.metadata?.projectId as string | undefined;
-
-        // If repeated violation, create task for Vader
-        const isRepeated = validation.violations.some((v) =>
-          violationTracker.isRepeatedViolation(handoff.targetAgent, v.type, v.ruleViolated)
-        );
-
-        if (isRepeated && projectId) {
-          projectManager.createUserActionItem({
-            projectId,
-            workflowId,
-            type: 'task',
-            title: `Repeated Violation: ${handoff.targetAgent}`,
-            description: `Agent ${handoff.targetAgent} has repeated a violation. Consider updating agent rules.`,
-            priority: 'high',
-            status: 'pending',
-            notes: JSON.stringify(validation.violations, null, 2),
-            metadata: { violations: validation.violations },
-            createdBy: 'jude',
-          });
-        }
-
-        // Track start time for Jude's correction
-        const judeStartTime = Date.now();
-
-        // Get correction from Jude
-        const judeResult = await this.invokeAgent(
+        const correctionResult = await this.handleCorrection(
           workflowId,
-          'jude',
-          validation.correctionPrompt || 'Please correct the response',
-          {
-            previousAgent: handoff.targetAgent,
-            previousResponse: result.response,
-          }
+          handoff.targetAgent,
+          agentResponse,
+          validation,
+          projectId,
+          stepStartTime,
+          result.response
         );
 
-        // Parse Jude's response
-        const judeParsed = ResponseParser.parse(judeResult.response);
-        
-        // Calculate duration for Jude's correction
-        const judeDuration = Date.now() - judeStartTime;
-
-        // Add Jude's correction step (this is not a duplicate - it's Jude's response)
-        stateManager.addStep(workflowId, {
-          agent: 'jude',
-          input: validation.correctionPrompt || '',
-          output: {
-            agent: 'jude',
-            timestamp: new Date(),
-            rawResponse: judeResult.response,
-            parsedSections: judeParsed,
-            conversationId: judeResult.conversationId,
-          },
-          duration: judeDuration,
-        });
-
-        // If Jude's response has a handoff back to the original agent, handle it
-        if (judeParsed.forNextAgent && judeParsed.forNextAgent.targetAgent === handoff.targetAgent) {
-          // Track start time for corrected response
-          const correctedStartTime = Date.now();
-          
-          // Agent will redo their response
-          const correctedResult = await this.invokeAgent(
+        if (correctionResult.shouldStop) {
+          return {
+            success: false,
             workflowId,
-            handoff.targetAgent,
-            judeParsed.forNextAgent.prompt,
-            {
-              previousAgent: 'jude',
-              previousResponse: judeResult.response,
-            }
-          );
-
-          // Re-validate the corrected response
-          const correctedParsed = ResponseParser.parse(correctedResult.response);
-          const correctedResponse = {
-            agent: handoff.targetAgent,
-            timestamp: new Date(),
-            rawResponse: correctedResult.response,
-            parsedSections: correctedParsed,
-            conversationId: correctedResult.conversationId,
+            currentAgent: handoff.targetAgent,
+            status: 'blocked',
+            error: 'Agent failed to correct violations. Workflow stopped.',
           };
-
-          const reValidation = await judeValidator.validateResponse(
-            handoff.targetAgent,
-            correctedResponse,
-            judeParsed.forNextAgent.prompt
-          );
-
-          if (!reValidation.isValid && reValidation.shouldStop) {
-            // Still failing after correction - stop
-            stateManager.updateStatus(workflowId, 'blocked');
-            return {
-              success: false,
-              workflowId,
-              currentAgent: handoff.targetAgent,
-              status: 'blocked',
-              error: 'Agent failed to correct violations. Workflow stopped.',
-            };
-          }
-
-          // Use corrected response
-          agentResponse.rawResponse = correctedResult.response;
-          agentResponse.parsedSections = correctedParsed;
-          // Duration is total time from initial step start to corrected response completion
-          // This includes the original call, Jude's correction, and the corrected response
         }
+
+        // Update agentResponse with corrected response if applicable
+        agentResponse = correctionResult.agentResponse;
       }
 
       // Calculate duration for the target agent's step
@@ -625,6 +438,157 @@ export class Orchestrator {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  }
+
+  /**
+   * Handle violations and check if workflow should stop
+   */
+  private async handleViolations(
+    workflowId: string,
+    agent: AgentName,
+    validation: any,
+    projectId?: string
+  ): Promise<{ shouldStop: boolean }> {
+    if (validation.shouldStop) {
+      if (projectId) {
+        projectManager.createUserActionItem({
+          projectId,
+          workflowId,
+          type: 'task',
+          title: `URGENT: ${agent} has 3 violations - Workflow Stopped`,
+          description: `Agent ${agent} has violated rules 3 times in 10 minutes. Workflow stopped. Review violations and decide next steps.`,
+          priority: 'critical',
+          status: 'pending',
+          notes: JSON.stringify(validation.violations, null, 2),
+          metadata: { violations: validation.violations },
+          createdBy: 'jude',
+        });
+      }
+
+      stateManager.updateStatus(workflowId, 'blocked');
+      return { shouldStop: true };
+    }
+    return { shouldStop: false };
+  }
+
+  /**
+   * Handle correction flow for agent responses
+   */
+  private async handleCorrection(
+    workflowId: string,
+    agent: AgentName,
+    agentResponse: any,
+    validation: any,
+    projectId: string | undefined,
+    stepStartTime: number,
+    originalResponse: string
+  ): Promise<{ agentResponse: any; shouldStop: boolean }> {
+    const isRepeated = validation.violations.some((v: any) =>
+      violationTracker.isRepeatedViolation(agent, v.type, v.ruleViolated)
+    );
+
+    // If repeated violation, create task for Vader
+    if (isRepeated && projectId) {
+      projectManager.createUserActionItem({
+        projectId,
+        workflowId,
+        type: 'task',
+        title: `Repeated Violation: ${agent}`,
+        description: `Agent ${agent} has repeated a violation. Consider updating agent rules.`,
+        priority: 'high',
+        status: 'pending',
+        notes: JSON.stringify(validation.violations, null, 2),
+        metadata: { violations: validation.violations },
+        createdBy: 'jude',
+      });
+    }
+
+    // Track start time for Jude's correction
+    const judeStartTime = Date.now();
+    
+    // Get correction from Jude
+    const judeResult = await this.invokeAgent(
+      workflowId,
+      'jude',
+      validation.correctionPrompt || 'Please correct the response',
+      {
+        previousAgent: agent,
+        previousResponse: originalResponse,
+      }
+    );
+
+    // Parse Jude's response
+    const judeParsed = ResponseParser.parse(judeResult.response);
+    
+    // Calculate duration for Jude's correction
+    const judeDuration = Date.now() - judeStartTime;
+
+    // Add Jude's correction step (this is not a duplicate - it's Jude's response)
+    stateManager.addStep(workflowId, {
+      agent: 'jude',
+      input: validation.correctionPrompt || '',
+      output: {
+        agent: 'jude',
+        timestamp: new Date(),
+        rawResponse: judeResult.response,
+        parsedSections: judeParsed,
+        conversationId: judeResult.conversationId,
+      },
+      duration: judeDuration,
+    });
+
+    // If Jude's response has a handoff back to the original agent, handle it
+    if (judeParsed.forNextAgent && judeParsed.forNextAgent.targetAgent === agent) {
+      // Track start time for corrected response
+      const correctedStartTime = Date.now();
+      
+      // Agent will redo their response
+      const correctedResult = await this.invokeAgent(
+        workflowId,
+        agent,
+        judeParsed.forNextAgent.prompt,
+        {
+          previousAgent: 'jude',
+          previousResponse: judeResult.response,
+        }
+      );
+
+      // Re-validate the corrected response
+      const correctedParsed = ResponseParser.parse(correctedResult.response);
+      const correctedResponse = {
+        agent,
+        timestamp: new Date(),
+        rawResponse: correctedResult.response,
+        parsedSections: correctedParsed,
+        conversationId: correctedResult.conversationId,
+      };
+
+      const reValidation = await judeValidator.validateResponse(
+        agent,
+        correctedResponse,
+        judeParsed.forNextAgent.prompt
+      );
+
+      if (!reValidation.isValid && reValidation.shouldStop) {
+        // Still failing after correction - stop
+        stateManager.updateStatus(workflowId, 'blocked');
+        return {
+          agentResponse,
+          shouldStop: true,
+        };
+      }
+
+      // Use corrected response
+      agentResponse.rawResponse = correctedResult.response;
+      agentResponse.parsedSections = correctedParsed;
+      // Duration is total time from initial step start to corrected response completion
+      // This includes the original call, Jude's correction, and the corrected response
+    } else {
+      // Jude approved or provided different guidance
+      // Continue with original response (Jude may have just noted the violation)
+    }
+
+    return { agentResponse, shouldStop: false };
   }
 
   /**

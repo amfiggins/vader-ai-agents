@@ -6,10 +6,13 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import { createServer } from 'http';
 import { Server } from 'net';
+import fs from 'fs';
 import { Orchestrator } from './orchestrator';
 import { AgentInterface, LLMAgentInterface, MockAgentInterface } from './agent-interface';
 import { AgentName } from './types';
 import { projectManager } from './project-manager';
+import { stateManager } from './state-manager';
+import { AgentRegistry } from './agent-registry';
 
 const app = express();
 app.use(express.json());
@@ -81,7 +84,6 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Serve static files from public directory
-const fs = require('fs');
 const publicPath = path.join(__dirname, '../public');
 const publicPathSrc = path.join(process.cwd(), 'public');
 const publicPathDist = path.join(process.cwd(), 'dist/public');
@@ -246,8 +248,6 @@ app.get('/workflows/:id/history', (req: Request, res: Response) => {
 app.get('/workflows', (req: Request, res: Response) => {
   try {
     const orch = initializeOrchestrator();
-    // Access stateManager through orchestrator's internal reference
-    const { stateManager } = require('./state-manager');
     const workflows = req.query.active === 'true' 
       ? stateManager.getActiveWorkflows()
       : stateManager.getAllWorkflows();
@@ -264,7 +264,6 @@ app.get('/workflows', (req: Request, res: Response) => {
 // List available agents
 app.get('/agents', (req: Request, res: Response) => {
   try {
-    const { AgentRegistry } = require('./agent-registry');
     const agents = AgentRegistry.getAllAgents();
     res.json({ agents });
   } catch (error) {

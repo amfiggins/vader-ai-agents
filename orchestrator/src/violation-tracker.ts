@@ -3,6 +3,7 @@
  */
 
 import { AgentName } from './types';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Violation {
   id: string;
@@ -29,7 +30,7 @@ export class ViolationTracker {
     responseContext: string
   ): string {
     const violation: Violation = {
-      id: require('uuid').v4(),
+      id: uuidv4(),
       agent,
       violationType,
       ruleViolated,
