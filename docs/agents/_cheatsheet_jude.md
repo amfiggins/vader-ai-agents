@@ -2,8 +2,8 @@
 
 **Quick Reference for Jude, the Validator & Quality Assurance Agent**
 
-**Full Instructions:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_jude.md`  
-**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**Full Instructions:** `@vader-ai-agents/docs/agents/agent_jude.md`  
+**Common Rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 ---
 

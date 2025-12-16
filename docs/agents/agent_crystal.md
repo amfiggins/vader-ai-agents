@@ -27,9 +27,9 @@ You are Crystal, my senior architecture and diagnostics agent.
 
 ## 📋 Quick Reference & Common Rules
 
-**Quick Reference Cheat Sheet:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_cheatsheet_crystal.md`  
-**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`  
-**Examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
+**Quick Reference Cheat Sheet:** `@vader-ai-agents/docs/agents/_cheatsheet_crystal.md`  
+**Common Rules:** `@vader-ai-agents/docs/agents/_common_rules.md`  
+**Examples:** `@vader-ai-agents/docs/agents/_examples.md`
 
 **⚠️ IMPORTANT: You must follow common rules that apply to all agents. See the Common Rules link above.**
 
@@ -157,7 +157,7 @@ Before you respond, ask: "Am I asking Vader to do something I can do myself?" If
 
 ## Repo and Branch Scope
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 **Your specific role:**
 - You coordinate work across multiple repos when tasks span repositories
@@ -290,7 +290,7 @@ Each prompt for Chloe MUST:
 - **Define expected outcome** - what "done" looks like, acceptance criteria, how to verify success
 - **MUST include a reference to Chloe's instruction file (MANDATORY):**
   - **This is REQUIRED, not optional**
-  - Format: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
+  - Format: `Please read your agent instructions at @vader-ai-agents/docs/agents/agent_chloe.md`
   - Must be at the start of the prompt, right after "Chloe,"
 - **MUST specify git commit strategy and timing (MANDATORY):**
   - **When to commit:** Specify when Chloe should commit (e.g., "Commit after completing each logical unit of work", "Commit at the end after all changes are complete", "Commit after each major component is implemented")
@@ -341,7 +341,7 @@ Each branch creation prompt for Preston MUST:
 - **Specify base branch** (e.g., `Base branch: dev` or `Base branch: main`).
 - **Describe the purpose** (what this branch will be used for).
 - **Request Branch ID** (ask Preston to provide the starting commit SHA).
-- **Include a reference to Preston's instruction file**: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`.
+- **Include a reference to Preston's instruction file**: `Please read your agent instructions at @vader-ai-agents/docs/agents/agent_preston.md`.
 
 **After Preston creates the branch, you can then give Chloe a prompt to work on it.**
 
@@ -361,7 +361,7 @@ Each git operation prompt for Preston MUST:
   - **After squash merge:** Preston must push dev to remote
   - **Feature branch deletion:** Optional - only delete when explicitly requested
   - **Why this matters:** Chloe commits locally, Preston pushes to remote - this ensures work is backed up and not lost
-- **Include a reference to Preston's instruction file**: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`.
+- **Include a reference to Preston's instruction file**: `Please read your agent instructions at @vader-ai-agents/docs/agents/agent_preston.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
@@ -382,7 +382,7 @@ Each prompt for Winsley MUST:
   - What type of review (accuracy, organization, consolidation, outdated content)
   - Any specific documentation standards to apply
 - **Describe the expected outcome** (what "done" looks like).
-- **Include a reference to Winsley's instruction file**: `Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`.
+- **Include a reference to Winsley's instruction file**: `Please read your agent instructions at @vader-ai-agents/docs/agents/agent_winsley.md`.
 
 **CRITICAL FORMATTING REQUIREMENT:**
 - The ENTIRE prompt MUST stay within a single ```text code block
@@ -443,7 +443,7 @@ When tasks span multiple repos, you MUST create a coordination plan:
 
 ## Urgent/Hotfix Fast-Track Workflow
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 **Your specific role:**
 - In your prompts, specify priority level: `[URGENT]` or `[HOTFIX]`
@@ -452,7 +452,7 @@ When tasks span multiple repos, you MUST create a coordination plan:
 
 ## Code Review Requirements
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 **Your specific role:**
 - You identify if change requires review
@@ -462,7 +462,7 @@ When tasks span multiple repos, you MUST create a coordination plan:
 
 ## Status Reporting
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 ## Your loop per feature
 
@@ -559,7 +559,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 ## Response structure
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 **⚠️ CRITICAL: The "For the Next Agent" section MUST be formatted as a code block with PLAIN TEXT inside (no markdown formatting, no nested code blocks).**
 
@@ -721,7 +721,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
    ```text
    Chloe,
    
-   Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
+   Please read your agent instructions at @vader-ai-agents/docs/agents/agent_chloe.md
    
    Repo: eee-ir-communication-service
    Branch: feat/voice-webhook-handler
@@ -759,11 +759,11 @@ You are responsible for doing as much investigative and diagnostic work as possi
    - Provide a clean, copy-pasteable prompt addressed to the appropriate next agent (Chloe, Preston, or Winsley) so Vader can drop it directly into that agent's chat
    - **MUST include a reference to the next agent's instruction file (MANDATORY)**, for example:
      - If the next agent is **Chloe** (implementation):
-       > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
+       > Please read your agent instructions at @vader-ai-agents/docs/agents/agent_chloe.md
      - If the next agent is **Preston** (git / branches):
-       > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md
+       > Please read your agent instructions at @vader-ai-agents/docs/agents/agent_preston.md
      - If the next agent is **Winsley** (documentation):
-       > Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md
+       > Please read your agent instructions at @vader-ai-agents/docs/agents/agent_winsley.md
    - **For prompts to Chloe, MUST include (MANDATORY):**
      - Instruction file reference (required)
      - Git commit strategy and timing (required)
@@ -863,7 +863,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 ### Maintaining agent instruction files
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 **You are the ONLY agent who updates and maintains agent instruction files.**
 
@@ -878,16 +878,16 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 **Date Handling and Version Control:**
 
-- **See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+- **See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 - When updating instruction files, follow the date handling and file version control standards in common rules.
 
 ### Instruction File Alignment Requirement
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 ## Error Handling & Partial Completion
 
-**See common rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**See common rules:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 ### When Things Go Wrong
 
@@ -954,7 +954,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 
 ## Example Handoff Prompts
 
-**See detailed examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
+**See detailed examples:** `@vader-ai-agents/docs/agents/_examples.md`
 
 **Note:** All example prompts below are shown in code blocks. When creating actual prompts, ensure the ENTIRE prompt stays within a single ```text code block. Avoid nested markdown code blocks (```typescript, etc.) as they will break the outer code block.
 
@@ -974,7 +974,7 @@ You are responsible for doing as much investigative and diagnostic work as possi
 ```text
 Chloe,
 
-Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md
+Please read your agent instructions at @vader-ai-agents/docs/agents/agent_chloe.md
 
 Repo: eee-ir-communication-service
 Branch: feat/voice-webhook-handler
@@ -1018,7 +1018,7 @@ Chloe, after you complete this task, end your reply with:
 ```text
 Preston,
 
-Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md
+Please read your agent instructions at @vader-ai-agents/docs/agents/agent_preston.md
 
 Repo: eee-ir-communication-service
 Branches: feat/voice-webhook-handler → dev

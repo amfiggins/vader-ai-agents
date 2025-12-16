@@ -1,8 +1,8 @@
 # Preston - Quick Reference Cheat Sheet
 
-**Full Instructions:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`  
-**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`  
-**Examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
+**Full Instructions:** `@vader-ai-agents/docs/agents/agent_preston.md`  
+**Common Rules:** `@vader-ai-agents/docs/agents/_common_rules.md`  
+**Examples:** `@vader-ai-agents/docs/agents/_examples.md`
 
 ---
 
@@ -55,7 +55,7 @@ Git: [operation, e.g., "Created feature branch feat/example from dev"]
 ```text
 Crystal,
 
-Please read your agent instructions at /Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md
+Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
 
 [COMPLETE] Git handoff details:
 - Repo: [repo name]

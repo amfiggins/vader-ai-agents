@@ -2,7 +2,7 @@
 
 **⚠️ IMPORTANT: All agents must follow these common rules. This file is referenced by all agent instruction files.**
 
-**Reference Path:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`
+**Reference Path:** `@vader-ai-agents/docs/agents/_common_rules.md`
 
 ---
 
@@ -67,10 +67,10 @@
 - Reference your instruction file URL at the start of each response if needed.
 
 **Your instruction file paths:**
-- Crystal: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`
-- Chloe: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
-- Preston: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`
-- Winsley: `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`
+- Crystal: `@vader-ai-agents/docs/agents/agent_crystal.md`
+- Chloe: `@vader-ai-agents/docs/agents/agent_chloe.md`
+- Preston: `@vader-ai-agents/docs/agents/agent_preston.md`
+- Winsley: `@vader-ai-agents/docs/agents/agent_winsley.md`
 
 ---
 
@@ -80,11 +80,11 @@
 
 - Other agents may call out issues or suggest changes, but **only Crystal performs the changes after Vader approves**.
 - Files Crystal maintains:
-  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_crystal.md`
-  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_chloe.md`
-  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_preston.md`
-  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`
-  - `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agent_system_overview.md`
+  - `@vader-ai-agents/docs/agents/agent_crystal.md`
+  - `@vader-ai-agents/docs/agents/agent_chloe.md`
+  - `@vader-ai-agents/docs/agents/agent_preston.md`
+  - `@vader-ai-agents/docs/agents/agent_winsley.md`
+  - `@vader-ai-agents/docs/agent_system_overview.md`
 
 **For other agents (Chloe, Preston, Winsley):**
 - You do not own or edit any agent instruction files, including your own.

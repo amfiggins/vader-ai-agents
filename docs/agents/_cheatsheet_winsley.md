@@ -1,8 +1,8 @@
 # Winsley - Quick Reference Cheat Sheet
 
-**Full Instructions:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/agent_winsley.md`  
-**Common Rules:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_common_rules.md`  
-**Examples:** `/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/docs/agents/_examples.md`
+**Full Instructions:** `@vader-ai-agents/docs/agents/agent_winsley.md`  
+**Common Rules:** `@vader-ai-agents/docs/agents/_common_rules.md`  
+**Examples:** `@vader-ai-agents/docs/agents/_examples.md`
 
 ---
 
