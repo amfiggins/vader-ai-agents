@@ -1,13 +1,34 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { spawn } = require('child_process');
 
 let mainWindow;
 let serverProcess;
 
-const ORCHESTRATOR_DIR = '/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/orchestrator';
+// Calculate orchestrator directory dynamically (relative to electron-app)
+// In development: __dirname = .../orchestrator/electron-app, so ../ = orchestrator
+// In packaged app: __dirname = .../app.asar/electron-app, so ../ = app.asar/orchestrator
+const ORCHESTRATOR_DIR_RELATIVE = path.join(__dirname, '..');
+const ORCHESTRATOR_DIR_ABSOLUTE = '/Users/anthonyfiggins/Library/CloudStorage/GoogleDrive-amfiggins@gmail.com/Other computers/Silabs/Documents/GitHub/vader-ai-agents/orchestrator';
+
+// Use relative path if it exists and has package.json, otherwise fallback to absolute
+function getOrchestratorDir() {
+  const relativePath = ORCHESTRATOR_DIR_RELATIVE;
+  const packageJsonPath = path.join(relativePath, 'package.json');
+  if (fs.existsSync(packageJsonPath)) {
+    console.log('Using relative orchestrator path:', relativePath);
+    return relativePath;
+  } else {
+    console.log('Relative path not found, using absolute path:', ORCHESTRATOR_DIR_ABSOLUTE);
+    return ORCHESTRATOR_DIR_ABSOLUTE;
+  }
+}
+
+const ORCHESTRATOR_DIR = getOrchestratorDir();
 const PORT = 3002;
 const URL = `http://localhost:${PORT}`;
+const LOG_FILE = '/tmp/orchestrator-server.log';
 
 function checkServerRunning() {
   return new Promise((resolve) => {
@@ -20,34 +41,73 @@ function checkServerRunning() {
 
 function startServer() {
   return new Promise((resolve, reject) => {
+    const extendedPath = `${process.env.PATH || ''}:/usr/local/bin:/opt/homebrew/bin`;
+    console.log('Using PATH for npm spawn:', extendedPath);
+    console.log('Orchestrator directory:', ORCHESTRATOR_DIR);
+
+    // Open log file for writing
+    const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
+    logStream.write(`\n=== Server startup at ${new Date().toISOString()} ===\n`);
+    logStream.write(`Orchestrator dir: ${ORCHESTRATOR_DIR}\n`);
+    logStream.write(`PATH: ${extendedPath}\n`);
+
     // Start the server directly with npm
     serverProcess = spawn('npm', ['run', 'dev'], {
       cwd: ORCHESTRATOR_DIR,
-      stdio: 'ignore',
+      stdio: ['ignore', 'pipe', 'pipe'], // Capture stdout and stderr
       detached: false, // Keep attached so we can kill it
-      env: { ...process.env, PORT: PORT.toString() },
+      shell: true,
+      env: { ...process.env, PORT: PORT.toString(), PATH: extendedPath },
+    });
+
+    let serverError = '';
+    let serverOutput = '';
+
+    // Capture stdout
+    serverProcess.stdout.on('data', (data) => {
+      const output = data.toString();
+      serverOutput += output;
+      logStream.write(`[STDOUT] ${output}`);
+      console.log('[Server]', output.trim());
+    });
+
+    // Capture stderr
+    serverProcess.stderr.on('data', (data) => {
+      const output = data.toString();
+      serverError += output;
+      logStream.write(`[STDERR] ${output}`);
+      console.error('[Server Error]', output.trim());
     });
 
     // Handle server process errors
     serverProcess.on('error', (error) => {
-      console.error('Server process error:', error);
+      const errorMsg = `Server process error: ${error.message}\nStack: ${error.stack}`;
+      console.error(errorMsg);
+      logStream.write(`[ERROR] ${errorMsg}\n`);
+      logStream.end();
       serverProcess = null;
-      reject(error);
+      reject(new Error(`Failed to start server: ${error.message}\nCheck ${LOG_FILE} for details.`));
     });
 
     // Handle server process exit
     serverProcess.on('exit', (code, signal) => {
-      console.log(`Server process exited with code ${code} and signal ${signal}`);
-      serverProcess = null;
+      const exitMsg = `Server process exited with code ${code} and signal ${signal}`;
+      console.log(exitMsg);
+      logStream.write(`[EXIT] ${exitMsg}\n`);
       
-      // If server crashed unexpectedly, try to restart it
       if (code !== 0 && code !== null) {
-        console.log('Server crashed, attempting to restart...');
-        setTimeout(() => {
-          startServer().catch((err) => {
-            console.error('Failed to restart server:', err);
-          });
-        }, 2000);
+        const errorDetails = serverError || serverOutput || 'No output captured';
+        logStream.write(`[ERROR DETAILS] ${errorDetails}\n`);
+        logStream.end();
+        serverProcess = null;
+        
+        // Don't auto-restart on initial startup failure - let user see the error
+        if (code !== null) {
+          reject(new Error(`Server exited with code ${code}\nError output: ${errorDetails}\nCheck ${LOG_FILE} for full details.`));
+        }
+      } else {
+        logStream.end();
+        serverProcess = null;
       }
     });
 
@@ -168,15 +228,31 @@ function createWindow() {
           mainWindow.loadURL(URL);
         } else if (retries >= maxRetries) {
           clearInterval(retryInterval);
+          // Read log file for error details
+          let errorDetails = 'No error details available';
+          try {
+            if (fs.existsSync(LOG_FILE)) {
+              const logContent = fs.readFileSync(LOG_FILE, 'utf8');
+              const recentErrors = logContent.split('\n').slice(-20).join('\n');
+              errorDetails = recentErrors || 'Log file is empty';
+            }
+          } catch (err) {
+            errorDetails = `Could not read log file: ${err.message}`;
+          }
+          
           mainWindow.loadURL(`data:text/html,
             <!DOCTYPE html>
             <html>
             <head><title>Error</title></head>
-            <body style="font-family: -apple-system; padding: 40px; text-align: center;">
-              <h1>Server Not Available</h1>
-              <p>Could not connect to orchestrator server.</p>
-              <p>Please check that the server is running on port ${PORT}</p>
-              <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Retry</button>
+            <body style="font-family: -apple-system; padding: 40px; text-align: center; background: #1a1a1a; color: #fff;">
+              <h1 style="color: #ff4444;">Server Not Available</h1>
+              <p>Could not connect to orchestrator server on port ${PORT}.</p>
+              <div style="text-align: left; max-width: 800px; margin: 20px auto; background: #2a2a2a; padding: 20px; border-radius: 5px;">
+                <h3 style="color: #ffaa00;">Error Details:</h3>
+                <pre style="color: #aaa; font-size: 12px; overflow-x: auto;">${errorDetails.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                <p style="font-size: 12px; color: #888; margin-top: 10px;">Full log available at: ${LOG_FILE}</p>
+              </div>
+              <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 20px; cursor: pointer; background: #00ff00; color: #000; border: none; border-radius: 3px; font-weight: bold;">Retry</button>
             </body>
             </html>
           `);
@@ -253,16 +329,35 @@ app.whenReady().then(async () => {
       console.log('Server started successfully');
     } catch (error) {
       console.error('Failed to start server:', error);
+      
+      // Read log file for error details
+      let errorDetails = error.message;
+      try {
+        if (fs.existsSync(LOG_FILE)) {
+          const logContent = fs.readFileSync(LOG_FILE, 'utf8');
+          const recentErrors = logContent.split('\n').slice(-30).join('\n');
+          errorDetails = recentErrors || error.message;
+        }
+      } catch (err) {
+        errorDetails = `${error.message}\nCould not read log file: ${err.message}`;
+      }
+      
       // Show error in window
       createWindow();
       mainWindow.loadURL(`data:text/html,
         <!DOCTYPE html>
         <html>
         <head><title>Error</title></head>
-        <body style="font-family: -apple-system; padding: 40px; text-align: center;">
-          <h1>Server Failed to Start</h1>
-          <p>${error.message}</p>
-          <p>Please check the orchestrator directory and try again.</p>
+        <body style="font-family: -apple-system; padding: 40px; text-align: center; background: #1a1a1a; color: #fff;">
+          <h1 style="color: #ff4444;">Server Failed to Start</h1>
+          <p style="color: #ffaa00;">${error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+          <div style="text-align: left; max-width: 800px; margin: 20px auto; background: #2a2a2a; padding: 20px; border-radius: 5px;">
+            <h3 style="color: #ffaa00;">Error Details:</h3>
+            <pre style="color: #aaa; font-size: 12px; overflow-x: auto;">${errorDetails.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+            <p style="font-size: 12px; color: #888; margin-top: 10px;">Full log available at: ${LOG_FILE}</p>
+            <p style="font-size: 12px; color: #888;">Orchestrator directory: ${ORCHESTRATOR_DIR}</p>
+          </div>
+          <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 20px; cursor: pointer; background: #00ff00; color: #000; border: none; border-radius: 3px; font-weight: bold;">Retry</button>
         </body>
         </html>
       `);
