@@ -60,7 +60,7 @@ For complete system documentation, see: [`docs/agent_system_overview.md`](https:
 
 ## Common Workflows
 
-See [`docs/getting_started.md`](docs/getting_started.md) for detailed workflows and examples.
+See [`docs/common_workflows.md`](docs/common_workflows.md) for detailed workflows and examples.
 
 ## Cost Considerations
 
@@ -113,5 +113,7 @@ See [`docs/getting_started.md`](docs/getting_started.md) for detailed workflows 
 ## Getting Help
 
 - **Troubleshooting:** See [`docs/troubleshooting.md`](docs/troubleshooting.md)
-- **Common Workflows:** See [`docs/getting_started.md`](docs/getting_started.md)
+- **Getting Started:** See [`docs/getting_started.md`](docs/getting_started.md) - How to start chats with each agent
+- **Common Workflows:** See [`docs/common_workflows.md`](docs/common_workflows.md) - Detailed workflows for common tasks
 - **System Details:** See [`docs/agent_system_overview.md`](docs/agent_system_overview.md)
+- **Documentation Index:** See [`docs/README.md`](docs/README.md) - Complete documentation structure

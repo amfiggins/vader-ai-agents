@@ -363,3 +363,5 @@ If starting a new chat, mention:
 - "Can you help me test/refine [specific component]?"
 
 The project is fully functional but may need testing and refinement, especially around Jude's validation workflow.
+
+
