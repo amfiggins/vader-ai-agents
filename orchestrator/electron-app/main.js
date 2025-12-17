@@ -83,7 +83,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, '../assets/icon_final.icns'),
+    icon: path.join(__dirname, '../assets/icon_dock.icns'),
     titleBarStyle: 'hiddenInset',
     show: false, // Don't show until ready
     frame: true, // Keep frame for macOS controls

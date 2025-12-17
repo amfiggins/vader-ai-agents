@@ -7,14 +7,14 @@
     "start": "electron .",
     "build": "electron-builder",
     "build-mac": "electron-builder --mac",
-    "package": "electron-packager . 'Vader AI Orchestrator' --platform=darwin --arch=arm64 --out=dist --overwrite --icon=../assets/icon_f.icns"
+    "package": "electron-packager . 'Vader AI Orchestrator' --platform=darwin --arch=arm64 --out=dist --overwrite --icon=../assets/icon_dock.icns"
   },
   "build": {
     "appId": "com.vaderai.orchestrator",
     "productName": "Vader AI Orchestrator",
     "mac": {
       "category": "public.app-category.developer-tools",
-      "icon": "../assets/icon_f.icns",
+      "icon": "../assets/icon_dock.icns",
       "target": [
         {
           "target": "dir",
