@@ -20,12 +20,16 @@ function checkServerRunning() {
 
 function startServer() {
   return new Promise((resolve, reject) => {
+    const extendedPath = `${process.env.PATH || ''}:/usr/local/bin:/opt/homebrew/bin`;
+    console.log('Using PATH for npm spawn:', extendedPath);
+
     // Start the server directly with npm
     serverProcess = spawn('npm', ['run', 'dev'], {
       cwd: ORCHESTRATOR_DIR,
       stdio: 'ignore',
       detached: false, // Keep attached so we can kill it
-      env: { ...process.env, PORT: PORT.toString() },
+      shell: true,
+      env: { ...process.env, PORT: PORT.toString(), PATH: extendedPath },
     });
 
     // Handle server process errors
