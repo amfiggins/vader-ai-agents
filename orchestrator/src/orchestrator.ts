@@ -171,6 +171,18 @@ export class Orchestrator {
         return await this.handleHandoff(workflowId, startingAgent, parsed.forNextAgent);
       }
 
+      // Check if workflow is complete
+      if (parsed.forVader?.noAction && !parsed.forNextAgent) {
+        stateManager.updateStatus(workflowId, 'completed');
+        return {
+          success: true,
+          workflowId,
+          currentAgent: startingAgent,
+          status: 'completed',
+          message: 'Workflow completed',
+        };
+      }
+
       // No handoff, workflow may be complete or waiting
       stateManager.updateStatus(workflowId, 'in_progress');
 
