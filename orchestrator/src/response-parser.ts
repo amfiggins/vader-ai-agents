@@ -46,7 +46,7 @@ export class ResponseParser {
     let noAction = false;
 
     // Parse action items
-    const actionMatches = section.matchAll(/✅\s*Action\s+Required:?\s*\n([\s\S]*?)(?=❓|🧪|➡️|📦|✅|$)/gi);
+    const actionMatches = section.matchAll(/✅\s*Action\s+Required:?\s*\n([\s\S]*?)(?=❓|🧪|➡️|📦|✅|⏸️|$)/gi);
     for (const match of actionMatches) {
       const actionText = match[1].trim();
       const actionLines = actionText.split('\n').filter((line) => line.trim().startsWith('-'));
@@ -63,7 +63,7 @@ export class ResponseParser {
     }
 
     // Parse decision items
-    const decisionMatches = section.matchAll(/❓\s*Decision\s+Needed:?\s*\n([\s\S]*?)(?=✅|🧪|➡️|📦|$)/gi);
+    const decisionMatches = section.matchAll(/❓\s*Decision\s+Needed:?\s*\n([\s\S]*?)(?=✅|🧪|➡️|📦|⏸️|$)/gi);
     for (const match of decisionMatches) {
       const decisionText = match[1].trim();
       const decisionLines = decisionText.split('\n').filter((line) => line.trim().startsWith('-'));
@@ -78,8 +78,24 @@ export class ResponseParser {
       });
     }
 
+    // Parse "Waiting for Vader" items (also requires approval/decision)
+    const waitingMatches = section.matchAll(/⏸️\s*Waiting\s+for\s+Vader:?\s*\n([\s\S]*?)(?=✅|🧪|➡️|📦|❓|$)/gi);
+    for (const match of waitingMatches) {
+      const waitingText = match[1].trim();
+      const waitingLines = waitingText.split('\n').filter((line) => line.trim().startsWith('-'));
+      waitingLines.forEach((line) => {
+        const description = line.replace(/^-\s*/, '').trim();
+        if (description) {
+          decisions.push({
+            description,
+            required: true,
+          });
+        }
+      });
+    }
+
     // Parse testing items
-    const testingMatches = section.matchAll(/🧪\s*Testing:?\s*\n([\s\S]*?)(?=✅|❓|➡️|📦|$)/gi);
+    const testingMatches = section.matchAll(/🧪\s*Testing:?\s*\n([\s\S]*?)(?=✅|❓|➡️|📦|⏸️|$)/gi);
     for (const match of testingMatches) {
       const testingText = match[1].trim();
       const testingLines = testingText.split('\n').filter((line) => line.trim().startsWith('-'));
@@ -94,7 +110,7 @@ export class ResponseParser {
     }
 
     // Parse git operations
-    const gitMatches = section.matchAll(/📦\s*Git:?\s*\n([\s\S]*?)(?=✅|❓|🧪|➡️|$)/gi);
+    const gitMatches = section.matchAll(/📦\s*Git:?\s*\n([\s\S]*?)(?=✅|❓|🧪|➡️|⏸️|$)/gi);
     for (const match of gitMatches) {
       const gitText = match[1].trim();
       const gitLines = gitText.split('\n').filter((line) => line.trim().startsWith('-'));

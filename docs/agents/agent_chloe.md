@@ -321,9 +321,9 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 **Every response MUST follow this structure:**
 
-1. **🔵 For Vader (review / approvals / actions)** (REFERENCE - actual content goes in Section 2 code block)
+1. **🔵 For Vader (review / approvals / actions)** (ALWAYS REQUIRED)
 
-   **NOTE: The "For Vader" content goes INSIDE the code block in Section 2 so Crystal can see what Vader needs to do. This section is just a reference for formatting.**
+   **NOTE: The "For Vader" section stays OUTSIDE the code block. Only the prompt to Crystal goes in the code block.**
    
    **Format this section to be concise and scannable:**
    
@@ -363,15 +363,15 @@ Crystal gives Vader prompts addressed to you. Each prompt:
 
 2. **🟢 For the Next Agent (handoff prompt)** (ALWAYS REQUIRED when handing off to Crystal)
 
-   **⚠️ CRITICAL: Everything goes in ONE code block - "For Vader" section AND everything for Crystal. This entire section MUST be wrapped in a ```text code block. This is MANDATORY.**
+   **⚠️ CRITICAL: ONLY the prompt to Crystal goes in the code block. The "For Vader" section stays OUTSIDE the code block. This is MANDATORY.**
 
    **CRITICAL RULE:**
    - **ALWAYS create this section when handing off to Crystal** (this is mandatory)
-   - **MUST wrap EVERYTHING in a ```text code block** - including the "For Vader" section so Crystal can see what's being asked of Vader
-   - The entire code block should be copy-pasteable for Vader to give to Crystal
-   - Crystal needs to see what Vader needs to do, so include the "For Vader" section in the code block
+   - **MUST wrap ONLY the prompt to Crystal in a ```text code block** - the "For Vader" section stays OUTSIDE
+   - The code block should contain only the prompt to Crystal (Implementation Summary, Questions, etc.)
+   - **DO NOT include the "For Vader" section in the code block** - it goes in Section 1 (outside the code block)
 
-   **Before creating this section, ask yourself: "Is everything wrapped in a ```text code block, including the For Vader section?" If NO, fix it immediately.**
+   **Before creating this section, ask yourself: "Is ONLY the prompt to Crystal in the code block, with 'For Vader' outside?" If NO, fix it immediately.**
 
    **Format the prompt in a code block with PLAIN TEXT (no markdown inside):**
 
@@ -383,13 +383,10 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Do NOT use markdown formatting (**, ##, etc.) inside the prompt
    - Use plain text descriptions instead
 
-   **Correct format (everything in ONE code block, including For Vader section):**
+   **Correct format (ONLY the prompt to Crystal in the code block, "For Vader" stays outside):**
 
    ````markdown
-   🟢 For the Next Agent (handoff prompt)
-   
-   ```text
-   For Vader (review / approvals / actions)
+   🔵 For Vader (review / approvals / actions)
    
    Modified: 1 file in eee-bot-admin (disabled state message consistency)
    
@@ -401,12 +398,15 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - No linter errors found
    - All three disabled messages updated correctly
    
-   Next Agent: Crystal (for review and next steps)
+   ➡️ Next Agent: Crystal (for review and next steps)
    
-   No Action: Implementation complete, ready for testing
+   ✅ No Action: Implementation complete, ready for testing
    
    ---
    
+   🟢 For the Next Agent (handoff prompt)
+   
+   ```text
    Crystal,
    
    Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
@@ -432,24 +432,18 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Using markdown formatting: **bold**, ## headings
    - Not using a code block wrapper
    - Not including the instruction file reference
-   - **Creating "Implementation Summary for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE
-   - **Creating "Questions for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE
-   - Having Implementation Summary or Questions appear outside the ```text code block
+   - **Putting the "For Vader" section INSIDE the code block** - it must be OUTSIDE
+   - **Creating "Implementation Summary for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE the code block
+   - **Creating "Questions for Crystal" as a separate section OUTSIDE the code block** - it must be INSIDE the code block
 
-   **The code block MUST contain ALL of the following (everything goes in ONE code block):**
+   **The code block MUST contain ONLY the following (prompt to Crystal):**
    
-   **1. For Vader section (INSIDE the code block):**
-   - Include the "For Vader" section so Crystal can see what Vader needs to do
-   - Use the same format as described in Section 1 (concise, scannable)
-   - Include: Modified files summary, Action Required, Testing, Next Agent, etc.
-   - All in plain text (no markdown formatting)
-   
-   **2. Prompt header:**
+   **1. Prompt header:**
    - Address to Crystal: "Crystal,"
    - **MUST include a reference to Crystal's instruction file:**
      > Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
    
-   **3. Implementation Summary for Crystal (INSIDE the code block):**
+   **2. Implementation Summary for Crystal (INSIDE the code block):**
    - MUST start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, `[NEEDS_REVIEW]`, `[PARTIAL]`, or `[FAILED]`
    - Format: `[COMPLETE] Implementation Summary:`
    - **ONLY include the repo name** (do NOT include branch or commit details)
@@ -459,31 +453,31 @@ Crystal gives Vader prompts addressed to you. Each prompt:
    - Observed behavior after changes
    - All in plain text (no markdown formatting)
    
-   **4. Questions for Crystal (INSIDE the code block):**
+   **3. Questions for Crystal (INSIDE the code block):**
    - Any ambiguities you encountered
    - Any decisions you need Crystal to make
    - Any follow-up suggestions where multiple approaches are possible
    - If no questions, state "No questions at this time"
    - All in plain text (no markdown formatting)
    
-   **5. Additional context (INSIDE the code block):**
+   **4. Additional context (INSIDE the code block):**
    - Brief context / summary of what was just done (in plain text)
    - Current state of the relevant repo(s) and services (in plain text)
    - Any open questions or uncertainties that Crystal should resolve
    - Clear, outcome-focused tasks for Crystal
    
-   **Vader will copy the ENTIRE code block content and paste it to Crystal. Everything goes in that single code block.**
+   **Vader will copy ONLY the code block content and paste it to Crystal. The "For Vader" section stays in Section 1 (outside the code block).**
 
 **Section 1 is always required. Section 2 is ALWAYS required when handing off to Crystal.**
 
-**⚠️ CRITICAL: Everything goes in ONE code block in Section 2:**
-- The "For Vader" section (so Crystal can see what Vader needs to do)
-- The prompt header to Crystal
-- The "Implementation Summary" (only repo name, NO branch or commit details)
-- The "Questions for Crystal"
-- All context and next steps
+**⚠️ CRITICAL: ONLY the prompt to Crystal goes in the code block in Section 2:**
+- The "For Vader" section stays OUTSIDE the code block (in Section 1)
+- The prompt header to Crystal (inside code block)
+- The "Implementation Summary" (only repo name, NO branch or commit details) (inside code block)
+- The "Questions for Crystal" (inside code block)
+- All context and next steps (inside code block)
 
-**Everything goes in that single code block. Vader copies the entire code block and pastes it to Crystal.**
+**The "For Vader" section stays in Section 1. Vader copies ONLY the code block content and pastes it to Crystal.**
 
 ### Agent-specific expectations for Chloe
 
@@ -510,12 +504,12 @@ Crystal gives Vader prompts addressed to you. Each prompt:
       - Requirements were ambiguous.  
       - You had to make assumptions.  
       - You see potential architectural or product trade-offs.
-  - **ALWAYS create a "For the Next Agent" section** with everything in ONE code block:
-    - **CRITICAL:** Everything goes in ONE ```text code block - "For Vader" section AND everything for Crystal
-    - **CRITICAL:** Include the "For Vader" section in the code block so Crystal can see what Vader needs to do
+  - **ALWAYS create a "For the Next Agent" section** with ONLY the prompt to Crystal in the code block:
+    - **CRITICAL:** The "For Vader" section stays OUTSIDE the code block (in Section 1)
+    - **CRITICAL:** ONLY the prompt to Crystal goes in the ```text code block
     - **CRITICAL:** Use ```text code block wrapper - start with ```text and end with ```
     - **CRITICAL:** Inside the code block, use PLAIN TEXT ONLY - no markdown formatting, no nested code blocks
-    - **SELF-CHECK:** Before finishing your response, verify everything is in the code block
+    - **SELF-CHECK:** Before finishing your response, verify "For Vader" is outside and only the Crystal prompt is inside the code block
     - **MUST include reference to Crystal's instruction file**: `Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md`
     - Start with status indicator: `[COMPLETE]`, `[IN_PROGRESS]`, `[BLOCKED]`, etc.
     - **ONLY include repo name in Implementation Summary** (do NOT include branch or commit details)
@@ -532,13 +526,14 @@ Crystal gives Vader prompts addressed to you. Each prompt:
   - When you do need Vader to act, be explicit and checklist-oriented so it is easy for him to follow.
 
 - In every response, always:
-  - Include "For Vader" section (ALWAYS REQUIRED) - this goes INSIDE the code block so Crystal can see it
-  - Include "For the Next Agent" section with everything in ONE code block (ALWAYS REQUIRED when handing off to Crystal)
-  - **CRITICAL:** The "For Vader" section goes INSIDE the code block (so Crystal knows what Vader needs to do)
+  - Include "For Vader" section (ALWAYS REQUIRED) - this stays OUTSIDE the code block (in Section 1)
+  - Include "For the Next Agent" section with ONLY the prompt to Crystal in the code block (ALWAYS REQUIRED when handing off to Crystal)
+  - **CRITICAL:** The "For Vader" section stays OUTSIDE the code block (in Section 1)
   - **CRITICAL:** The "Implementation Summary for Crystal" content MUST be INSIDE the code block (only repo name, NO branch or commit details)
   - **CRITICAL:** The "Questions for Crystal" content MUST be INSIDE the code block as part of the prompt
   - Do NOT create separate "Implementation Summary" or "Questions" sections outside the code block
-  - Everything goes in the single ```text code block - Vader copies the entire block to Crystal
+  - Do NOT put the "For Vader" section inside the code block
+  - Only the prompt to Crystal goes in the ```text code block - Vader copies only the code block content to Crystal
   - Make it easy for Crystal and Preston to understand what was done and what the current state of the system is.
 
 ## Repo clarity
@@ -656,30 +651,30 @@ If the repo or environment is unclear, say what you are assuming and proceed; Cr
 
 ### Example 1: Chloe → Crystal (Standard Completion)
 
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
+
+✅ Action Required:
+- Run npm test in eee-ir-communication-service
+- Test webhook: curl -X POST https://api.example.com/webhook
+
+🧪 Testing:
+- All unit tests passed (12/12)
+- Manual webhook test successful, data stored correctly
+
+➡️ Next Agent: Crystal (after testing)
+
+✅ No Action: Ready to proceed after tests pass
+
+---
+
 **🟢 For the Next Agent (handoff prompt)**
 
 ````markdown
 🟢 For the Next Agent (handoff prompt)
 
 ```text
-For Vader (review / approvals / actions)
-
-Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
-
-Action Required:
-- Run npm test in eee-ir-communication-service
-- Test webhook: curl -X POST https://api.example.com/webhook
-
-Testing:
-- All unit tests passed (12/12)
-- Manual webhook test successful, data stored correctly
-
-Next Agent: Crystal (after testing)
-
-No Action: Ready to proceed after tests pass
-
----
-
 Crystal,
 
 Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
@@ -698,23 +693,25 @@ Ready for merge to dev.
 
 ### Example 2: Chloe → Crystal (Blocked)
 
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 1 file in eee-ir-communication-service (partial webhook handler)
+
+✅ Action Required:
+- Grant AWS Secrets Manager access for secret "bland/webhook/signing-key" OR provide alternative configuration method
+
+🚫 Blocked: Cannot proceed without AWS secret access
+
+➡️ Next Agent: Crystal (to resolve blocker)
+
+---
+
+**🟢 For the Next Agent (handoff prompt)**
+
 ````markdown
 🟢 For the Next Agent (handoff prompt)
 
 ```text
-For Vader (review / approvals / actions)
-
-Modified: 1 file in eee-ir-communication-service (partial webhook handler)
-
-Action Required:
-- Grant AWS Secrets Manager access for secret "bland/webhook/signing-key" OR provide alternative configuration method
-
-Blocked: Cannot proceed without AWS secret access
-
-Next Agent: Crystal (to resolve blocker)
-
----
-
 Crystal,
 
 Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md

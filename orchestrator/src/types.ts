@@ -105,6 +105,7 @@ export interface Approval {
   autoApproved?: boolean;
   projectId?: string; // Link to project
   taskId?: string; // Link to task
+  userResponse?: string; // User's text response to the approval request
 }
 
 export interface WorkflowStep {

@@ -199,42 +199,50 @@ function showMessage(text, type = 'success') {
     setTimeout(() => messageDiv.remove(), 5000);
 }
 
-// Start workflow
-document.getElementById('workflowForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const prompt = document.getElementById('prompt').value;
-    const startingAgent = document.getElementById('startingAgent').value;
-    const submitButton = e.target.querySelector('button[type="submit"]');
-
-    // Disable form and show loading
-    disableForm('workflowForm', true);
-    setLoadingState(submitButton, true, 'Starting workflow...');
-
-    try {
-        const data = await fetchWithRetry(`${API_BASE}/workflows`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt, startingAgent })
-        });
-        
-        if (data.success) {
-            showMessage(`Workflow started: ${data.workflowId}`);
-            document.getElementById('prompt').value = '';
-            loadWorkflows();
-            
-            if (data.requiresApproval) {
-                showMessage('Approval required! Check the workflow below.', 'error');
-            }
-        } else {
-            showMessage(`Error: ${data.error}`, 'error');
-        }
-    } catch (error) {
-        showError('messages', error, 'retryWorkflowSubmit', null);
-    } finally {
-        disableForm('workflowForm', false);
-        setLoadingState(submitButton, false);
+// Start workflow - wait for DOM to be ready
+function setupWorkflowForm() {
+    const workflowForm = document.getElementById('workflowForm');
+    if (!workflowForm) {
+        console.error('Workflow form not found');
+        return;
     }
-});
+    
+    workflowForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const prompt = document.getElementById('prompt').value;
+        const startingAgent = document.getElementById('startingAgent').value;
+        const submitButton = e.target.querySelector('button[type="submit"]');
+
+        // Disable form and show loading
+        disableForm('workflowForm', true);
+        setLoadingState(submitButton, true, 'Starting workflow...');
+
+        try {
+            const data = await fetchWithRetry(`${API_BASE}/workflows`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt, startingAgent })
+            });
+            
+            if (data.success) {
+                showMessage(`Workflow started: ${data.workflowId}`);
+                document.getElementById('prompt').value = '';
+                loadWorkflows();
+                
+                if (data.requiresApproval) {
+                    showMessage('Approval required! Check the workflow below.', 'error');
+                }
+            } else {
+                showMessage(`Error: ${data.error}`, 'error');
+            }
+        } catch (error) {
+            showError('messages', error, 'retryWorkflowSubmit', null);
+        } finally {
+            disableForm('workflowForm', false);
+            setLoadingState(submitButton, false);
+        }
+    });
+}
 
 // Load workflows
 async function loadWorkflows() {
@@ -261,10 +269,20 @@ async function loadWorkflows() {
                     ${wf.status === 'waiting_approval' && wf.approvals && wf.approvals.length > 0 ? `
                         <div class="approval-section">
                             <h3><i class="fas fa-exclamation-triangle"></i> Approval Required</h3>
-                            ${wf.approvals.filter(a => !a.approved).map(a => `
+                            ${wf.approvals.filter(a => !a.approved).map((a, idx) => `
                                 <p>${a.description}</p>
+                                <div style="margin: 15px 0;">
+                                    <label for="approval-response-${wf.workflowId}-${idx}" style="display: block; margin-bottom: 5px; color: #00ff00;">
+                                        <i class="fas fa-comment"></i> Your Response (optional):
+                                    </label>
+                                    <textarea 
+                                        id="approval-response-${wf.workflowId}-${idx}" 
+                                        placeholder="Provide details, requirements, or answer questions here..."
+                                        style="width: 100%; min-height: 100px; padding: 10px; background: #1a1a1a; border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; border-radius: 5px; resize: vertical;"
+                                    ></textarea>
+                                </div>
                                 <div class="actions">
-                                    <button class="btn-success" onclick="approveWorkflow('${wf.workflowId}', true)"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn-success" onclick="approveWorkflow('${wf.workflowId}', true, 'approval-response-${wf.workflowId}-${idx}')"><i class="fas fa-check"></i> Approve</button>
                                     <button class="btn-danger" onclick="approveWorkflow('${wf.workflowId}', false)"><i class="fas fa-times"></i> Reject</button>
                                 </div>
                             `).join('')}
@@ -285,15 +303,27 @@ async function loadWorkflows() {
 }
 
 // Approve workflow
-async function approveWorkflow(workflowId, approved) {
+async function approveWorkflow(workflowId, approved, responseTextareaId = null) {
     const button = event?.target || document.querySelector(`button[onclick*="approveWorkflow('${workflowId}'"]`);
     setLoadingState(button, true, approved ? 'Approving...' : 'Rejecting...');
+    
+    // Get user response if textarea ID provided
+    let userResponse = '';
+    if (responseTextareaId && approved) {
+        const textarea = document.getElementById(responseTextareaId);
+        if (textarea) {
+            userResponse = textarea.value.trim();
+        }
+    }
     
     try {
         const data = await fetchWithRetry(`${API_BASE}/workflows/${workflowId}/approve`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ approved })
+            body: JSON.stringify({ 
+                approved,
+                userResponse: userResponse || undefined
+            })
         });
         
         if (data.success) {
@@ -404,18 +434,36 @@ async function loadUserActions() {
         if (data.items && data.items.length > 0) {
             actionsDiv.innerHTML = data.items.map(item => `
                 <div class="workflow-item ${item.priority === 'critical' ? 'error' : ''}">
-                    <h3 style="color: ${item.priority === 'critical' ? '#ff0000' : '#ffaa00'}; margin-bottom: 10px;">
+                    <h3 style="color: ${item.priority === 'critical' ? '#ff0000' : item.type === 'approval' ? '#ffaa00' : '#00ff00'}; margin-bottom: 10px;">
                         <i class="fas fa-${item.type === 'approval' ? 'check-circle' : 'tasks'}"></i> ${item.title}
                     </h3>
                     <p>${item.description}</p>
                     <div style="font-size: 12px; color: #888; margin-top: 10px;">
                         <strong>Type:</strong> ${item.type} | 
-                        <strong>Priority:</strong> ${item.priority} |
-                        <strong>Project:</strong> ${item.projectId}
+                        <strong>Priority:</strong> ${item.priority}
+                        ${item.projectId ? ` | <strong>Project:</strong> ${item.projectId}` : ''}
+                        ${item.workflowId ? ` | <strong>Workflow:</strong> ${item.workflowId.substring(0, 8)}...` : ''}
                     </div>
+                    ${item.type === 'approval' ? `
+                        <div style="margin: 15px 0;">
+                            <label for="task-response-${item.id}" style="display: block; margin-bottom: 5px; color: #00ff00;">
+                                <i class="fas fa-comment"></i> Your Response (optional):
+                            </label>
+                            <textarea 
+                                id="task-response-${item.id}" 
+                                placeholder="Provide details, requirements, or answer questions here..."
+                                style="width: 100%; min-height: 100px; padding: 10px; background: #1a1a1a; border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; border-radius: 5px; resize: vertical;"
+                            ></textarea>
+                        </div>
+                    ` : ''}
                     <div class="actions">
-                        <button class="btn-success" onclick="completeAction('${item.id}', true)"><i class="fas fa-check"></i> Complete</button>
-                        <button class="btn-secondary" onclick="viewActionDetails('${item.id}')"><i class="fas fa-info"></i> Details</button>
+                        ${item.type === 'approval' ? `
+                            <button class="btn-success" onclick="completeAction('${item.id}', true, 'task-response-${item.id}')"><i class="fas fa-check"></i> Approve</button>
+                            <button class="btn-danger" onclick="completeAction('${item.id}', false)"><i class="fas fa-times"></i> Reject</button>
+                        ` : `
+                            <button class="btn-success" onclick="completeAction('${item.id}', true)"><i class="fas fa-check"></i> Complete</button>
+                        `}
+                        ${item.workflowId ? `<button class="btn-secondary" onclick="viewHistory('${item.workflowId}')"><i class="fas fa-history"></i> View Workflow</button>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -428,8 +476,41 @@ async function loadUserActions() {
 }
 
 // Complete action
-async function completeAction(actionId, approved) {
-    const userNotes = prompt('Add any notes (optional):');
+async function completeAction(actionId, approved, responseTextareaId = null) {
+    // Check if this is a workflow approval (starts with "approval-")
+    if (actionId.startsWith('approval-')) {
+        // Extract workflow ID and approval ID
+        const parts = actionId.split('-');
+        if (parts.length >= 3) {
+            const workflowId = parts.slice(1, -1).join('-'); // Handle UUIDs with multiple dashes
+            const approvalId = parts[parts.length - 1];
+            
+            // Get user response if textarea provided
+            let userResponse = '';
+            if (responseTextareaId && approved !== false) {
+                const textarea = document.getElementById(responseTextareaId);
+                if (textarea) {
+                    userResponse = textarea.value.trim();
+                }
+            }
+            
+            // Use workflow approval endpoint
+            await approveWorkflow(workflowId, approved !== false, responseTextareaId);
+            return;
+        }
+    }
+    
+    // Get user response if textarea provided, otherwise prompt
+    let userNotes = '';
+    if (responseTextareaId) {
+        const textarea = document.getElementById(responseTextareaId);
+        if (textarea) {
+            userNotes = textarea.value.trim();
+        }
+    } else {
+        userNotes = prompt('Add any notes (optional):') || '';
+    }
+    
     const button = event?.target || document.querySelector(`button[onclick*="completeAction('${actionId}'"]`);
     setLoadingState(button, true, 'Completing...');
     
@@ -496,9 +577,19 @@ function retryCompleteAction(context) {
     completeAction(context.actionId, context.approved);
 }
 
-// Initial load
-loadWorkflows();
-loadAgents();
+// Wait for DOM to be ready before setting up event listeners
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setupWorkflowForm();
+        loadWorkflows();
+        loadAgents();
+    });
+} else {
+    // DOM is already ready
+    setupWorkflowForm();
+    loadWorkflows();
+    loadAgents();
+}
 
 // Refresh every 5 seconds
 setInterval(() => {

@@ -143,8 +143,24 @@ export class LLMAgentInterface extends AgentInterface {
           finishReason: completion.choices[0]?.finish_reason,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
+        // Check for token limit errors
+        const errorMessage = error.message.toLowerCase();
+        // Check if error has a code property (OpenAI errors often have this)
+        const errorWithCode = error as Error & { code?: string };
+        const errorCode = errorWithCode.code;
+        
+        if (errorMessage.includes('maximum context length') || 
+            (errorMessage.includes('token') && errorMessage.includes('limit')) ||
+            errorMessage.includes('too large') ||
+            errorCode === 'context_length_exceeded') {
+          throw new Error(
+            `Request too large: The instruction file and prompt exceed ${this.model}'s token limit. ` +
+            `Consider using a model with a larger context window (e.g., gpt-4-turbo) or reducing the instruction file size. ` +
+            `Original error: ${error.message}`
+          );
+        }
         throw new Error(`OpenAI API error: ${error.message}`);
       }
       throw error;
@@ -163,12 +179,86 @@ export class LLMAgentInterface extends AgentInterface {
 
   private async fetchInstructionFile(url: string): Promise<string> {
     // Fetch instruction file from GitHub
-    // In a real implementation, this would fetch the raw content
     const response = await fetch(url.replace('/blob/', '/raw/'));
     if (!response.ok) {
       throw new Error(`Failed to fetch instruction file: ${url}`);
     }
-    return response.text();
+    let content = await response.text();
+    
+    // Truncate if too large for model context window
+    content = this.truncateForModel(content, this.model);
+    
+    return content;
+  }
+
+  /**
+   * Truncate content to fit within model's context window
+   * Estimates tokens as ~4 characters per token, reserves space for prompt and response
+   * Always preserves critical format requirements even when truncating
+   */
+  private truncateForModel(content: string, model: string): string {
+    // Model context windows (in tokens)
+    const contextWindows: Record<string, number> = {
+      'gpt-4': 8192,
+      'gpt-4-turbo': 128000,
+      'gpt-4-turbo-preview': 128000,
+      'gpt-4-32k': 32768,
+      'gpt-3.5-turbo': 16385,
+      'gpt-3.5-turbo-16k': 16385,
+    };
+
+    const contextWindow = contextWindows[model] || 8192; // Default to 8k if unknown
+    
+    // Reserve tokens for:
+    // - User prompt: ~500 tokens
+    // - Response (max_tokens): 4096 tokens
+    // - System message overhead: ~100 tokens
+    // - Safety margin: ~500 tokens
+    // - Format requirements appendix: ~300 tokens
+    const reservedTokens = 500 + 4096 + 100 + 500 + 300;
+    const availableTokens = contextWindow - reservedTokens;
+    
+    // Estimate tokens: ~4 characters per token (conservative estimate)
+    const estimatedTokens = Math.ceil(content.length / 4);
+    
+    if (estimatedTokens <= availableTokens) {
+      return content; // No truncation needed
+    }
+    
+    // Extract critical format requirements section if it exists
+    const formatSectionStart = content.indexOf('## Response structure');
+    let formatSection = '';
+    if (formatSectionStart >= 0) {
+      // Find end of format section (next ## heading or reasonable limit)
+      const formatSectionEnd = content.indexOf('\n## ', formatSectionStart + 100);
+      if (formatSectionEnd > 0) {
+        formatSection = '\n\n' + content.substring(formatSectionStart, formatSectionEnd);
+      } else {
+        // Take next 1500 chars if no clear end
+        formatSection = '\n\n' + content.substring(formatSectionStart, formatSectionStart + 1500);
+      }
+    }
+    
+    // Truncate to fit within available tokens (reserving space for format section)
+    const maxChars = (availableTokens * 4) - formatSection.length;
+    let truncated = content.substring(0, Math.max(0, maxChars));
+    
+    // Try to truncate at a reasonable boundary (end of paragraph or section)
+    const lastNewline = truncated.lastIndexOf('\n\n');
+    const lastSection = truncated.lastIndexOf('\n##');
+    
+    const truncateAt = Math.max(lastNewline, lastSection);
+    if (truncateAt > maxChars * 0.8) {
+      // Only use boundary if it's not too early
+      truncated = truncated.substring(0, truncateAt);
+    }
+    
+    // Always append format requirements if we have them and they're not already in the truncated content
+    if (formatSection && !truncated.includes('## Response structure')) {
+      return truncated + '\n\n[Instruction file truncated due to length...]' + formatSection;
+    }
+    
+    return truncated + '\n\n[Instruction file truncated due to length...]';
   }
 }
 

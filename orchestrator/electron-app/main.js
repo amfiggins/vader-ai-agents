@@ -376,15 +376,8 @@ app.whenReady().then(async () => {
   });
 });
 
-app.on('window-all-closed', () => {
-  // On macOS, keep app running even when all windows are closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('before-quit', () => {
-  // Kill server process when app quits
+// Function to kill server process
+function killServerProcess() {
   if (serverProcess) {
     console.log('Killing server process...');
     try {
@@ -406,4 +399,24 @@ app.on('before-quit', () => {
     }
     serverProcess = null;
   }
+}
+
+app.on('window-all-closed', () => {
+  // On macOS, keep app running even when all windows are closed
+  // But kill the server when windows are closed (user can restart via menu)
+  if (process.platform === 'darwin') {
+    killServerProcess();
+  } else {
+    app.quit();
+  }
+});
+
+app.on('before-quit', () => {
+  // Kill server process when app quits
+  killServerProcess();
+});
+
+app.on('will-quit', (event) => {
+  // Ensure server is killed before app quits
+  killServerProcess();
 });

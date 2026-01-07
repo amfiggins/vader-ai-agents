@@ -202,28 +202,30 @@ Winsley, after you complete this task, end your reply with two sections:
 
 ### Example 1: Standard Completion
 
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
+
+✅ Action Required:
+- Run npm test in eee-ir-communication-service
+- Test webhook: curl -X POST https://api.example.com/webhook
+
+🧪 Testing:
+- All unit tests passed (12/12)
+- Manual webhook test successful, data stored correctly
+
+➡️ Next Agent: Crystal (after testing)
+
+✅ No Action: Ready to proceed after tests pass
+
+---
+
+**🟢 For the Next Agent (handoff prompt)**
+
 ````markdown
 🟢 For the Next Agent (handoff prompt)
 
 ```text
-For Vader (review / approvals / actions)
-
-Modified: 3 files in eee-ir-communication-service (webhook handler implementation)
-
-Action Required:
-- Run npm test in eee-ir-communication-service
-- Test webhook: curl -X POST https://api.example.com/webhook
-
-Testing:
-- All unit tests passed (12/12)
-- Manual webhook test successful, data stored correctly
-
-Next Agent: Crystal (after testing)
-
-No Action: Ready to proceed after tests pass
-
----
-
 Crystal,
 
 Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
@@ -245,23 +247,25 @@ Next steps: Ready for Crystal to coordinate merge with Preston.
 
 ### Example 2: Blocked
 
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 1 file in eee-ir-communication-service (partial webhook handler)
+
+✅ Action Required:
+- Grant AWS Secrets Manager access for secret "bland/webhook/signing-key" OR provide alternative configuration method
+
+🚫 Blocked: Cannot proceed without AWS secret access
+
+➡️ Next Agent: Crystal (to resolve blocker)
+
+---
+
+**🟢 For the Next Agent (handoff prompt)**
+
 ````markdown
 🟢 For the Next Agent (handoff prompt)
 
 ```text
-For Vader (review / approvals / actions)
-
-Modified: 1 file in eee-ir-communication-service (partial webhook handler)
-
-Action Required:
-- Grant AWS Secrets Manager access for secret "bland/webhook/signing-key" OR provide alternative configuration method
-
-Blocked: Cannot proceed without AWS secret access
-
-Next Agent: Crystal (to resolve blocker)
-
----
-
 Crystal,
 
 Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md
@@ -281,28 +285,30 @@ I cannot proceed until AWS secret access is resolved.
 
 ### Example 3: Needs Review
 
+**🔵 For Vader (review / approvals / actions)**
+
+Modified: 2 files in eee-bot-admin (payment webhook security)
+
+✅ Action Required:
+- Review payment webhook security changes before merge
+- Verify HMAC signature verification implementation
+
+🧪 Testing:
+- All 18 tests passed including security tests
+- Signature validation and replay attack prevention verified
+
+➡️ Next Agent: Crystal (after Vader review)
+
+⚠️ This change requires Vader review before merge due to payment processing and security implications.
+
+---
+
+**🟢 For the Next Agent (handoff prompt)**
+
 ````markdown
 🟢 For the Next Agent (handoff prompt)
 
 ```text
-For Vader (review / approvals / actions)
-
-Modified: 2 files in eee-bot-admin (payment webhook security)
-
-Action Required:
-- Review payment webhook security changes before merge
-- Verify HMAC signature verification implementation
-
-Testing:
-- All 18 tests passed including security tests
-- Signature validation and replay attack prevention verified
-
-Next Agent: Crystal (after Vader review)
-
-This change requires Vader review before merge due to payment processing and security implications.
-
----
-
 Crystal,
 
 Please read your agent instructions at @vader-ai-agents/docs/agents/agent_crystal.md

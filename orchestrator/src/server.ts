@@ -2,8 +2,13 @@
  * Local API Server - Express-based server for local development
  */
 
-import express, { Request, Response } from 'express';
+// Load environment variables from .env file
+import dotenv from 'dotenv';
 import path from 'path';
+// Load .env from the orchestrator directory (parent of src/)
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'net';
 import fs from 'fs';
@@ -190,9 +195,9 @@ app.get('/workflows/:id', (req: Request, res: Response) => {
 // Approve and continue workflow
 app.post('/workflows/:id/approve', async (req: Request, res: Response) => {
   try {
-    const { approved = true } = req.body;
+    const { approved = true, userResponse } = req.body;
     const orch = initializeOrchestrator();
-    const result = await orch.continueWorkflow(req.params.id, approved);
+    const result = await orch.continueWorkflow(req.params.id, approved, userResponse);
     res.json(result);
   } catch (error) {
     console.error('Error approving workflow:', error);
@@ -210,6 +215,20 @@ app.post('/workflows/:id/reject', async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     console.error('Error rejecting workflow:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Continue workflow by processing pending handoffs
+app.post('/workflows/:id/continue', async (req: Request, res: Response) => {
+  try {
+    const orch = initializeOrchestrator();
+    const result = await orch.continueWorkflowWithHandoff(req.params.id);
+    res.json(result);
+  } catch (error) {
+    console.error('Error continuing workflow:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -446,7 +465,7 @@ app.post('/projects/:id/notes', (req: Request, res: Response) => {
   }
 });
 
-// Get user action items
+// Get user action items (includes project tasks and workflow approvals)
 app.get('/user-actions', (req: Request, res: Response) => {
   try {
     const filters: any = {};
@@ -455,7 +474,47 @@ app.get('/user-actions', (req: Request, res: Response) => {
     if (req.query.type) filters.type = req.query.type;
 
     const items = projectManager.getUserActionItems(filters);
-    res.json({ items });
+    
+    // Also include workflow approvals that are waiting (even if not linked to projects)
+    const workflows = stateManager.getAllWorkflows();
+    const pendingApprovals = workflows
+      .filter(wf => wf.status === 'waiting_approval')
+      .flatMap(wf => 
+        (wf.approvals || [])
+          .filter(a => a.approved === undefined)
+          .map(approval => ({
+            id: `approval-${wf.workflowId}-${approval.id}`,
+            type: 'approval' as const,
+            title: `Approval Required: ${wf.currentAgent || 'agent'} workflow`,
+            description: approval.description,
+            priority: 'medium' as const,
+            status: 'pending' as const,
+            projectId: wf.metadata?.projectId || null,
+            workflowId: wf.workflowId,
+            approvalId: approval.id,
+            createdAt: approval.requestedAt,
+            metadata: { 
+              approvalId: approval.id,
+              workflowId: wf.workflowId,
+              agent: wf.currentAgent,
+            },
+          }))
+      );
+    
+    // Combine project tasks and workflow approvals
+    const allItems = [...items, ...pendingApprovals];
+    
+    // Sort by priority and creation date
+    allItems.sort((a, b) => {
+      const priorityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+      const priorityDiff = (priorityOrder[a.priority] || 2) - (priorityOrder[b.priority] || 2);
+      if (priorityDiff !== 0) return priorityDiff;
+      const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt || 0).getTime();
+      const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt || 0).getTime();
+      return aTime - bTime;
+    });
+    
+    res.json({ items: allItems });
   } catch (error) {
     console.error('Error getting user action items:', error);
     res.status(500).json({

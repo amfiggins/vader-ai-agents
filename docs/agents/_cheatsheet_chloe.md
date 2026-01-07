@@ -34,7 +34,7 @@
 
 ### Section 2: 🟢 For the Next Agent (ALWAYS REQUIRED when handing off to Crystal)
 - **MUST be in ```text code block with PLAIN TEXT only**
-- Include "For Vader" section in code block (so Crystal sees what Vader needs to do)
+- **ONLY the prompt to Crystal goes in the code block** (NOT the "For Vader" section)
 - Include: Implementation Summary, Questions for Crystal
 - Address to Crystal
 

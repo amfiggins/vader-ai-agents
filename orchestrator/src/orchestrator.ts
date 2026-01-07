@@ -56,7 +56,7 @@ export class Orchestrator {
       const result = await this.invokeAgent(workflowId, startingAgent, initialPrompt);
 
       // Parse the response
-      const parsed = ResponseParser.parse(result.response);
+      let parsed = ResponseParser.parse(result.response);
 
       let agentResponse = {
         agent: startingAgent,
@@ -115,6 +115,8 @@ export class Orchestrator {
 
         // Update agentResponse with corrected response if applicable
         agentResponse = correctionResult.agentResponse;
+        // Update parsed to use corrected response's parsed sections
+        parsed = agentResponse.parsedSections;
       }
 
       // Calculate duration for the starting agent's step
@@ -183,6 +185,19 @@ export class Orchestrator {
         };
       }
 
+      // Check if response has no structure at all (no forVader and no forNextAgent)
+      // This indicates the agent didn't follow the required format
+      if (!parsed.forVader && !parsed.forNextAgent) {
+        stateManager.updateStatus(workflowId, 'blocked');
+        return {
+          success: false,
+          workflowId,
+          currentAgent: startingAgent,
+          status: 'blocked',
+          error: 'Agent response does not follow required format (missing "For Vader" and "For Next Agent" sections). Manual intervention required.',
+        };
+      }
+
       // No handoff, workflow may be complete or waiting
       stateManager.updateStatus(workflowId, 'in_progress');
 
@@ -208,7 +223,7 @@ export class Orchestrator {
   /**
    * Continue a workflow after approval
    */
-  async continueWorkflow(workflowId: string, approved: boolean): Promise<OrchestratorResponse> {
+  async continueWorkflow(workflowId: string, approved: boolean, userResponse?: string): Promise<OrchestratorResponse> {
     const workflow = stateManager.getWorkflow(workflowId);
     if (!workflow) {
       return {
@@ -240,7 +255,8 @@ export class Orchestrator {
         workflowId,
         pendingApproval.id,
         'user',
-        this.config.autoApprove || false
+        this.config.autoApprove || false,
+        userResponse
       );
     }
 
@@ -274,6 +290,148 @@ export class Orchestrator {
         workflow.currentAgent || 'crystal',
         parsed.forNextAgent
       );
+    }
+
+    // Check if workflow should be completed after approval
+    if (parsed.forVader?.noAction && !parsed.forNextAgent) {
+      stateManager.updateStatus(workflowId, 'completed');
+      return {
+        success: true,
+        workflowId,
+        currentAgent: workflow.currentAgent,
+        status: 'completed',
+        message: 'Workflow completed after approval',
+      };
+    }
+
+    // If there are decisions/actions that were approved, but no handoff,
+    // check if the agent mentioned they would proceed after approval
+    // If so, re-invoke the agent to continue
+    if (parsed.forVader && (parsed.forVader.decisions.length > 0 || parsed.forVader.actions.length > 0)) {
+      // Check if the response indicates the agent will proceed after approval
+      const responseText = lastStep.output.rawResponse.toLowerCase();
+      const willProceed = responseText.includes('will proceed') || 
+                         responseText.includes('proceed with') ||
+                         responseText.includes('next steps') ||
+                         responseText.includes('upon approval');
+      
+      if (willProceed) {
+        // Re-invoke the agent to continue after approval
+        const currentAgent = workflow.currentAgent || 'crystal';
+        let continuationPrompt = `You have received approval for your previous request.`;
+        
+        // Include user response if provided
+        if (userResponse && userResponse.trim()) {
+          continuationPrompt += `\n\nVader's response to your questions:\n${userResponse}\n\nPlease proceed with the next steps based on this information.`;
+        } else {
+          continuationPrompt += ` Please proceed with the next steps as you mentioned. Continue with the workflow.`;
+        }
+        
+        const stepStartTime = Date.now();
+        const result = await this.invokeAgent(
+          workflowId,
+          currentAgent,
+          continuationPrompt,
+          {
+            previousAgent: currentAgent,
+            previousResponse: lastStep.output.rawResponse,
+          }
+        );
+
+        const continuationParsed = ResponseParser.parse(result.response);
+        const agentResponse = {
+          agent: currentAgent,
+          timestamp: new Date(),
+          rawResponse: result.response,
+          parsedSections: continuationParsed,
+          conversationId: result.conversationId,
+        };
+
+        // Validate the continuation response
+        const validation = await judeValidator.validateResponse(
+          currentAgent,
+          agentResponse,
+          continuationPrompt
+        );
+
+        // Handle violations if needed
+        if (validation.correctionNeeded) {
+          const projectId = workflow.metadata?.projectId as string | undefined;
+          const violationResult = await this.handleViolations(
+            workflowId,
+            currentAgent,
+            validation,
+            projectId
+          );
+
+          if (violationResult.shouldStop) {
+            return {
+              success: false,
+              workflowId,
+              currentAgent: workflow.currentAgent,
+              status: 'blocked',
+              error: 'Workflow stopped due to repeated violations after approval continuation.',
+            };
+          }
+        }
+
+        const stepDuration = Date.now() - stepStartTime;
+        stateManager.addStep(workflowId, {
+          agent: currentAgent,
+          input: continuationPrompt,
+          output: agentResponse,
+          duration: stepDuration,
+        });
+
+        // Check for handoff in continuation response
+        if (continuationParsed.forNextAgent) {
+          return await this.handleHandoff(
+            workflowId,
+            currentAgent,
+            continuationParsed.forNextAgent
+          );
+        }
+
+        // Check if continuation requires approval
+        if (ResponseParser.requiresApproval(continuationParsed)) {
+          const approvalId = stateManager.requestApproval(
+            workflowId,
+            currentAgent,
+            this.buildApprovalDescription(continuationParsed)
+          );
+          const approval = stateManager.getWorkflow(workflowId)?.approvals.find(a => a.id === approvalId);
+          return {
+            success: true,
+            workflowId,
+            currentAgent: currentAgent,
+            status: 'waiting_approval',
+            requiresApproval: true,
+            approvalRequest: approval,
+          };
+        }
+
+        // Check if continuation completes the workflow
+        if (continuationParsed.forVader?.noAction && !continuationParsed.forNextAgent) {
+          stateManager.updateStatus(workflowId, 'completed');
+          return {
+            success: true,
+            workflowId,
+            currentAgent: currentAgent,
+            status: 'completed',
+            message: 'Workflow completed after approval continuation',
+          };
+        }
+
+        // Continuation response but no clear next step
+        stateManager.updateStatus(workflowId, 'in_progress');
+        return {
+          success: true,
+          workflowId,
+          currentAgent: currentAgent,
+          status: 'in_progress',
+          message: 'Agent continued after approval, but no clear next step',
+        };
+      }
     }
 
     return {
@@ -590,6 +748,17 @@ export class Orchestrator {
         };
       }
 
+      // Check if corrected response has minimum required format (at least forVader section)
+      if (!correctedParsed.forVader && !correctedParsed.forNextAgent) {
+        // Corrected response still doesn't have required format - this is a critical issue
+        // Mark as blocked and require manual intervention
+        stateManager.updateStatus(workflowId, 'blocked');
+        return {
+          agentResponse,
+          shouldStop: true,
+        };
+      }
+
       // Use corrected response
       agentResponse.rawResponse = correctedResult.response;
       agentResponse.parsedSections = correctedParsed;
@@ -680,5 +849,62 @@ export class Orchestrator {
    */
   getWorkflowState(workflowId: string): WorkflowState | null {
     return stateManager.getWorkflow(workflowId) || null;
+  }
+
+  /**
+   * Continue workflow by processing pending handoffs
+   * This is used when an agent responds with a handoff but the workflow didn't automatically continue
+   */
+  async continueWorkflowWithHandoff(workflowId: string): Promise<OrchestratorResponse> {
+    const workflow = stateManager.getWorkflow(workflowId);
+    if (!workflow) {
+      return {
+        success: false,
+        workflowId,
+        currentAgent: null,
+        status: 'failed',
+        error: 'Workflow not found',
+      };
+    }
+
+    // Check if workflow is in progress (not waiting for approval)
+    if (workflow.status !== 'in_progress') {
+      return {
+        success: false,
+        workflowId,
+        currentAgent: workflow.currentAgent,
+        status: workflow.status,
+        error: `Workflow is ${workflow.status}, cannot continue. Use /approve endpoint if waiting for approval.`,
+      };
+    }
+
+    // Get the last step to check for handoff
+    const lastStep = workflow.history[workflow.history.length - 1];
+    if (!lastStep) {
+      return {
+        success: false,
+        workflowId,
+        currentAgent: workflow.currentAgent,
+        status: 'failed',
+        error: 'No previous step found',
+      };
+    }
+
+    const parsed = lastStep.output.parsedSections;
+    
+    // Check if there's a pending handoff
+    if (parsed.forNextAgent) {
+      const fromAgent = lastStep.agent as AgentName;
+      return await this.handleHandoff(workflowId, fromAgent, parsed.forNextAgent);
+    }
+
+    // No handoff found
+    return {
+      success: false,
+      workflowId,
+      currentAgent: workflow.currentAgent,
+      status: workflow.status,
+      error: 'No pending handoff found in last step',
+    };
   }
 }

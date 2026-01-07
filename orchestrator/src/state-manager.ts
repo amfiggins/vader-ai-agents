@@ -119,7 +119,7 @@ export class StateManager {
   /**
    * Approve a request
    */
-  approve(workflowId: string, approvalId: string, approvedBy: string, autoApproved = false): void {
+  approve(workflowId: string, approvalId: string, approvedBy: string, autoApproved = false, userResponse?: string): void {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow not found: ${workflowId}`);
@@ -134,6 +134,9 @@ export class StateManager {
     approval.approvedAt = new Date();
     approval.approvedBy = approvedBy;
     approval.autoApproved = autoApproved;
+    if (userResponse) {
+      approval.userResponse = userResponse;
+    }
 
     // Check if all approvals are resolved
     const allApproved = workflow.approvals.every((a) => a.approved !== undefined);
