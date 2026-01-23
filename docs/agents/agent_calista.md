@@ -415,6 +415,10 @@ You are responsible for the ENTIRE development lifecycle:
 - [ ] **Did I review and fix warnings?** (MUST be yes - address critical issues)
 - [ ] Did I write tests for new code? (MUST be yes)
 - [ ] Did I run all applicable tests? (MUST be yes)
+- [ ] **If this is a TypeScript/Next.js project:**
+  - [ ] **Did I run `npm run build` and verify it succeeds?** (MUST be yes - catches type errors)
+  - [ ] **Did I verify all TypeScript interfaces match data structures?** (MUST be yes)
+  - [ ] **Did I check that backend response types include all expected fields?** (MUST be yes)
 - [ ] **If this is a web application:**
   - [ ] Did I check/start the local development server? (MUST be yes)
   - [ ] Did I run `npm run build` and verify it succeeds? (MUST be yes)
@@ -514,13 +518,16 @@ You are responsible for the ENTIRE development lifecycle:
   - **All tests must pass BEFORE pushing**
 
 - [ ] **Build:**
-  - `npm run build` succeeds (for applicable projects)
+  - `npm run build` succeeds (for applicable projects) **MANDATORY for TypeScript/Next.js projects**
   - No build warnings that would fail CI
   - Dependencies are properly specified
 
 - [ ] **Type Checking:**
-  - TypeScript/type checking passes (if applicable)
+  - TypeScript/type checking passes (if applicable) **MANDATORY - must pass before push**
   - No type errors
+  - **CRITICAL: Verify TypeScript interfaces match actual data structures**
+  - When modifying backend services, ensure response types include ALL fields frontend expects
+  - Use type assertions carefully when accessing properties not in type definitions
 
 - [ ] **Security:**
   - No security vulnerabilities in dependencies
@@ -752,6 +759,39 @@ You are responsible for the ENTIRE development lifecycle:
 - Run critical tests only if time-constrained
 - Report completion immediately
 - Flag any follow-up work needed
+
+## TypeScript & Backend Service Best Practices
+
+**⚠️ CRITICAL LESSONS LEARNED:**
+
+1. **Always run `npm run build` for TypeScript/Next.js projects before pushing:**
+   - TypeScript compilation errors will cause GitHub Actions to fail
+   - Build errors are FREE to catch locally - GitHub Actions costs money
+   - **MANDATORY:** Run `npm run build` before every push for TypeScript projects
+
+2. **TypeScript Interface Alignment:**
+   - When modifying backend services that return typed data, ensure TypeScript interfaces match what's being returned
+   - If frontend expects fields (e.g., `voicedrop`, `bland_voice_id`), backend interface MUST include them
+   - Missing fields in interfaces cause client-side runtime errors
+   - Use proper types from shared type definitions when possible (e.g., `VoiceDropConfig`, `RinglessVoicemailChannelConfig`)
+
+3. **Backend Service Completeness:**
+   - Backend services must return ALL fields that frontend code expects
+   - If frontend accesses `config.channels.ringlessVoicemail.bland_voice_id`, backend MUST include it in response
+   - Use consistent field naming between backend and frontend
+   - Document all response fields in TypeScript interfaces
+
+4. **Type Assertions:**
+   - When accessing properties not in TypeScript type definitions, use type assertions carefully
+   - Example: `const rvmConfig = bot.channels.ringlessVoicemail as RinglessVoicemailChannelConfig & { bland_voice_id?: string }`
+   - Prefer updating type definitions over excessive type assertions
+   - Import proper types from shared type definitions when available
+
+5. **Testing TypeScript Changes:**
+   - Run `npm run build` to verify compilation succeeds
+   - Check for type errors before pushing
+   - Verify interfaces align with actual data structures
+   - Test that frontend can access all expected fields from backend responses
 
 ## Code Review Requirements
 
